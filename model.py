@@ -391,41 +391,50 @@ class Implicit4DNN(nn.Module):
 
         self.feature_size = (3 + 16 + 32 + 64 + 128 + 128 + 128 + 128)
 
-        #========================IMAGE FEATURE PAIRING=============================
-        num_merged_views = 2
-        self.conv_sim_pair = torch.nn.Conv2d(in_channels=1,
-                                             out_channels=128,
-                                             padding=0,
-                                             kernel_size=(num_merged_views,
-                                                          self.feature_size),
-                                             stride=num_merged_views,
-                                             dilation=1,
-                                             padding_mode='circular')
+        # TODO: Replace this with a transformer or attention mechanism
+        # TODO: play with the number of heads and layers
+        # TODO: Either way we need to add positional encoding to the features + handle number of views + possibly concatenate together, ViT style
+        self.stereo_transformer_layer = nn.TransformerEncoderLayer(
+            d_model=self.feature_size, nhead=8)
+        self.stereo_transformer = nn.TransformerEncoder(
+            self.stereo_transformer_layer, num_layers=6)
 
-        #========================ENSEMBLE OF SIMILARITIES=============================
-        num_merged_pairs = 4
-        self.conv_sim_merge_1 = torch.nn.Conv2d(in_channels=128,
-                                                out_channels=128,
-                                                padding=0,
-                                                kernel_size=(num_merged_pairs,
-                                                             1),
-                                                stride=1,
-                                                dilation=1,
-                                                padding_mode='circular')
+        # #========================IMAGE FEATURE PAIRING=============================
+        # num_merged_views = 2
+        # self.conv_sim_pair = torch.nn.Conv2d(in_channels=1,
+        #                                      out_channels=128,
+        #                                      padding=0,
+        #                                      kernel_size=(num_merged_views,
+        #                                                   self.feature_size),
+        #                                      stride=num_merged_views,
+        #                                      dilation=1,
+        #                                      padding_mode='circular')
 
-        self.conv_sim_merge_2 = torch.nn.Conv2d(in_channels=128,
-                                                out_channels=128,
-                                                padding=0,
-                                                kernel_size=(num_merged_pairs,
-                                                             1),
-                                                stride=1,
-                                                dilation=1,
-                                                padding_mode='circular')
+        # #========================ENSEMBLE OF SIMILARITIES=============================
+        # num_merged_pairs = 4
+        # self.conv_sim_merge_1 = torch.nn.Conv2d(in_channels=128,
+        #                                         out_channels=128,
+        #                                         padding=0,
+        #                                         kernel_size=(num_merged_pairs,
+        #                                                      1),
+        #                                         stride=1,
+        #                                         dilation=1,
+        #                                         padding_mode='circular')
 
-        #========================COLLATION OF STEREO FEATURES=============================
-        self.max_over_views = nn.MaxPool2d(kernel_size=(-1, 1))
+        # self.conv_sim_merge_2 = torch.nn.Conv2d(in_channels=128,
+        #                                         out_channels=128,
+        #                                         padding=0,
+        #                                         kernel_size=(num_merged_pairs,
+        #                                                      1),
+        #                                         stride=1,
+        #                                         dilation=1,
+        #                                         padding_mode='circular')
+
+        # #========================COLLATION OF STEREO FEATURES=============================
+        # self.max_over_views = nn.MaxPool2d(kernel_size=(-1, 1))
 
         #========================NERF DECODER=============================
+        # TODO: Change number of in features
         self.fc_0 = nn.Linear(in_features=128, out_features=256)
         self.fc_1 = nn.Linear(in_features=256, out_features=128)
         self.fc_out = nn.Linear(in_features=128, out_features=4)
