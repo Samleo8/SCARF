@@ -1,5 +1,5 @@
 
-# Stereo Transformer Radiance Fields
+# Stereo Attention Radiance Fields (SARF)
 
 This is a modification of the originial SRF paper, but using attention as the mechanism for implicit stereo correspondences.
 
