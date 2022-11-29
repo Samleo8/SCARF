@@ -1,5 +1,10 @@
 
-# Stereo Radiance Fields
+# Stereo Transformer Radiance Fields
+
+This is a modification of the originial SRF paper, but using attention as the mechanism for implicit stereo correspondences.
+
+## Original Paper/Authors
+
 > [Julian Chibane](http://virtualhumans.mpi-inf.mpg.de/people/Chibane.html), 
 > [Aayush Bansal](http://www.cs.cmu.edu/~aayushb/),
 > [Verica Lazova](http://virtualhumans.mpi-inf.mpg.de/people/Lazova.html),
