@@ -394,6 +394,13 @@ class Implicit4DNN(nn.Module):
         # TODO: Replace this with a transformer or attention mechanism
         # TODO: play with the number of heads and layers
         # TODO: Either way we need to add positional encoding to the features + handle number of views + possibly concatenate together, ViT style
+        # Ref https://medium.com/artificialis/vit-visiontransformer-a-pytorch-implementation-8d6a1033bdc5
+
+        # NOTE: should probably use a proper cosine embedding?
+        # Ref https://github.com/lucidrains/vit-pytorch/blob/main/vit_pytorch/simple_vit.py
+
+        # TODO: Figure out embedding for number of views
+
         self.stereo_transformer_layer = nn.TransformerEncoderLayer(
             d_model=self.feature_size, nhead=8)
         self.stereo_transformer = nn.TransformerEncoder(
@@ -549,6 +556,7 @@ class Implicit4DNN(nn.Module):
             net, ref_pts, align_corners=True
         )  # out (batch_size x num_ref_views, 128, rays, num_samples)
 
+        # TODO: perform embedding before feature concat
         # here every channel corresponds to one feature.
         features = torch.cat(
             (feature_0, feature_1, feature_2, feature_3, feature_4, feature_5,
@@ -561,10 +569,16 @@ class Implicit4DNN(nn.Module):
         features = features.permute(
             0, 3, 4, 1,
             2)  # out (batch_size, rays, num_samples, num_ref_views, features)
+
+        # TODO: convert features to a size suitable for transformer
+
         features = features.reshape((self.batch_size * rays * num_samples, 1,
                                      self.num_ref_views, self.feature_size))
+        # out (batch_size * rays * num_samples, 1, num_ref_views, features)
 
         #========================END IMAGE ENCODER=============================
+
+        # TODO: Use transformer encoder/decoder here
 
         #========================PAIRING IMAGE FEATURES=============================
         if self.cfg.fine_tune and self.cfg.shuffle_combis:
