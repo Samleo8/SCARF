@@ -453,7 +453,8 @@ class Implicit4DNN(nn.Module):
 
         # Move to device
         if device is None:
-            device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+            device = torch.device(
+                'cuda' if torch.cuda.is_available() else 'cpu')
 
         self.to(device)
         self.device = device
@@ -633,8 +634,25 @@ def sample_pdf(bins, weights, N_importance_samples, det=False):
     samples = bins_g[..., 0] + t * (bins_g[..., 1] - bins_g[..., 0])
     return samples
 
+
 if __name__ == "__main__":
     import config_loader
     cfg = config_loader.get_config()
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    test_model = Implicit4DNN(cfg, device='cuda:0')
+    # Create fake data
+    num_ref_views = cfg.num_reference_views
+    batch_size = cfg.batch_size
+
+    # (batch_size x num_ref_views, H, W, 3)
+    H = W = 256
+    ref_imgs = torch.rand((batch_size * num_ref_views, H, W, 3)).to(device)
+
+    # (batch_size x num_ref_views, rays, num_samples, 2)
+    rays = 100
+    num_samples = 130
+    ref_pts = torch.rand((batch_size * num_ref_views, rays, num_samples, 2)).to(device)
+
+    # Create fake model
+    test_model = Implicit4DNN(cfg, device=device)
+    test_model(ref_imgs, ref_pts)
