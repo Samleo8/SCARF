@@ -420,7 +420,7 @@ class Implicit4DNN(nn.Module):
         self.cross_features_positional_encoder = PositionalEncoding1D(channels=1) # num samples
 
         self.stereo_transformer_layer = nn.TransformerEncoderLayer(
-            d_model=self.cnn_feature_size, nhead=8)
+            d_model=self.compressed_feature_size, nhead=8)
         self.stereo_transformer = nn.TransformerEncoder(
             self.stereo_transformer_layer, num_layers=6)
 
@@ -537,13 +537,14 @@ class Implicit4DNN(nn.Module):
             net, ref_pts, align_corners=True
         )  # out (batch_size x num_ref_views, 128, rays, num_samples)
 
-        # TODO: perform embedding before feature concat
         # here every channel corresponds to one feature.
         features = torch.cat(
             (feature_0, feature_1, feature_2, feature_3, feature_4, feature_5,
              feature_6, feature_7),
             dim=1
         )  # out (batch_size x num_ref_views, features, rays, num_samples),
+
+        print(features.shape, self.cnn_feature_size)
         
         features = features.reshape((self.batch_size, self.num_ref_views,
                                      self.cnn_feature_size, rays, num_samples))
