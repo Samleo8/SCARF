@@ -117,11 +117,13 @@ def train(cfg):
 
 def compute_loss(dataset_iterator, dataloader, global_step, cfg):
     try:
-        data = dataset_iterator.next()
+        # data = dataset_iterator.next()
+        data = next(dataset_iterator)
     except:
         # iterator not initialized or last element reached, python has no .hasNext
         dataset_iterator = dataloader.__iter__()
-        data = dataset_iterator.next()
+        # data = dataset_iterator.next()
+        data = next(dataset_iterator)
 
     if global_step < cfg.precrop_iters:
         # [rays_o, rays_d, viewdirs, target_s, pts, z_vals]
