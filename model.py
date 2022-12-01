@@ -452,6 +452,9 @@ class Implicit4DNN(nn.Module):
         self.conv5_1_bn = nn.BatchNorm2d(128)
 
         # Move to device
+        if device is None:
+            device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
         self.to(device)
         self.device = device
 
@@ -629,3 +632,9 @@ def sample_pdf(bins, weights, N_importance_samples, det=False):
     # weights are computed on pts samples and bins are defined in between samples - does this make sense?
     samples = bins_g[..., 0] + t * (bins_g[..., 1] - bins_g[..., 0])
     return samples
+
+if __name__ == "__main__":
+    import config_loader
+    cfg = config_loader.get_config()
+
+    test_model = Implicit4DNN(cfg, device='cuda:0')
