@@ -403,33 +403,36 @@ class Implicit4DNN(nn.Module):
 
         #=======================FEATURE LINEAR PROJECTION========================
         # For feature size reduction
-        self.fc_0 = nn.Linear(in_features=self.cnn_feature_size, out_features=self.intermediate_feature_size)
-        self.fc_1 = nn.Linear(in_features=self.intermediate_feature_size, out_features=self.compressed_feature_size)
+        self.fc_0 = nn.Linear(in_features=self.cnn_feature_size,
+                              out_features=self.intermediate_feature_size)
+        self.fc_1 = nn.Linear(in_features=self.intermediate_feature_size,
+                              out_features=self.compressed_feature_size)
 
         #========================FEATURE ENCODER=============================
-        # TODO: Replace this with a transformer or attention mechanism
+        # Replaces stereo similarity and correspondences with an attention (transformer) mechanism
         # TODO: play with the number of heads and layers
-        # TODO: Either way we need to add positional encoding to the features + handle number of views + possibly concatenate together, ViT style
-        # Ref https://medium.com/artificialis/vit-visiontransformer-a-pytorch-implementation-8d6a1033bdc5
 
-        # NOTE: should probably use a proper cosine embedding?
-        # Ref https://github.com/lucidrains/vit-pytorch/blob/main/vit_pytorch/simple_vit.py
-
-        # Encoding
-        # NOTE: Internal feature encoding is the encoding within a feature 
+        # NOTE: positional encoding needs to be added to the number of features, ViT style
+        # NOTE: Internal feature encoding is the encoding within a feature
         # Feature Vector: (batch_size, num_ref_views, features, rays, num_samples)
-        # TODO: Check if we are learning the same thing across different 
-        self.internal_features_positional_encoder = PositionalEncoding1D(channels=2) # feature size
-        self.cross_features_positional_encoder = PositionalEncoding1D(channels=1) # num samples
+        # TODO: Check if we are learning the same thing across different
+        self.internal_features_positional_encoder = PositionalEncoding1D(
+            channels=2)  # feature size
+        self.cross_features_positional_encoder = PositionalEncoding1D(
+            channels=1)  # num samples
 
+        # Actual transformer encoder
         self.stereo_transformer_layer = nn.TransformerEncoderLayer(
             d_model=self.compressed_feature_size, nhead=self.num_attn_heads)
         self.stereo_transformer = nn.TransformerEncoder(
-            self.stereo_transformer_layer, num_layers=self.num_transformer_layers)
+            self.stereo_transformer_layer,
+            num_layers=self.num_transformer_layers,
+            batch_first=True)
 
         #========================NERF DECODER=============================
         # TODO: Change number of in features
-        self.fc_2 = nn.Linear(in_features=self.transformer_size, out_features=256)
+        self.fc_2 = nn.Linear(in_features=self.transformer_size,
+                              out_features=256)
         self.fc_3 = nn.Linear(in_features=256, out_features=128)
         self.fc_out = nn.Linear(in_features=128, out_features=4)
         self.actvn = nn.ReLU()
@@ -448,26 +451,6 @@ class Implicit4DNN(nn.Module):
         # Move to device
         self.to(device)
         self.device = device
-
-        # self.combis_list = self.sample_sim_combinations(self.num_ref_views, 2)
-
-    # sample an ordering of input reference views, which is used to order the encoded views for the subsequent
-    # similarity emulating CNN
-    def sample_sim_combinations(self, num_views, num_merged_views):
-        # instead of all possible permutations of size num_merged_views (i.e. regarding inequality due to ordering)
-        # we only consider all possible sets of size num_merged_views (i.e. disregarding inequality due to ordering)
-        # and shuffle these to encourage unbiased, more symmetric learning
-
-        # TODO: Vectorize???
-        combis = list(
-            itertools.combinations(range(num_views), num_merged_views))
-        random.shuffle(combis)
-        combis_list = []
-        for combi in combis:
-            combi = list(combi)
-            random.shuffle(combi)
-            combis_list += combi
-        return combis_list
 
     def forward(self, ref_images, ref_pts):
 
@@ -548,12 +531,15 @@ class Implicit4DNN(nn.Module):
         )  # out (batch_size x num_ref_views, features, rays, num_samples),
 
         print(features.shape, self.cnn_feature_size)
-        
+
         features = features.reshape((self.batch_size, self.num_ref_views,
                                      self.cnn_feature_size, rays, num_samples))
 
-        features = features.permute(0, 3, 4, 1, 2)  # out (batch_size, rays, num_samples, num_ref_views, features)
-        features = features.reshape....
+        features = features.permute(
+            0, 3, 4, 1,
+            2)  # out (batch_size, rays, num_samples, num_ref_views, features)
+        # features = features.reshape....
+        print(features.shape)
 
         # Feature encoder
         # FC layers to project the feature size into a smaller latent space
@@ -564,16 +550,14 @@ class Implicit4DNN(nn.Module):
 
         # Reshape layers
         # out (batch_size, num_ref_views, features x rays x num_samples)
-        features = features.view(self.batch_size, self.num_ref_views, -1) 
+        features = features.view(self.batch_size, self.num_ref_views, -1)
 
         #========================END IMAGE ENCODER=============================
         # TODO: Positional encoding
         self.internal_features_encoding(features)
         self.cross_features_encoding(features)
-        
-        # TODO: Use transformer encoder/decoder here
-        
 
+        # TODO: Use transformer encoder/decoder here
 
         #========================NERF DECODER=============================
         features = self.actvn(self.fc_2(features))
