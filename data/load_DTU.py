@@ -1,8 +1,8 @@
+import cv2
 import os
 import torch
 import numpy as np
 import imageio
-import cv2
 import pickle as pkl
 import random
 

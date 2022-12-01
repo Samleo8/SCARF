@@ -1,9 +1,9 @@
+import data.load_DTU as DTU
 from torch.utils.data import Dataset
 import torch
 import numpy as np
 import os
 import random
-import data.load_DTU as DTU
 
 
 

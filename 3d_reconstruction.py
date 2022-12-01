@@ -1,3 +1,4 @@
+import data.load_DTU as DTU
 import torch
 from tqdm import tqdm, trange
 import time
@@ -6,7 +7,6 @@ import model
 import numpy as np
 from dataloader import SceneDataset
 import imageio
-import data.load_DTU as DTU
 import mcubes
 import trimesh
 

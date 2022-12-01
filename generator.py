@@ -1,9 +1,9 @@
+import data.load_DTU as DTU
 import torch
 import os
 import numpy as np
 from dataloader import SceneDataset
 import imageio
-import data.load_DTU as DTU
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
