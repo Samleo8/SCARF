@@ -17,6 +17,8 @@ def config_parser():
     # architecture options
     parser.add_argument("--intermediate_feature_size", type=int, default=256)
     parser.add_argument("--compressed_feature_size", type=int, default=128)
+    parser.add_argument("--num_attn_heads", type=int, default=8)
+    parser.add_argument("--num_transformer_layers", type=int, default=3)
 
     # training options
     parser.add_argument("--shuffle_combis", action='store_true',

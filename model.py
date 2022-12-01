@@ -283,11 +283,14 @@ class Implicit4DNN(nn.Module):
     def __init__(self, cfg, device):
         super(Implicit4DNN, self).__init__()
 
-        # Setup variables
+        # Setup variables from config
         self.num_ref_views = cfg.num_reference_views
         self.batch_size = cfg.batch_size
         self.intermediate_feature_size = cfg.intermediate_feature_size
         self.compressed_feature_size = cfg.compressed_feature_size
+        self.num_attn_heads = cfg.num_attn_heads
+        self.num_transformer_layers = cfg.num_transformer_layers
+
         self.cfg = cfg
 
         #========================IMAGE ENCODER=============================
@@ -420,9 +423,9 @@ class Implicit4DNN(nn.Module):
         self.cross_features_positional_encoder = PositionalEncoding1D(channels=1) # num samples
 
         self.stereo_transformer_layer = nn.TransformerEncoderLayer(
-            d_model=self.compressed_feature_size, nhead=8)
+            d_model=self.compressed_feature_size, nhead=self.num_attn_heads)
         self.stereo_transformer = nn.TransformerEncoder(
-            self.stereo_transformer_layer, num_layers=6)
+            self.stereo_transformer_layer, num_layers=self.num_transformer_layers)
 
         #========================NERF DECODER=============================
         # TODO: Change number of in features
