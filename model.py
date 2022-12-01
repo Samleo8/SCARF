@@ -423,14 +423,17 @@ class Implicit4DNN(nn.Module):
 
         # Actual transformer encoder
         self.stereo_transformer_layer = nn.TransformerEncoderLayer(
-            d_model=self.compressed_feature_size, nhead=self.num_attn_heads)
+            d_model=self.compressed_feature_size,
+            nhead=self.num_attn_heads,
+            batch_first=True)
         self.stereo_transformer = nn.TransformerEncoder(
             self.stereo_transformer_layer,
-            num_layers=self.num_transformer_layers,
-            batch_first=True)
+            num_layers=self.num_transformer_layers)
 
         #========================NERF DECODER=============================
         # TODO: Change number of in features
+        self.transformer_size = self.compressed_feature_size
+        # TODO: Can we use a transformer decoder directly?
         self.fc_2 = nn.Linear(in_features=self.transformer_size,
                               out_features=256)
         self.fc_3 = nn.Linear(in_features=256, out_features=128)
@@ -453,7 +456,6 @@ class Implicit4DNN(nn.Module):
         self.device = device
 
     def forward(self, ref_images, ref_pts):
-
         rays, num_samples = ref_pts.shape[1:-1]
 
         ref_images = ref_images.permute((0, 3, 1, 2))
