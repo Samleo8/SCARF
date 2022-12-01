@@ -9,7 +9,8 @@ import itertools
 import random
 from tqdm import tqdm
 
-from embedding import PositionalEncoding1D
+# from embedding import PositionalEncoding1D
+from embedding import posemb_sincos_1d, posemb_sincos_2d
 
 to8b = lambda x: (255 * np.clip(x, 0, 1)).astype(np.uint8)
 
@@ -416,10 +417,10 @@ class Implicit4DNN(nn.Module):
         # NOTE: Internal feature encoding is the encoding within a feature
         # Feature Vector: (batch_size, rays, num_samples, num_ref_views, compressed_feature_size)
         # TODO: Check if we are learning the same position across different views or does it not matter
-        self.internal_features_positional_encoder = PositionalEncoding1D(
-            channels=-1)  # feature size
-        self.cross_features_positional_encoder = PositionalEncoding1D(
-            channels=-2)  # num samples
+        # self.internal_features_positional_encoder = PositionalEncoding1D(
+        #     channels=-1)  # feature size
+        # self.cross_features_positional_encoder = PositionalEncoding1D(
+        #     channels=-2)  # num samples
 
         # Actual transformer encoder
         self.stereo_transformer_layer = nn.TransformerEncoderLayer(
@@ -530,6 +531,7 @@ class Implicit4DNN(nn.Module):
         )  # out (batch_size x num_ref_views, 128, rays, num_samples)
 
         # here every channel corresponds to one feature.
+        # TODO: We need to either throw some features away (do we really need so many), or compress each feature individually
         features = torch.cat(
             (feature_0, feature_1, feature_2, feature_3, feature_4, feature_5,
              feature_6, feature_7),
@@ -543,22 +545,29 @@ class Implicit4DNN(nn.Module):
         features = features.permute(0, 3, 4, 1, 2)
         # out (batch_size, rays, num_samples, num_ref_views, cnn_feature_size)
 
+        # TODO: I think we need to change the "features" shape to
+        # (batch_size x rays x num_samples, num_ref_views, cnn_feature_size)
+        # TODO: which corresponds to src: (N, S, E) if batch_first=True.
+        # as per pytorch documentation; N = batch_size, S = "sequence", E = feature dimension
+
         #========================END IMAGE ENCODER=============================
 
         #========================SIMILARITY ENCODER=============================
         # FC layers to project the feature size into a smaller latent space
-        features = self.fc_0(features)
-        features = self.actvn(features)
-        features = self.fc_1(features)
-        features = self.actvn(features)
+        # features = self.fc_0(features)
+        # features = self.actvn(features)
+        # features = self.fc_1(features)
+        # features = self.actvn(features)
         # out (batch_size, rays, num_samples, num_ref_views, compressed_feature_size)
 
         # TODO: Positional encoding
-        pos_enc_internal = self.internal_features_positional_encoder(
-            features)  # .unsqueeze(-1)
-        pos_enc_cross = self.cross_features_positional_encoder(
-            features)  #.unsqueeze(-1)
-        # out (batch_size, num_ref_views, -1)
+        # pos_enc_internal = self.internal_features_positional_encoder(
+        #     features)  # .unsqueeze(-1)
+        # pos_enc_cross = self.cross_features_positional_encoder(
+        #     features)  #.unsqueeze(-1)
+        # # out (batch_size, num_ref_views, -1)
+        '''
+        pos_enc_internal = self.internal_features_positional_encoder()
 
         print("features", features.shape)
         print("pos_enc_internal", pos_enc_internal.shape)
@@ -566,6 +575,7 @@ class Implicit4DNN(nn.Module):
 
         features += pos_enc_internal
         features += pos_enc_cross
+        '''
 
         # TODO: Use transformer encoder/decoder here
         features = self.transformer_encoder(features)
