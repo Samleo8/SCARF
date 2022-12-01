@@ -9,6 +9,8 @@ import itertools
 import random
 from tqdm import tqdm
 
+from embedding import PositionalEncoding1D
+
 to8b = lambda x: (255 * np.clip(x, 0, 1)).astype(np.uint8)
 
 
@@ -281,7 +283,10 @@ class Implicit4DNN(nn.Module):
     def __init__(self, cfg, device):
         super(Implicit4DNN, self).__init__()
 
-        # NOTE: Pose embedding is done in the parent function
+        # Setup variables
+        self.num_ref_views = cfg.num_reference_views
+        self.batch_size = cfg.batch_size
+        self.cfg = cfg
 
         #========================IMAGE ENCODER=============================
         # input should be (Scenes/Time instant x Views, img_channels, H, W)
@@ -391,6 +396,10 @@ class Implicit4DNN(nn.Module):
 
         self.feature_size = (3 + 16 + 32 + 64 + 128 + 128 + 128 + 128)
 
+        #========================FEATURE ENCODER=============================
+        self.fc_0 = nn.Linear(in_features=self.feature_size, out_features=256)
+        self.fc_1 = nn.Linear(in_features=256, out_features=128)
+
         # TODO: Replace this with a transformer or attention mechanism
         # TODO: play with the number of heads and layers
         # TODO: Either way we need to add positional encoding to the features + handle number of views + possibly concatenate together, ViT style
@@ -399,51 +408,22 @@ class Implicit4DNN(nn.Module):
         # NOTE: should probably use a proper cosine embedding?
         # Ref https://github.com/lucidrains/vit-pytorch/blob/main/vit_pytorch/simple_vit.py
 
-        # TODO: Figure out embedding for number of views
+        # Encoding
+        # NOTE: Internal feature encoding is the encoding within a feature 
+        # Feature Vector: (batch_size, num_ref_views, features, rays, num_samples)
+        # TODO: Check if we are learning the same thing across different 
+        self.internal_features_positional_encoder = PositionalEncoding1D(channels=2) # feature size
+        self.cross_features_positional_encoder = PositionalEncoding1D(channels=1) # num samples
 
         self.stereo_transformer_layer = nn.TransformerEncoderLayer(
             d_model=self.feature_size, nhead=8)
         self.stereo_transformer = nn.TransformerEncoder(
             self.stereo_transformer_layer, num_layers=6)
 
-        # #========================IMAGE FEATURE PAIRING=============================
-        # num_merged_views = 2
-        # self.conv_sim_pair = torch.nn.Conv2d(in_channels=1,
-        #                                      out_channels=128,
-        #                                      padding=0,
-        #                                      kernel_size=(num_merged_views,
-        #                                                   self.feature_size),
-        #                                      stride=num_merged_views,
-        #                                      dilation=1,
-        #                                      padding_mode='circular')
-
-        # #========================ENSEMBLE OF SIMILARITIES=============================
-        # num_merged_pairs = 4
-        # self.conv_sim_merge_1 = torch.nn.Conv2d(in_channels=128,
-        #                                         out_channels=128,
-        #                                         padding=0,
-        #                                         kernel_size=(num_merged_pairs,
-        #                                                      1),
-        #                                         stride=1,
-        #                                         dilation=1,
-        #                                         padding_mode='circular')
-
-        # self.conv_sim_merge_2 = torch.nn.Conv2d(in_channels=128,
-        #                                         out_channels=128,
-        #                                         padding=0,
-        #                                         kernel_size=(num_merged_pairs,
-        #                                                      1),
-        #                                         stride=1,
-        #                                         dilation=1,
-        #                                         padding_mode='circular')
-
-        # #========================COLLATION OF STEREO FEATURES=============================
-        # self.max_over_views = nn.MaxPool2d(kernel_size=(-1, 1))
-
         #========================NERF DECODER=============================
         # TODO: Change number of in features
-        self.fc_0 = nn.Linear(in_features=128, out_features=256)
-        self.fc_1 = nn.Linear(in_features=256, out_features=128)
+        self.fc_2 = nn.Linear(in_features=self.transformer_size, out_features=256)
+        self.fc_3 = nn.Linear(in_features=256, out_features=128)
         self.fc_out = nn.Linear(in_features=128, out_features=4)
         self.actvn = nn.ReLU()
 
@@ -458,14 +438,11 @@ class Implicit4DNN(nn.Module):
         self.conv4_1_bn = nn.BatchNorm2d(128)
         self.conv5_1_bn = nn.BatchNorm2d(128)
 
-        # Other random stuff
+        # Move to device
         self.to(device)
         self.device = device
-        self.num_ref_views = cfg.num_reference_views
-        self.batch_size = cfg.batch_size
-        self.cfg = cfg
 
-        self.combis_list = self.sample_sim_combinations(self.num_ref_views, 2)
+        # self.combis_list = self.sample_sim_combinations(self.num_ref_views, 2)
 
     # sample an ordering of input reference views, which is used to order the encoded views for the subsequent
     # similarity emulating CNN
@@ -563,58 +540,36 @@ class Implicit4DNN(nn.Module):
              feature_6, feature_7),
             dim=1
         )  # out (batch_size x num_ref_views, features, rays, num_samples),
-
+        
         features = features.reshape((self.batch_size, self.num_ref_views,
                                      self.feature_size, rays, num_samples))
-        features = features.permute(
-            0, 3, 4, 1,
-            2)  # out (batch_size, rays, num_samples, num_ref_views, features)
 
-        # TODO: convert features to a size suitable for transformer
+        features = features.permute(0, 3, 4, 1, 2)  # out (batch_size, rays, num_samples, num_ref_views, features)
+        features = features.reshape....
 
-        features = features.reshape((self.batch_size * rays * num_samples, 1,
-                                     self.num_ref_views, self.feature_size))
-        # out (batch_size * rays * num_samples, 1, num_ref_views, features)
+        # Feature encoder
+        # FC layers to project the feature size into a smaller latent space
+        features = self.fc_0(features)
+        features = self.actvn(features)
+        features = self.fc_1(features)
+        features = self.actvn(features)
+
+        # Reshape layers
+        # out (batch_size, num_ref_views, features x rays x num_samples)
+        features = features.view(self.batch_size, self.num_ref_views, -1) 
 
         #========================END IMAGE ENCODER=============================
-
+        # TODO: Positional encoding
+        self.internal_features_encoding(features)
+        self.cross_features_encoding(features)
+        
         # TODO: Use transformer encoder/decoder here
+        
 
-        #========================PAIRING IMAGE FEATURES=============================
-        if self.cfg.fine_tune and self.cfg.shuffle_combis:
-            self.combis_list = self.sample_sim_combinations(
-                self.num_ref_views, 2)
-            print('resample combis list')
-
-        features = features[:, :, self.
-                            combis_list]  # out (batch_size * rays * num_samples, 1, num_ref_views pairs, features)
-        features = self.actvn(
-            self.conv_sim_pair(features)
-        )  # out (batch_size * rays * num_samples, channels, num_ref_views pairs /2, 1)
-
-        #========================END PAIRING IMAGE FEATURES=============================
-
-        #========================ENSEMBLE OF SIMILARITIES=============================
-        features = self.actvn(
-            self.conv_sim_merge_1(features)
-        )  # out (batch_size * rays * num_samples, 128, convoled views, 1)
-        features = self.actvn(
-            self.conv_sim_merge_2(features)
-        )  # out (batch_size * rays * num_samples, 128, convoled views, 1)
-
-        #========================END ENSEMBLE OF SIMILARITIES=============================
-
-        #========================COLLATE STEREO FEATURES=============================
-        self.max_over_views.stride = (features.shape[-2], 1)
-        self.max_over_views.kernel_size = (features.shape[-2], 1)
-
-        features = self.max_over_views(features).squeeze(-1).squeeze(
-            -1)  # out (batch_size * rays * num_samples, 128)
-        #========================END COLLATE STEREO FEATURES=============================
 
         #========================NERF DECODER=============================
-        features = self.actvn(self.fc_0(features))
-        features = self.actvn(self.fc_1(features))
+        features = self.actvn(self.fc_2(features))
+        features = self.actvn(self.fc_3(features))
         features = self.fc_out(
             features)  # out (batch_size * rays * num_samples, 4)
 
