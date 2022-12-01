@@ -536,8 +536,6 @@ class Implicit4DNN(nn.Module):
             dim=1
         )  # out (batch_size x num_ref_views, features, rays, num_samples),
 
-        print(features.shape, self.cnn_feature_size)
-
         features = features.reshape((self.batch_size, self.num_ref_views,
                                      self.cnn_feature_size, rays, num_samples))
 
@@ -545,7 +543,6 @@ class Implicit4DNN(nn.Module):
             0, 3, 4, 1,
             2)  # out (batch_size, rays, num_samples, num_ref_views, features)
         # features = features.reshape....
-        print(features.shape)
 
         #========================END IMAGE ENCODER=============================
 
@@ -557,12 +554,21 @@ class Implicit4DNN(nn.Module):
         features = self.actvn(features)
 
         # Reshape layers
+        # TODO: Why is this here/necessary?
+        # TODO: Shouldn't we want 
         # out (batch_size, num_ref_views, features x rays x num_samples)
         features = features.view(self.batch_size, self.num_ref_views, -1)
 
         # TODO: Positional encoding
-        pos_enc_internal = self.internal_features_positional_encoder(features)
-        pos_enc_cross = self.cross_features_positional_encoder(features)
+        pos_enc_internal = self.internal_features_positional_encoder(
+            features) # .unsqueeze(-1)
+        pos_enc_cross = self.cross_features_positional_encoder(
+            features) #.unsqueeze(-1)
+        # out (batch_size, num_ref_views, -1)
+
+        print("features", features.shape)
+        print("pos_enc_internal", pos_enc_internal.shape)
+        print("pos_enc_cross", pos_enc_cross.shape)
 
         features += pos_enc_internal
         features += pos_enc_cross
@@ -651,7 +657,8 @@ if __name__ == "__main__":
     # (batch_size x num_ref_views, rays, num_samples, 2)
     rays = 100
     num_samples = 130
-    ref_pts = torch.rand((batch_size * num_ref_views, rays, num_samples, 2)).to(device)
+    ref_pts = torch.rand(
+        (batch_size * num_ref_views, rays, num_samples, 2)).to(device)
 
     # Create fake model
     test_model = Implicit4DNN(cfg, device=device)
