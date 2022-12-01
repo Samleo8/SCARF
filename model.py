@@ -408,7 +408,7 @@ class Implicit4DNN(nn.Module):
         self.fc_1 = nn.Linear(in_features=self.intermediate_feature_size,
                               out_features=self.compressed_feature_size)
 
-        #========================FEATURE ENCODER=============================
+        #========================SIMILARITY ENCODER=============================
         # Replaces stereo similarity and correspondences with an attention (transformer) mechanism
         # TODO: play with the number of heads and layers
 
@@ -543,7 +543,9 @@ class Implicit4DNN(nn.Module):
         # features = features.reshape....
         print(features.shape)
 
-        # Feature encoder
+        #========================END IMAGE ENCODER=============================
+
+        #========================SIMILARITY ENCODER=============================
         # FC layers to project the feature size into a smaller latent space
         features = self.fc_0(features)
         features = self.actvn(features)
@@ -554,12 +556,17 @@ class Implicit4DNN(nn.Module):
         # out (batch_size, num_ref_views, features x rays x num_samples)
         features = features.view(self.batch_size, self.num_ref_views, -1)
 
-        #========================END IMAGE ENCODER=============================
         # TODO: Positional encoding
-        self.internal_features_encoding(features)
-        self.cross_features_encoding(features)
+        pos_enc_internal = self.internal_features_positional_encoder(features)
+        pos_enc_cross = self.cross_features_positional_encoder(features)
+
+        features += pos_enc_internal
+        features += pos_enc_cross
 
         # TODO: Use transformer encoder/decoder here
+        features = self.transformer_encoder(features)
+
+        #========================END SIMILARITY ENCODER=============================
 
         #========================NERF DECODER=============================
         features = self.actvn(self.fc_2(features))
