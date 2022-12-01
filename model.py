@@ -536,6 +536,7 @@ class Implicit4DNN(nn.Module):
             dim=1
         )  # out (batch_size x num_ref_views, features, rays, num_samples),
 
+        # TODO: Why is this needed?
         features = features.reshape((self.batch_size, self.num_ref_views,
                                      self.cnn_feature_size, rays, num_samples))
 
@@ -555,15 +556,15 @@ class Implicit4DNN(nn.Module):
 
         # Reshape layers
         # TODO: Why is this here/necessary?
-        # TODO: Shouldn't we want 
+        # TODO: Shouldn't we want (batch_size, rays x num_samples, features x num_ref_views)
         # out (batch_size, num_ref_views, features x rays x num_samples)
         features = features.view(self.batch_size, self.num_ref_views, -1)
 
         # TODO: Positional encoding
         pos_enc_internal = self.internal_features_positional_encoder(
-            features) # .unsqueeze(-1)
+            features)  # .unsqueeze(-1)
         pos_enc_cross = self.cross_features_positional_encoder(
-            features) #.unsqueeze(-1)
+            features)  #.unsqueeze(-1)
         # out (batch_size, num_ref_views, -1)
 
         print("features", features.shape)
