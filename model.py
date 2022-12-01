@@ -414,12 +414,12 @@ class Implicit4DNN(nn.Module):
 
         # NOTE: positional encoding needs to be added to the number of features, ViT style
         # NOTE: Internal feature encoding is the encoding within a feature
-        # Feature Vector: (batch_size, rays, num_samples, num_ref_views, features)
-        # TODO: Check if we are learning the same thing across different
+        # Feature Vector: (batch_size, rays, num_samples, num_ref_views, compressed_feature_size)
+        # TODO: Check if we are learning the same position across different views or does it not matter
         self.internal_features_positional_encoder = PositionalEncoding1D(
             channels=-1)  # feature size
         self.cross_features_positional_encoder = PositionalEncoding1D(
-            channels=2)  # num samples
+            channels=-2)  # num samples
 
         # Actual transformer encoder
         self.stereo_transformer_layer = nn.TransformerEncoderLayer(
@@ -534,16 +534,14 @@ class Implicit4DNN(nn.Module):
             (feature_0, feature_1, feature_2, feature_3, feature_4, feature_5,
              feature_6, feature_7),
             dim=1
-        )  # out (batch_size x num_ref_views, features, rays, num_samples),
+        )  # out (batch_size x num_ref_views, cnn_feature_size, rays, num_samples),
 
         # TODO: Why is this needed?
         features = features.reshape((self.batch_size, self.num_ref_views,
                                      self.cnn_feature_size, rays, num_samples))
 
-        features = features.permute(
-            0, 3, 4, 1,
-            2)  # out (batch_size, rays, num_samples, num_ref_views, features)
-        # features = features.reshape....
+        features = features.permute(0, 3, 4, 1, 2)
+        # out (batch_size, rays, num_samples, num_ref_views, cnn_feature_size)
 
         #========================END IMAGE ENCODER=============================
 
@@ -553,12 +551,7 @@ class Implicit4DNN(nn.Module):
         features = self.actvn(features)
         features = self.fc_1(features)
         features = self.actvn(features)
-
-        # Reshape layers
-        # TODO: Why is this here/necessary?
-        # TODO: Shouldn't we want (batch_size, rays x num_samples, features x num_ref_views)
-        # out (batch_size, num_ref_views, features x rays x num_samples)
-        features = features.view(self.batch_size, self.num_ref_views, -1)
+        # out (batch_size, rays, num_samples, num_ref_views, compressed_feature_size)
 
         # TODO: Positional encoding
         pos_enc_internal = self.internal_features_positional_encoder(
