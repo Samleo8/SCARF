@@ -1,16 +1,13 @@
+from dataloader import SceneDataset
 import torch
 from tqdm import tqdm, trange
 import os
 import numpy as np
-from dataloader import SceneDataset
 import generator
 import math
 from glob import glob
 from torch.utils.tensorboard import SummaryWriter
 import torchvision
-
-
-
 
 
 img2mse = lambda x, y: torch.mean((x - y) ** 2)
