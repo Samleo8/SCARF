@@ -286,6 +286,8 @@ class Implicit4DNN(nn.Module):
         # Setup variables
         self.num_ref_views = cfg.num_reference_views
         self.batch_size = cfg.batch_size
+        self.intermediate_feature_size = cfg.intermediate_feature_size
+        self.compressed_feature_size = cfg.compressed_feature_size
         self.cfg = cfg
 
         #========================IMAGE ENCODER=============================
@@ -394,12 +396,14 @@ class Implicit4DNN(nn.Module):
                                   padding=1,
                                   padding_mode='zeros')
 
-        self.feature_size = (3 + 16 + 32 + 64 + 128 + 128 + 128 + 128)
+        self.cnn_feature_size = (3 + 16 + 32 + 64 + 128 + 128 + 128 + 128)
+
+        #=======================FEATURE LINEAR PROJECTION========================
+        # For feature size reduction
+        self.fc_0 = nn.Linear(in_features=self.cnn_feature_size, out_features=self.intermediate_feature_size)
+        self.fc_1 = nn.Linear(in_features=self.intermediate_feature_size, out_features=self.compressed_feature_size)
 
         #========================FEATURE ENCODER=============================
-        self.fc_0 = nn.Linear(in_features=self.feature_size, out_features=256)
-        self.fc_1 = nn.Linear(in_features=256, out_features=128)
-
         # TODO: Replace this with a transformer or attention mechanism
         # TODO: play with the number of heads and layers
         # TODO: Either way we need to add positional encoding to the features + handle number of views + possibly concatenate together, ViT style
@@ -416,7 +420,7 @@ class Implicit4DNN(nn.Module):
         self.cross_features_positional_encoder = PositionalEncoding1D(channels=1) # num samples
 
         self.stereo_transformer_layer = nn.TransformerEncoderLayer(
-            d_model=self.feature_size, nhead=8)
+            d_model=self.cnn_feature_size, nhead=8)
         self.stereo_transformer = nn.TransformerEncoder(
             self.stereo_transformer_layer, num_layers=6)
 
@@ -542,7 +546,7 @@ class Implicit4DNN(nn.Module):
         )  # out (batch_size x num_ref_views, features, rays, num_samples),
         
         features = features.reshape((self.batch_size, self.num_ref_views,
-                                     self.feature_size, rays, num_samples))
+                                     self.cnn_feature_size, rays, num_samples))
 
         features = features.permute(0, 3, 4, 1, 2)  # out (batch_size, rays, num_samples, num_ref_views, features)
         features = features.reshape....

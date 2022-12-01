@@ -14,6 +14,10 @@ def config_parser():
                         help='Number of worker processes preparing input data for SRF.'
                              'The larger the better, but should not exceed the number of available CPUs.')
 
+    # architecture options
+    parser.add_argument("--intermediate_feature_size", type=int, default=256)
+    parser.add_argument("--compressed_feature_size", type=int, default=128)
+
     # training options
     parser.add_argument("--shuffle_combis", action='store_true',
                         help='Do we want to randomly sample similarity combinations in SRF? True, if set, False else.')
