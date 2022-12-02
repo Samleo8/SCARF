@@ -578,6 +578,7 @@ class Implicit4DNN(nn.Module):
         features = self.fc_out(features)
         # out (batch_size * rays * num_samples, 4)
 
+        print (features.shape)
         features = features.reshape((self.batch_size * rays, num_samples, 4))
 
         return features
