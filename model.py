@@ -432,7 +432,7 @@ class Implicit4DNN(nn.Module):
             self.stereo_transformer_layer,
             num_layers=self.num_transformer_layers)
 
-        self.transformer_pool = nn.MaxPool1d(dim=1, kernel_size=self.num_ref_views)
+        self.transformer_pool = nn.MaxPool1d(kernel_size=self.num_ref_views)
 
         #========================NERF DECODER=============================
         # TODO: Change number of in features
