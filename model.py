@@ -549,18 +549,17 @@ class Implicit4DNN(nn.Module):
 
         #========================SIMILARITY ENCODER=============================
         # FC layers to project the feature size into a smaller latent space
-        # TODO: is this ok?
+        features = features.reshape((self.batch_size * rays * num_samples * self.num_ref_views, self.cnn_feature_size))
         features = self.fc_0(features)
         features = self.actvn(features)
         features = self.fc_1(features)
         features = self.actvn(features)
-        # out (batch_size, rays, num_samples, num_ref_views, compressed_feature_size)
+
+        # out (batch_size x rays x num_samples x num_ref_views, compressed_feature_size)
 
         # Reshape features for transformer: (N, S, E)
         # NOTE: as per pytorch documentation; N = batch_size, S = sequence, E = feature dimension
-        features = features.reshape(
-            (self.batch_size * rays * num_samples, self.num_ref_views,
-             self.compresed_feature_size))
+        features = features.reshape((self.batch_size * rays * num_samples, self.num_ref_views, self.compresed_feature_size))
         # (batch_size x rays x num_samples, num_ref_views, cnn_feature_size)
 
         # TODO: Positional encoding
