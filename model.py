@@ -9,8 +9,7 @@ import itertools
 import random
 from tqdm import tqdm
 
-# from embedding import PositionalEncoding1D
-from embedding import posemb_sincos_1d, posemb_sincos_2d
+from embedding import PositionalEncoding1D
 
 to8b = lambda x: (255 * np.clip(x, 0, 1)).astype(np.uint8)
 
@@ -415,12 +414,10 @@ class Implicit4DNN(nn.Module):
 
         # NOTE: positional encoding needs to be added to the number of features, ViT style
         # NOTE: Internal feature encoding is the encoding within a feature
-        # Feature Vector: (batch_size, rays, num_samples, num_ref_views, compressed_feature_size)
+        # Feature Vector: (batch_size * rays * num_samples, num_ref_views, compressed_feature_size)
         # TODO: Check if we are learning the same position across different views or does it not matter
-        # self.internal_features_positional_encoder = PositionalEncoding1D(
-        #     channels=-1)  # feature size
-        # self.cross_features_positional_encoder = PositionalEncoding1D(
-        #     channels=-2)  # num samples
+        self.positional_encoder = PositionalEncoding1D(
+            channels=self.compressed_feature_size)
 
         # Actual transformer encoder
         self.stereo_transformer_layer = nn.TransformerEncoderLayer(
@@ -538,55 +535,45 @@ class Implicit4DNN(nn.Module):
             dim=1
         )  # out (batch_size x num_ref_views, cnn_feature_size, rays, num_samples),
 
-        # TODO: Why is this needed?
+        # reshape
         features = features.reshape((self.batch_size, self.num_ref_views,
                                      self.cnn_feature_size, rays, num_samples))
-
         features = features.permute(0, 3, 4, 1, 2)
         # out (batch_size, rays, num_samples, num_ref_views, cnn_feature_size)
-
-        # TODO: I think we need to change the "features" shape to
-        # (batch_size x rays x num_samples, num_ref_views, cnn_feature_size)
-        # TODO: which corresponds to src: (N, S, E) if batch_first=True.
-        # as per pytorch documentation; N = batch_size, S = "sequence", E = feature dimension
 
         #========================END IMAGE ENCODER=============================
 
         #========================SIMILARITY ENCODER=============================
         # FC layers to project the feature size into a smaller latent space
-        # features = self.fc_0(features)
-        # features = self.actvn(features)
-        # features = self.fc_1(features)
-        # features = self.actvn(features)
+        # TODO: is this ok?
+        features = self.fc_0(features)
+        features = self.actvn(features)
+        features = self.fc_1(features)
+        features = self.actvn(features)
         # out (batch_size, rays, num_samples, num_ref_views, compressed_feature_size)
 
+        # Reshape features for transformer: (N, S, E)
+        # NOTE: as per pytorch documentation; N = batch_size, S = sequence, E = feature dimension
+        features = features.reshape(
+            (self.batch_size * rays * num_samples, self.num_ref_views,
+             self.compresed_feature_size))
+        # (batch_size x rays x num_samples, num_ref_views, cnn_feature_size)
+
         # TODO: Positional encoding
-        # pos_enc_internal = self.internal_features_positional_encoder(
-        #     features)  # .unsqueeze(-1)
-        # pos_enc_cross = self.cross_features_positional_encoder(
-        #     features)  #.unsqueeze(-1)
-        # # out (batch_size, num_ref_views, -1)
-        '''
-        pos_enc_internal = self.internal_features_positional_encoder()
+        pos_enc = self.positional_encoder(features)
+        features += pos_enc
 
-        print("features", features.shape)
-        print("pos_enc_internal", pos_enc_internal.shape)
-        print("pos_enc_cross", pos_enc_cross.shape)
-
-        features += pos_enc_internal
-        features += pos_enc_cross
-        '''
-
-        # TODO: Use transformer encoder/decoder here
+        # Transformer Encoder here
         features = self.transformer_encoder(features)
 
         #========================END SIMILARITY ENCODER=============================
 
+        # TODO: For now, use basic MLP decoder, possibly replace with a Transformer decoder
         #========================NERF DECODER=============================
         features = self.actvn(self.fc_2(features))
         features = self.actvn(self.fc_3(features))
-        features = self.fc_out(
-            features)  # out (batch_size * rays * num_samples, 4)
+        features = self.fc_out(features)
+        # out (batch_size * rays * num_samples, 4)
 
         features = features.reshape((self.batch_size * rays, num_samples, 4))
 
