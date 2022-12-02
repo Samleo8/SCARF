@@ -55,7 +55,9 @@ python 3d_reconstruction.py --config configs/finetune_scan106.txt --generate_spe
 
 ### Data Setup
 
-With the next commands the [DTU MVS dataset](https://roboimagedata.compute.dtu.dk/?page_id=36) is downloaded and put in 
+Use the download script `./scripts/download_data.sh` to download the data, and have it save into the `./data/DTU_MVS/` directory.
+
+Alternatively, use these commands the [DTU MVS dataset](https://roboimagedata.compute.dtu.dk/?page_id=36) is downloaded and put in 
 place. 
 ```
 wget http://roboimagedata2.compute.dtu.dk/data/MVS/Rectified.zip -P data/
