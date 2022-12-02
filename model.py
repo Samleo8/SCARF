@@ -432,6 +432,8 @@ class Implicit4DNN(nn.Module):
             self.stereo_transformer_layer,
             num_layers=self.num_transformer_layers)
 
+        self.transformer_pool = nn.MaxPool1d(dim=1, kernel_size=self.num_ref_views)
+
         #========================NERF DECODER=============================
         # TODO: Change number of in features
         self.transformer_size = self.compressed_feature_size
@@ -570,6 +572,10 @@ class Implicit4DNN(nn.Module):
         features = self.stereo_transformer(features)
 
         #========================END SIMILARITY ENCODER=============================
+        print (features.shape)
+
+        features = self.transformer_pool(features)
+        print (features.shape)
 
         # TODO: For now, use basic MLP decoder, possibly replace with a Transformer decoder
         #========================NERF DECODER=============================
