@@ -572,13 +572,10 @@ class Implicit4DNN(nn.Module):
         features = self.stereo_transformer(features)
 
         #========================END SIMILARITY ENCODER=============================
-        print (features.shape)
 
         features = features.permute(0, 2, 1)
         features = self.transformer_pool(features)
         features = features.permute(0, 2, 1).squeeze(1)
-
-        print (features.shape)
 
         # TODO: For now, use basic MLP decoder, possibly replace with a Transformer decoder
         #========================NERF DECODER=============================
@@ -587,7 +584,6 @@ class Implicit4DNN(nn.Module):
         features = self.fc_out(features)
         # out (batch_size * rays * num_samples, 4)
 
-        print (features.shape)
         features = features.reshape((self.batch_size * rays, num_samples, 4))
 
         return features
