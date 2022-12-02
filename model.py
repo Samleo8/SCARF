@@ -559,7 +559,7 @@ class Implicit4DNN(nn.Module):
 
         # Reshape features for transformer: (N, S, E)
         # NOTE: as per pytorch documentation; N = batch_size, S = sequence, E = feature dimension
-        features = features.reshape((self.batch_size * rays * num_samples, self.num_ref_views, self.compresed_feature_size))
+        features = features.reshape((self.batch_size * rays * num_samples, self.num_ref_views, self.compressed_feature_size))
         # (batch_size x rays x num_samples, num_ref_views, cnn_feature_size)
 
         # TODO: Positional encoding
