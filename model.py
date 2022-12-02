@@ -576,6 +576,7 @@ class Implicit4DNN(nn.Module):
 
         features = features.permute(0, 2, 1)
         features = self.transformer_pool(features)
+        features = features.permute(0, 2, 1).squeeze(1)
 
         print (features.shape)
 
