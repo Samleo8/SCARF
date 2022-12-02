@@ -248,7 +248,6 @@ class Implicit4D():
 
             # Load model
             self.model.load_state_dict(ckpt['network_fn_state_dict'])
-            self.model.combis_list = ckpt['sim_combinations']
             if self.model_fine is not None and not self.cfg.fine_model_duplicate:
                 self.model_fine.load_state_dict(
                     ckpt['network_fine_state_dict'])
@@ -268,7 +267,6 @@ class Implicit4D():
             'global_step': global_step + 1,
             'network_fn_state_dict': self.model.state_dict(),
             'optimizer_state_dict': self.optimizer.state_dict(),
-            'sim_combinations': self.model.combis_list
         }
         if not self.model_fine is None and not self.cfg.fine_model_duplicate:
             save_dict['network_fine_state_dict'] = self.model_fine.state_dict()
@@ -292,6 +290,12 @@ class Implicit4DNN(nn.Module):
         self.num_transformer_layers = cfg.num_transformer_layers
 
         self.cfg = cfg
+
+        print(
+            f"Loading model with batch size {self.batch_size} and {self.num_ref_views} reference views..."
+        )
+        print("> Num Transformer Layers:", self.num_transformer_layers)
+        print("> Num Attention Heads:", self.num_attn_heads)
 
         #========================IMAGE ENCODER=============================
         # input should be (Scenes/Time instant x Views, img_channels, H, W)
