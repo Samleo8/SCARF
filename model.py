@@ -542,7 +542,7 @@ class Implicit4DNN(nn.Module):
         )  # out (batch_size x num_ref_views, cnn_feature_size, rays, num_samples),
 
         # reshape
-        features = features.view((self.batch_size, self.num_ref_views,
+        features = features.reshape((self.batch_size, self.num_ref_views,
                                      self.cnn_feature_size, rays, num_samples))
         features = features.permute(0, 3, 4, 1, 2)
         # out (batch_size, rays, num_samples, num_ref_views, cnn_feature_size)
@@ -551,7 +551,7 @@ class Implicit4DNN(nn.Module):
 
         #========================SIMILARITY ENCODER=============================
         # FC layers to project the feature size into a smaller latent space
-        features = features.view((self.batch_size * rays * num_samples * self.num_ref_views, self.cnn_feature_size))
+        features = features.reshape((self.batch_size * rays * num_samples * self.num_ref_views, self.cnn_feature_size))
         features = self.fc_0(features)
         features = self.actvn(features)
         features = self.fc_1(features)
@@ -561,7 +561,7 @@ class Implicit4DNN(nn.Module):
 
         # Reshape features for transformer: (N, S, E)
         # NOTE: as per pytorch documentation; N = batch_size, S = sequence, E = feature dimension
-        features = features.view((self.batch_size * rays * num_samples, self.num_ref_views, self.compressed_feature_size))
+        features = features.reshape((self.batch_size * rays * num_samples, self.num_ref_views, self.compressed_feature_size))
         # (batch_size x rays x num_samples, num_ref_views, cnn_feature_size)
 
         # TODO: Positional encoding
@@ -576,7 +576,7 @@ class Implicit4DNN(nn.Module):
 
         features = features.permute(0, 2, 1)
         features = self.transformer_pool(features)
-        
+
         print (features.shape)
 
         # TODO: For now, use basic MLP decoder, possibly replace with a Transformer decoder
