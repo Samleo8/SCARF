@@ -567,7 +567,7 @@ class Implicit4DNN(nn.Module):
         features += pos_enc
 
         # Transformer Encoder here
-        features = self.transformer_encoder(features)
+        features = self.stereo_transformer(features)
 
         #========================END SIMILARITY ENCODER=============================
 
