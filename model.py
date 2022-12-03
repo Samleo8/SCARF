@@ -651,7 +651,7 @@ def sample_pdf(bins, weights, N_importance_samples, det=False):
 if __name__ == "__main__":
     import config_loader
     cfg = config_loader.get_config()
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # Create fake data
     num_ref_views = cfg.num_reference_views
