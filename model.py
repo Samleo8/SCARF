@@ -26,6 +26,7 @@ class Implicit4D():
         # Model loading with allowances for multiple GPUs
         models = {'model1': Implicit4DNN}
         self.model = models[cfg.model](cfg, self.device)
+        self.batch_size = self.model.batch_size
 
         if not cfg.no_parallel and cfg.n_gpus > 1:
             self.model = DataParallel(self.model)
