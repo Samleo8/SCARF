@@ -10,7 +10,7 @@ def config_parser():
                         help='where to store ckpts and logs')
     parser.add_argument("--datadir", type=str, default='./data/DTU_MVS/',
                         help='input data directory')
-    parser.add_argument("--num_workers", type=int, default=16,
+    parser.add_argument("--num_workers", type=int, default=4,
                         help='Number of worker processes preparing input data for SRF.'
                              'The larger the better, but should not exceed the number of available CPUs.')
 
