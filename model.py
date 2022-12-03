@@ -518,8 +518,8 @@ class Implicit4DNN(nn.Module):
             ref_images, ref_pts, align_corners=True
         )  # out (batch_size x num_ref_views, 3, rays, num_samples)
 
-        print(feature_0.shape, self.batch_size, self.num_ref_views, 3, rays,
-              num_samples)
+        # print(feature_0.shape, self.batch_size, self.num_ref_views, 3, rays,
+        #       num_samples)
 
         net = self.actvn(self.conv_in(ref_images))
         net = self.conv_in_bn(net)
