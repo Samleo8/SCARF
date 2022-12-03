@@ -143,6 +143,13 @@ def config_parser():
         help='Downsampling factor to speed up test time rendering of images. '
         '1 is full size, set to 4 or 8 for faster preview.')
 
+    parser.add_argument(
+        "--vis_render_factor",
+        type=int,
+        default=16,
+        help='Downsampling factor to speed up training visualization rendering of images. '
+        '1 is full size, set to 16 and above to avoid memory problems.')
+
     # dataset options
     parser.add_argument("--dataset_type",
                         type=str,
@@ -221,7 +228,7 @@ def config_parser():
         type=int,
         default=200,
         help='frequency of val loss computation in fine tuning mode')
-    parser.add_argument("--i_weights",
+    parser.add_argument("--i_saveckpt",
                         type=int,
                         default=1000,
                         help='frequency of weight ckpt saving')

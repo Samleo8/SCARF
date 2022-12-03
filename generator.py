@@ -21,7 +21,8 @@ def training_visualization(num_images,
     basedir = cfg.basedir
     expname = cfg.expname
 
-    dataset.render_factor = cfg.render_factor
+    dataset.render_factor = cfg.vis_render_factor \
+        if cfg.vis_render_factor > 0 else cfg.render_factor
     dataloader = dataset.get_loader(num_workers=0)
 
     # Assert that img and render factor are compatible
@@ -119,15 +120,13 @@ def render_and_save(i4d, dataset, render_data, savedir, img_outpath,
 
     # Render image
     with torch.no_grad():
-        if specific_pose:
-            rgb, ref_images, scan = i4d.render_img(render_data,
-                                                   dataset.render_factor,
-                                                   dataset.H, dataset.W,
-                                                   specific_pose)
-        else:
-            rgb, ref_images, target, scan = i4d.render_img(
-                render_data, dataset.render_factor, dataset.H, dataset.W,
-                specific_pose)
+        rgb, ref_images, target, scan = i4d.render_img(render_data,
+                                                       dataset.render_factor,
+                                                       dataset.H, dataset.W,
+                                                       specific_pose)
+
+        # Render the target
+        if not specific_pose:
             filename = os.path.join(savedir, f'target.png')
             imageio.imwrite(filename, (target * 255).numpy().astype(np.uint8))
 
@@ -169,8 +168,8 @@ if __name__ == '__main__':
     cfg = config_loader.get_config()
     cfg.video = True
 
-    set = 'test'
-    dataset = SceneDataset(cfg, set)
+    mode = 'test'
+    dataset = SceneDataset(cfg, mode)
     i4d = model.Implicit4D(cfg, dataset.proj_pts_to_ref_torch)
 
     i4d.load_model()
