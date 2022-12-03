@@ -74,6 +74,9 @@ class SceneDataset(Dataset):
                     self.multi_world2cam(p.numpy(), self.H, self.W,
                                          self.focal[0], ref_pose) for p in pts
                 ])
+
+        # make into numpy array first
+        ref_pts = np.array(ref_pts)
         return torch.Tensor(ref_pts)  # (num_ref_views, rays, num_samples, 2)
 
     def proj_pts_to_ref_torch(self, pts, ref_poses, device, focal=None):
