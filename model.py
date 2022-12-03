@@ -518,6 +518,9 @@ class Implicit4DNN(nn.Module):
             ref_images, ref_pts, align_corners=True
         )  # out (batch_size x num_ref_views, 3, rays, num_samples)
 
+        print(feature_0.shape, self.batch_size, self.num_ref_views, rays,
+              num_samples)
+
         net = self.actvn(self.conv_in(ref_images))
         net = self.conv_in_bn(net)
         feature_1 = F.grid_sample(
@@ -712,4 +715,11 @@ if __name__ == "__main__":
 
     # Create fake model
     test_model = Implicit4DNN(cfg, device=device)
+
+    if torch.cuda.device_count() > 1:
+        print("Using", torch.cuda.device_count(), "GPUs!")
+        test_model = nn.DataParallel(test_model)
+
+    test_model.to(device)
+
     test_model(ref_imgs, ref_pts)
