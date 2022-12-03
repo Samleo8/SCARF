@@ -133,7 +133,8 @@ def render_and_save(i4d, dataset, render_data, savedir, img_outpath,
 
     # Save rendered image, converting to uint8
     # TODO: NOTE: added rgb * 255 here to fix warning about float values
-    rgb = (rgb * 255).numpy().astype(np.uint8)
+    print("RGB Render", rgb.min(), rgb.max(), rgb.dtype)
+    rgb = (rgb * 255).astype(np.uint8)
     imageio.imwrite(img_outpath, rgb)
 
     # Copy all reference images into rendering folder
