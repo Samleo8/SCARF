@@ -27,7 +27,7 @@ class Implicit4D():
         models = {'model1': Implicit4DNN}
         self.model = models[cfg.model](cfg, self.device)
 
-        if torch.cuda.device_count() > 1:
+        if torch.cuda.device_count() > 1 and not cfg.no_parallel:
             self.model = DataParallel(self.model)
 
         self.model.to(self.device)
@@ -518,7 +518,7 @@ class Implicit4DNN(nn.Module):
             ref_images, ref_pts, align_corners=True
         )  # out (batch_size x num_ref_views, 3, rays, num_samples)
 
-        print(feature_0.shape, self.batch_size, self.num_ref_views, rays,
+        print(feature_0.shape, self.batch_size, self.num_ref_views, 3, rays,
               num_samples)
 
         net = self.actvn(self.conv_in(ref_images))
@@ -582,7 +582,6 @@ class Implicit4DNN(nn.Module):
         )  # out (batch_size x num_ref_views, 128, rays, num_samples)
 
         # here every channel corresponds to one feature.
-        # TODO: We need to either throw some features away (do we really need so many), or compress each feature individually
         features = torch.cat(
             (feature_0, feature_1, feature_2, feature_3, feature_4, feature_5,
              feature_6, feature_7),

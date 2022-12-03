@@ -78,7 +78,12 @@ def config_parser():
     # dataset options
     parser.add_argument("--dataset_type", type=str, default='DTU',
                         help='options: DTU')
-
+    parser.add_argument(
+        "--no_parallel",
+        action='store_true',
+        help=
+        'do not use GPU parallelization'
+    )
 
     parser.add_argument("--near", type=int, default=None,
                         help='near clipping plane location')
