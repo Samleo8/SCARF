@@ -5,4 +5,7 @@ killall python3 # kill all previous running processes
 echo "" > nohup.out
 
 nohup ./scripts/train.sh &
-echo $! > .train_pid
+
+PID=$!
+echo "Training started in background task ${PID}. To see the output, run 'tail -f nohup.out'"
+echo ${PID} > .train_pid
