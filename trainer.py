@@ -159,6 +159,9 @@ if __name__ == '__main__':
     import config_loader
     import model
 
+    # Clear CUDA cache for good measure
+    torch.cuda.empty_cache()
+
     cfg = config_loader.get_config()
 
     train(cfg)
