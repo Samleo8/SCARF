@@ -21,7 +21,7 @@ class Implicit4D():
         self.cfg = cfg
         self.device = torch.device("cuda")
 
-        # Model loading with multiple GPUs
+        # Model loading with allowances for multiple GPUs
         models = {'model1': Implicit4DNN}
         self.model = nn.DataParallel(models[cfg.model](cfg, self.device))
         self.model.to(self.device)
@@ -236,6 +236,7 @@ class Implicit4D():
 
         print('Found ckpts', ckpts)
         if len(ckpts) > 0 and not self.cfg.no_reload:
+            # Load last checkpoint
             ckpt_path = ckpts[-1]
             print('Reloading from', ckpt_path)
             ckpt = torch.load(ckpt_path)
@@ -246,34 +247,65 @@ class Implicit4D():
             except:
                 self.val_min = None
 
+            # Load optimizer state
             if self.cfg.fine_tune:
                 self.val_min = None
             self.optimizer.load_state_dict(ckpt['optimizer_state_dict'])
 
-            # Load model
-            self.model.load_state_dict(ckpt['network_fn_state_dict'])
-            if self.model_fine is not None and not self.cfg.fine_model_duplicate:
-                self.model_fine.load_state_dict(
-                    ckpt['network_fine_state_dict'])
+            # Load model, support for parallelization
+            parallelized = isinstance(
+                self.model, (nn.DataParallel, nn.DistributedDataParallel))
+            parallelized_fine = isinstance(
+                self.model_fine, (nn.DataParallel, nn.DistributedDataParallel))
+            assert parallelized == parallelized_fine, 'Both models must have same parallelization'
 
+            if parallelized:
+                self.model.module.load_state_dict(ckpt['model_state_dict'])
+            else:
+                self.model.load_state_dict(ckpt['network_fn_state_dict'])
+
+            # Load fine model
+            if self.model_fine is not None and not self.cfg.fine_model_duplicate:
+                if parallelized_fine:
+                    self.model_fine.module.load_state_dict(
+                        ckpt['model_fine_state_dict'])
+                else:
+                    self.model_fine.load_state_dict(
+                        ckpt['network_fine_state_dict'])
+
+            # LR rate decay if needed
             if self.cfg.lrate_decay_off:
                 print('Setting lr to fixed config value')
                 for param_group in self.optimizer.param_groups:
                     param_group['lr'] = self.cfg.lrate
+
             print('Current learning-rate: ',
                   self.optimizer.param_groups[0]['lr'])
 
     def save_model(self, global_step):
         path = os.path.join(self.cfg.basedir, self.cfg.expname,
                             '{:06d}.tar'.format(global_step))
+
+        # Save model, support for parallelization
+        parallelized = isinstance(
+            self.model, (nn.DataParallel, nn.DistributedDataParallel))
+        parallelized_fine = isinstance(
+            self.model_fine, (nn.DataParallel, nn.DistributedDataParallel))
+        assert parallelized == parallelized_fine, 'Both models must have same parallelization'
+
+        model_state_dict = self.model.module.state_dict() \
+            if parallelized else self.model.state_dict()
+        model_fine_state_dict = self.model_fine.module.state_dict() \
+            if parallelized_fine else self.model_fine.state_dict()
+
         save_dict = {
             'val_min': self.val_min,
             'global_step': global_step + 1,
-            'network_fn_state_dict': self.model.state_dict(),
+            'network_fn_state_dict': model_state_dict,
             'optimizer_state_dict': self.optimizer.state_dict(),
         }
         if not self.model_fine is None and not self.cfg.fine_model_duplicate:
-            save_dict['network_fine_state_dict'] = self.model_fine.state_dict()
+            save_dict['network_fine_state_dict'] = model_fine_state_dict
 
         torch.save(save_dict, path)
         print('Saved checkpoints at', path)
