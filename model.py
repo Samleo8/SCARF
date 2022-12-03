@@ -297,6 +297,7 @@ class Implicit4DNN(nn.Module):
         )
         print("> Num Transformer Layers:", self.num_transformer_layers)
         print("> Num Attention Heads:", self.num_attn_heads)
+        print("> Positional Encoding:", self.use_pos_encoding)
 
         #========================IMAGE ENCODER=============================
         # input should be (Scenes/Time instant x Views, img_channels, H, W)
@@ -552,7 +553,9 @@ class Implicit4DNN(nn.Module):
 
         #========================SIMILARITY ENCODER=============================
         # FC layers to project the feature size into a smaller latent space
-        features = features.reshape((self.batch_size * rays * num_samples * self.num_ref_views, self.cnn_feature_size))
+        features = features.reshape(
+            (self.batch_size * rays * num_samples * self.num_ref_views,
+             self.cnn_feature_size))
         features = self.fc_0(features)
         features = self.actvn(features)
         features = self.fc_1(features)
@@ -562,7 +565,9 @@ class Implicit4DNN(nn.Module):
 
         # Reshape features for transformer: (N, S, E)
         # NOTE: as per pytorch documentation; N = batch_size, S = sequence, E = feature dimension
-        features = features.reshape((self.batch_size * rays * num_samples, self.num_ref_views, self.compressed_feature_size))
+        features = features.reshape(
+            (self.batch_size * rays * num_samples, self.num_ref_views,
+             self.compressed_feature_size))
         # (batch_size x rays x num_samples, num_ref_views, cnn_feature_size)
 
         # TODO: Positional encoding
