@@ -1,5 +1,7 @@
 #!/bin/bash
 
+killall python3 # kill all previous running processes
+
 git pull
 echo "" > nohup.out
 
