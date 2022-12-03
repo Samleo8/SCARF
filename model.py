@@ -20,8 +20,12 @@ class Implicit4D():
         self.proj_pts_to_ref = proj_pts_to_ref
         self.cfg = cfg
         self.device = torch.device("cuda")
+
+        # Model loading with multiple GPUs
         models = {'model1': Implicit4DNN}
-        self.model = models[cfg.model](cfg, self.device)
+        self.model = nn.DataParallel(models[cfg.model](cfg, self.device))
+        self.model.to(self.device)
+
         self.grad_vars = list(self.model.parameters())
 
         self.model_fine = None
@@ -462,7 +466,7 @@ class Implicit4DNN(nn.Module):
             device = torch.device(
                 'cuda' if torch.cuda.is_available() else 'cpu')
 
-        self.to(device)
+        # self.to(device)
         self.device = device
 
     def forward(self, ref_images, ref_pts):
