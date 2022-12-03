@@ -16,11 +16,12 @@ class SceneDataset(Dataset):
         self.data = None
         self.batch_size = cfg.batch_size
 
-        if torch.cuda.device_count() > 1 and not cfg.no_parallel:
-            if cfg.batch_size % torch.cuda.device_count() != 0:
+        # NOTE: Scale batch size by number of GPUs
+        if not cfg.no_parallel and cfg.n_gpus > 1:
+            if cfg.batch_size % cfg.n_gpus != 0:
                 raise ValueError(
                     'batch_size must be divisible by the number of GPUs')
-                    
+
             self.batch_size /= torch.cuda.device_count()
 
         self.num_reference_views = cfg.num_reference_views

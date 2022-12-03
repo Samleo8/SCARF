@@ -238,6 +238,11 @@ def config_parser():
                         help='frequency of val loss computation')
 
     # gpu options
+    from torch.cuda import device_count
+    parser.add_argument("--n_gpus",
+                        type=int,
+                        default=device_count(),
+                        help='number of gpus to use')
     parser.add_argument(
         "--no_parallel",
         action='store_true',

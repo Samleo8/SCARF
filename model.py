@@ -27,7 +27,7 @@ class Implicit4D():
         models = {'model1': Implicit4DNN}
         self.model = models[cfg.model](cfg, self.device)
 
-        if torch.cuda.device_count() > 1 and not cfg.no_parallel:
+        if not cfg.no_parallel and cfg.n_gpus > 1:
             self.model = DataParallel(self.model)
 
         self.model.to(self.device)
@@ -127,7 +127,7 @@ class Implicit4D():
             pts = rays_o[..., None, :] + rays_d[..., None, :] * z_vals[
                 ..., :, None]  # [N_rays, N_samples + N_importance, 3]
 
-            if self.cfg.batch_size != 1:
+            if self.batch_size != 1:
                 raise NotImplementedError(
                     'Not yet implemented. Next line accepts only single batch')
 
@@ -169,7 +169,8 @@ class Implicit4D():
 
         ref_pts = self.proj_pts_to_ref(w_pts, ref_poses, self.device, focal)
 
-        if self.cfg.batch_size != 1:
+        if self.batch_size != 1:
+            # NOTE: Changed to batch size because want to allow GPU training
             raise NotImplementedError(
                 'Not yet implemented. Next line accepts only single batch')
 
@@ -326,6 +327,15 @@ class Implicit4DNN(nn.Module):
         # Setup variables from config
         self.num_ref_views = cfg.num_reference_views
         self.batch_size = cfg.batch_size
+
+        # NOTE: Scale batch size by number of GPUs
+        if not cfg.no_parallel and cfg.n_gpus > 1:
+            if cfg.batch_size % cfg.n_gpus != 0:
+                raise ValueError(
+                    'batch_size must be divisible by the number of GPUs')
+
+            self.batch_size /= cfg.n_gpus
+
         self.intermediate_feature_size = cfg.intermediate_feature_size
         self.compressed_feature_size = cfg.compressed_feature_size
         self.num_attn_heads = cfg.num_attn_heads
@@ -714,8 +724,8 @@ if __name__ == "__main__":
     # Create fake model
     test_model = Implicit4DNN(cfg, device=device)
 
-    if torch.cuda.device_count() > 1:
-        print("Using", torch.cuda.device_count(), "GPUs!")
+    if cfg.n_gpus > 1:
+        print("Using", cfg.n_gpus, "GPUs!")
         test_model = nn.DataParallel(test_model)
 
     test_model.to(device)
