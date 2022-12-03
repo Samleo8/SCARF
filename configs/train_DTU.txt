@@ -23,4 +23,4 @@ precrop_frac = 0.5
 half_res = False
 generate_specific_samples = [scan23,scan106]
 
-render_factor = 32
+render_factor = 16
