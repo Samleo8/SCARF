@@ -177,7 +177,6 @@ class Implicit4D():
             # here we don't use the fine model to hierarchically predict more points on a ray, as we predict directly
             # on voxels instead
             raw = self.model_fine(ref_images.float(), ref_pts.float())
-
         else:
             raw = self.model(ref_images.float(), ref_pts.float())
 

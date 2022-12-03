@@ -39,7 +39,6 @@ def train(cfg):
     train_dataset_iterator = train_dataset_loader.__iter__()
     val_dataset_iterator = val_dataset_loader.__iter__()
 
-
     global i4d
     i4d = model.Implicit4D(cfg, train_dataset.proj_pts_to_ref_torch)
     i4d.load_model()
