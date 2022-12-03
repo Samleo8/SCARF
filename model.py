@@ -25,7 +25,11 @@ class Implicit4D():
 
         # Model loading with allowances for multiple GPUs
         models = {'model1': Implicit4DNN}
-        self.model = DistributedDataParallel(models[cfg.model](cfg, self.device))
+        self.model = models[cfg.model](cfg, self.device)
+
+        if torch.cuda.device_count() > 1:
+            self.model = DataParallel(self.model)
+
         self.model.to(self.device)
 
         self.grad_vars = list(self.model.parameters())
@@ -255,8 +259,8 @@ class Implicit4D():
             self.optimizer.load_state_dict(ckpt['optimizer_state_dict'])
 
             # Load model, support for parallelization
-            parallelized = isinstance(
-                self.model, (DataParallel, DistributedDataParallel))
+            parallelized = isinstance(self.model,
+                                      (DataParallel, DistributedDataParallel))
             parallelized_fine = isinstance(
                 self.model_fine, (DataParallel, DistributedDataParallel))
             assert parallelized == parallelized_fine, 'Both models must have same parallelization'
@@ -289,10 +293,10 @@ class Implicit4D():
                             '{:06d}.tar'.format(global_step))
 
         # Save model, support for parallelization
-        parallelized = isinstance(
-            self.model, (DataParallel, DistributedDataParallel))
-        parallelized_fine = isinstance(
-            self.model_fine, (DataParallel, DistributedDataParallel))
+        parallelized = isinstance(self.model,
+                                  (DataParallel, DistributedDataParallel))
+        parallelized_fine = isinstance(self.model_fine,
+                                       (DataParallel, DistributedDataParallel))
         assert parallelized == parallelized_fine, 'Both models must have same parallelization'
 
         model_state_dict = self.model.module.state_dict() \
