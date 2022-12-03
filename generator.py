@@ -130,7 +130,9 @@ def render_and_save(i4d, dataset, render_data, savedir, img_outpath,
                 specific_pose)
             filename = os.path.join(savedir, f'target.png')
             imageio.imwrite(filename, (target * 255).numpy().astype(np.uint8))
-    # Save rendered image
+
+    # Save rendered image, converting to uint8
+    rgb = (rgb * 255).numpy().astype(np.uint8)
     imageio.imwrite(img_outpath, rgb)
 
     # Copy all reference images into rendering folder
@@ -154,6 +156,7 @@ def render_and_save(i4d, dataset, render_data, savedir, img_outpath,
 
         plt.savefig(outpath)
         plt.close()
+
     return rgb
 
 
