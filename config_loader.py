@@ -19,6 +19,7 @@ def config_parser():
     parser.add_argument("--compressed_feature_size", type=int, default=128)
     parser.add_argument("--num_attn_heads", type=int, default=8)
     parser.add_argument("--num_transformer_layers", type=int, default=2)
+    parser.add_argument("--disable_pos_encoding", action='store_true')
 
     # training options
     parser.add_argument("--shuffle_combis", action='store_true',
