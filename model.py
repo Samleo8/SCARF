@@ -288,6 +288,7 @@ class Implicit4DNN(nn.Module):
         self.compressed_feature_size = cfg.compressed_feature_size
         self.num_attn_heads = cfg.num_attn_heads
         self.num_transformer_layers = cfg.num_transformer_layers
+        self.use_pos_encoding = not cfg.disable_pos_encoding
 
         self.cfg = cfg
 
@@ -565,8 +566,9 @@ class Implicit4DNN(nn.Module):
         # (batch_size x rays x num_samples, num_ref_views, cnn_feature_size)
 
         # TODO: Positional encoding
-        pos_enc = self.positional_encoder(features)
-        features += pos_enc
+        if (self.use_pos_encoding):
+            pos_enc = self.positional_encoder(features)
+            features += pos_enc
 
         # Transformer Encoder here
         features = self.stereo_transformer(features)
