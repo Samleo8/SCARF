@@ -15,8 +15,8 @@ def training_visualization(num_images, cfg, i4d, dataset, epoch, generate_specif
     basedir = cfg.basedir
     expname = cfg.expname
 
-    dataset.render_factor = 8
-    dataloader = dataset.get_loader(num_workers=0)
+    dataset.render_factor = cfg.render_factor
+    dataloader = dataset.get_loader(num_workers=4)
 
     if generate_specific_object:
         iter = cfg.generate_specific_samples
