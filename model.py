@@ -40,7 +40,7 @@ class Implicit4D():
                 self.model_fine = self.model
             else:
                 # see e.g. render_data() function
-                raise ValueError('Not yet implemented / tested ')
+                raise NotImplementedError('Not yet implemented / tested ')
                 # self.model_fine = models[cfg.model](cfg, self.device)
                 # self.grad_vars += list(self.model_fine.parameters())
 
@@ -128,7 +128,7 @@ class Implicit4D():
                 ..., :, None]  # [N_rays, N_samples + N_importance, 3]
 
             if self.cfg.batch_size != 1:
-                raise ValueError(
+                raise NotImplementedError(
                     'Not yet implemented. Next line accepts only single batch')
 
             ref_pts = self.proj_pts_to_ref(pts, ref_poses, self.device, focal)
@@ -170,7 +170,7 @@ class Implicit4D():
         ref_pts = self.proj_pts_to_ref(w_pts, ref_poses, self.device, focal)
 
         if self.cfg.batch_size != 1:
-            raise ValueError(
+            raise NotImplementedError(
                 'Not yet implemented. Next line accepts only single batch')
 
         if self.cfg.N_importance > 0:

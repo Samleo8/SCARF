@@ -97,7 +97,7 @@ class SceneDataset(Dataset):
 
     def __getitem__(self, idx):
         if not self.cfg.no_ndc:
-            raise ValueError('Not implemented!')
+            raise NotImplementedError('Non-direct facing camera not implemented!')
 
         N_rand = self.cfg.N_rand
         N_rays_test = self.cfg.N_rays_test
