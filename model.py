@@ -9,6 +9,8 @@ import itertools
 import random
 from tqdm import tqdm
 
+from torch.nn.parallel import DataParallel, DistributedDataParallel
+
 from embedding import PositionalEncoding1D
 
 to8b = lambda x: (255 * np.clip(x, 0, 1)).astype(np.uint8)
@@ -23,7 +25,7 @@ class Implicit4D():
 
         # Model loading with allowances for multiple GPUs
         models = {'model1': Implicit4DNN}
-        self.model = nn.DataParallel(models[cfg.model](cfg, self.device))
+        self.model = DistributedDataParallel(models[cfg.model](cfg, self.device))
         self.model.to(self.device)
 
         self.grad_vars = list(self.model.parameters())
@@ -254,9 +256,9 @@ class Implicit4D():
 
             # Load model, support for parallelization
             parallelized = isinstance(
-                self.model, (nn.DataParallel, nn.DistributedDataParallel))
+                self.model, (DataParallel, DistributedDataParallel))
             parallelized_fine = isinstance(
-                self.model_fine, (nn.DataParallel, nn.DistributedDataParallel))
+                self.model_fine, (DataParallel, DistributedDataParallel))
             assert parallelized == parallelized_fine, 'Both models must have same parallelization'
 
             if parallelized:
@@ -288,9 +290,9 @@ class Implicit4D():
 
         # Save model, support for parallelization
         parallelized = isinstance(
-            self.model, (nn.DataParallel, nn.DistributedDataParallel))
+            self.model, (DataParallel, DistributedDataParallel))
         parallelized_fine = isinstance(
-            self.model_fine, (nn.DataParallel, nn.DistributedDataParallel))
+            self.model_fine, (DataParallel, DistributedDataParallel))
         assert parallelized == parallelized_fine, 'Both models must have same parallelization'
 
         model_state_dict = self.model.module.state_dict() \
