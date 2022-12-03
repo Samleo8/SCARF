@@ -15,6 +15,14 @@ class SceneDataset(Dataset):
         self.load_mode = mode
         self.data = None
         self.batch_size = cfg.batch_size
+
+        if torch.cuda.device_count() > 1 and not cfg.no_parallel:
+            if cfg.batch_size % torch.cuda.device_count() != 0:
+                raise ValueError(
+                    'batch_size must be divisible by the number of GPUs')
+                    
+            self.batch_size /= torch.cuda.device_count()
+
         self.num_reference_views = cfg.num_reference_views
         self.fine_tune = cfg.fine_tune
         self.render_factor = cfg.render_factor
@@ -97,7 +105,8 @@ class SceneDataset(Dataset):
 
     def __getitem__(self, idx):
         if not self.cfg.no_ndc:
-            raise NotImplementedError('Non-direct facing camera not implemented!')
+            raise NotImplementedError(
+                'Non-direct facing camera not implemented!')
 
         N_rand = self.cfg.N_rand
         N_rays_test = self.cfg.N_rays_test
