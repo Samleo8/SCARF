@@ -1,13 +1,21 @@
 #!/bin/bash
 
 git pull
-killall python3 # kill all previous running processes
-echo "" > nohup.out
+echo "" >nohup.out
 
+# kill all previous running processes
+kill $(cat .train_pid)
+for i in {1..5}; do
+    killall python3
+done
+
+# run training headless
 nohup ./scripts/train.sh $@ &
 
+# save PID
 PID=$!
 echo "Training started in background task ${PID}. To see the output, run 'tail -f nohup.out'"
-echo ${PID} > .train_pid
+echo ${PID} >.train_pid
 
+# check nohup
 tail -f nohup.out
