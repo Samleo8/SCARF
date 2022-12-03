@@ -64,7 +64,7 @@ def train(cfg):
         #####           end            #####
 
         # Rest is logging
-        if global_step % cfg.i_weights == 0:
+        if global_step % cfg.i_saveckpt == 0:
             i4d.save_model(global_step)
 
         if global_step % cfg.i_testset == 0:

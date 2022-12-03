@@ -27,7 +27,7 @@ precrop_frac = 0.5
 half_res = False
 
 i_val_fine_tune = 200
-i_weights = 200
+i_saveckpt = 200
 i_testset = 200
 
 num_reference_views = 10

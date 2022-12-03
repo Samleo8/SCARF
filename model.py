@@ -223,7 +223,7 @@ class Implicit4D():
             all_ret[k] = torch.reshape(all_ret[k], k_sh)
 
         if specific_pose:
-            return all_ret['rgb'].numpy(), ref_images, idx[0]
+            return all_ret['rgb'].numpy(), ref_images, None, idx[0]
         else:
             return all_ret['rgb'].numpy(), ref_images, target[0], idx[0]
 
