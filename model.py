@@ -266,7 +266,8 @@ class Implicit4D():
             assert parallelized == parallelized_fine, 'Both models must have same parallelization'
 
             if parallelized:
-                self.model.module.load_state_dict(ckpt['model_state_dict'])
+                self.model.module.load_state_dict(
+                    ckpt['network_fn_state_dict'])
             else:
                 self.model.load_state_dict(ckpt['network_fn_state_dict'])
 
@@ -274,7 +275,7 @@ class Implicit4D():
             if self.model_fine is not None and not self.cfg.fine_model_duplicate:
                 if parallelized_fine:
                     self.model_fine.module.load_state_dict(
-                        ckpt['model_fine_state_dict'])
+                        ckpt['network_fine_state_dict'])
                 else:
                     self.model_fine.load_state_dict(
                         ckpt['network_fine_state_dict'])
