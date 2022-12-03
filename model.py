@@ -568,7 +568,7 @@ class Implicit4DNN(nn.Module):
         # TODO: Positional encoding
         if (self.use_pos_encoding):
             pos_enc = self.positional_encoder(features)
-            features += pos_enc
+            features = features + pos_enc
 
         # Transformer Encoder here
         features = self.stereo_transformer(features)
