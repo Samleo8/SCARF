@@ -23,7 +23,7 @@ precrop_frac = 0.5
 half_res = False
 # generate_specific_samples = [scan23,scan106]
 generate_specific_samples = [scan23]
-cnn_weight_path = ./logs/train_DTU/055000.tar # approximate best CNN weights based on validation set
+# cnn_weight_path = ./logs/train_DTU/055000.tar # approximate best CNN weights based on validation set
 # cnn_weight_path = ./logs/train_DTU/077000.tar # approximate best CNN weights based on validation set
 freeze_cnn = False
 
