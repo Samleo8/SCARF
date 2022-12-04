@@ -298,34 +298,34 @@ class Implicit4D():
             print('Current learning-rate: ',
                   self.optimizer.param_groups[0]['lr'])
 
-            if self.cfg.cnn_weight_path is not None:
-                cnn_model = torch.load(self.cfg.cnn_weight_path)
-                own_state = self.model.state_dict()
-                for name, param in cnn_model.items():
-                    if name not in conv_layers:
-                        continue
-                    if isinstance(param, nn.parameter.Parameter):
-                        param = param.data
-                    try:
-                        own_state[name].copy_(param)
-                        print('Copied {}'.format(name))
-                    except:
-                        print('Did not find {}'.format(name))
-                        continue
+        if self.cfg.cnn_weight_path is not None:
+            cnn_model = torch.load(self.cfg.cnn_weight_path)
+            own_state = self.model.state_dict()
+            for name, param in cnn_model.items():
+                if name not in conv_layers:
+                    continue
+                if isinstance(param, nn.parameter.Parameter):
+                    param = param.data
+                try:
+                    own_state[name].copy_(param)
+                    print('Copied {}'.format(name))
+                except:
+                    print('Did not find {}'.format(name))
+                    continue
 
 
-            if self.cfg.freeze_cnn:
-                print('Freezing CNN Layers')
-                for layer in (self.model.conv_in,
-                                self.model.conv_0, self.model.conv_0_1,
-                                self.model.conv_1, self.model.conv_1_1,
-                                self.model.conv_2, self.model.conv_2_1,
-                                self.model.conv_3, self.model.conv_3_1,
-                                self.model.conv_4, self.model.conv_4_1,
-                                self.model.conv_5, self.model.conv_5_1,
-                                self.model.fc_0, self.model.fc_1):
-                    for param in layer.parameters():
-                        param.requires_grad = False
+        if self.cfg.freeze_cnn:
+            print('Freezing CNN Layers')
+            for layer in (self.model.conv_in,
+                            self.model.conv_0, self.model.conv_0_1,
+                            self.model.conv_1, self.model.conv_1_1,
+                            self.model.conv_2, self.model.conv_2_1,
+                            self.model.conv_3, self.model.conv_3_1,
+                            self.model.conv_4, self.model.conv_4_1,
+                            self.model.conv_5, self.model.conv_5_1,
+                            self.model.fc_0, self.model.fc_1):
+                for param in layer.parameters():
+                    param.requires_grad = False
 
     def save_model(self, global_step):
         path = os.path.join(self.cfg.basedir, self.cfg.expname,

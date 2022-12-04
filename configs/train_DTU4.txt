@@ -1,4 +1,4 @@
-expname = train_DTU
+expname = train_DTU4
 basedir = ./logs
 datadir = ./data/DTU_MVS/
 dataset_type = DTU
@@ -23,6 +23,9 @@ precrop_frac = 0.5
 half_res = False
 # generate_specific_samples = [scan23,scan106]
 generate_specific_samples = [scan23]
+cnn_weight_path = ./logs/train_DTU/075000.tar
+freze_cnn = True
 
+num_transformer_layers = 4
 render_factor = 8
 vis_render_factor = 20
