@@ -4,7 +4,7 @@ git pull
 echo "" >nohup2.out
 
 # run training headless
-nohup ./scripts/train.sh $@ &>nohup2.out &
+nohup ./scripts/train2.sh $@ &>nohup2.out &
 
 # save PID
 PID=$!
