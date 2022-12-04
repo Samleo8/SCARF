@@ -30,8 +30,14 @@ def config_parser():
     parser.add_argument("--num_transformer_layers", type=int, default=2)
     parser.add_argument("--disable_pos_encoding", action='store_true')
 
-    parser.add_argument("--cnn_weight_path", type=str, default=None)
-    parser.add_argument("--freeze_cnn", action='store_true')
+    parser.add_argument("--cnn_weight_path",
+                        type=str,
+                        default=None,
+                        help='path to pretrained cnn weights')
+    parser.add_argument("--freeze_cnn",
+                        type=bool,
+                        action='store_true',
+                        help='whether to freeze cnn weights')
 
     # training options
     parser.add_argument(
@@ -150,7 +156,8 @@ def config_parser():
         "--vis_render_factor",
         type=int,
         default=16,
-        help='Downsampling factor to speed up training visualization rendering of images. '
+        help=
+        'Downsampling factor to speed up training visualization rendering of images. '
         '1 is full size, set to 16 and above to avoid memory problems.')
 
     # dataset options
