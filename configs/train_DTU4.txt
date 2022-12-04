@@ -24,7 +24,7 @@ half_res = False
 # generate_specific_samples = [scan23,scan106]
 generate_specific_samples = [scan23]
 cnn_weight_path = ./logs/train_DTU/075000.tar
-freze_cnn = True
+freeze_cnn = True
 
 num_transformer_layers = 4
 render_factor = 8
