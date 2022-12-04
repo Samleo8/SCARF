@@ -270,10 +270,3 @@ def get_config():
     if cfg.gen_pose is None:
         cfg.gen_pose = [0]
     return cfg
-
-if __name__ == '__main__':
-    cfg = get_config()
-
-    print(cfg.config)
-    print(cfg.freeze_cnn)
-    print(cfg.cnn_weight_path)
