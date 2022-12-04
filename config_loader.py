@@ -35,8 +35,7 @@ def config_parser():
                         default=None,
                         help='path to pretrained cnn weights')
     parser.add_argument("--freeze_cnn",
-                        type=bool,
-                        default=False,
+                        action='store_true',
                         help='whether to freeze cnn weights')
 
     # training options
@@ -51,8 +50,7 @@ def config_parser():
                         default=None,
                         help='scan to fine tune to')
     parser.add_argument("--lrate_decay_off",
-                        type=bool,
-                        default=False,
+                        action='store_true',
                         help='turn off lrate decay')
     parser.add_argument("--split",
                         type=str,
@@ -64,8 +62,7 @@ def config_parser():
                         help='the neural model to use')
     parser.add_argument(
         "--fine_model_duplicate",
-        type=bool,
-        default=True,
+        action='store_true',
         help=
         'if true use the same model for fine and coarse hierarchical sampling')
     parser.add_argument(
@@ -104,8 +101,7 @@ def config_parser():
                         help='fraction of img taken for central crops')
     parser.add_argument(
         "--sigmoid",
-        type=bool,
-        default=False,
+        action='store_true',
         help=
         'if true, use sigmoid to activate raw predicion with sigmoid, relu else'
     )
@@ -178,8 +174,7 @@ def config_parser():
     ## generation options
     parser.add_argument(
         "--eval",
-        type=bool,
-        default=False,
+        action='store_true',
         help='turn on eval mode - render images from eval poses')
     parser.add_argument(
         "--generate_specific_samples",
@@ -275,3 +270,10 @@ def get_config():
     if cfg.gen_pose is None:
         cfg.gen_pose = [0]
     return cfg
+
+if __name__ == '__main__':
+    cfg = get_config()
+
+    print(cfg.config)
+    print(cfg.freeze_cnn)
+    print(cfg.cnn_weight_path)
