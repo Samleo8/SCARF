@@ -22,8 +22,12 @@ dl_log() {
         ;;
     *.tar)
         # Download a specific checkpoint
-        echo "Downloading checkpoint $LOG_TYPE"
+        CKPT_ID=${LOG_TYPE%.tar}
+        echo "Downloading checkpoint $CKPT_ID"
         gscpfrom ~/vl/project/stereo-nerf/logs/train_DTU/$LOG_TYPE ./logs/train_DTU/ $INSTANCE
+
+        # Download the corresponding visualizations
+        gscpfrom ~/vl/project/stereo-nerf/logs/train_DTU/training_visualization ./logs/train_DTU/epoch_${CKPT_ID}_scan* $INSTANCE
         ;;
     *)
         dl_log "all"
