@@ -29,7 +29,7 @@ dl_log() {
         gscpfrom ~/vl/project/stereo-nerf/logs/${EXP_NAME}/$LOG_TYPE ./logs/${EXP_NAME}/ $INSTANCE
 
         # Download the corresponding visualizations
-        gscpfrom ~/vl/project/stereo-nerf/logs/${EXP_NAME}/training_visualization/epoch_${CKPT_ID}_scan* ./logs/${EXP_NAME} $INSTANCE
+        gscpfrom ~/vl/project/stereo-nerf/logs/${EXP_NAME}/training_visualization/epoch_${CKPT_ID}_scan* ./logs/${EXP_NAME}/training_visualization $INSTANCE
         ;;
     *)
         dl_log "all"
