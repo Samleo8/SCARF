@@ -235,7 +235,8 @@ class Implicit4D():
         expname = self.cfg.expname
 
         # Load checkpoints
-        if self.cfg.ckpt_path is not None and self.cfg.ckpt_path != 'None':
+        if self.cfg.ckpt_path is not None \
+            and self.cfg.ckpt_path.lower() != 'none':
             ckpts = [os.path.join(basedir, expname, self.cfg.ckpt_path)]
         else:
             ckpts = [
@@ -296,12 +297,13 @@ class Implicit4D():
 
         # CNN Weight Loading
         conv_layers = [
-            "conv_in", "conv_0", "conv_0_1", "conv_1", "conv_1_1",
-            "conv_2", "conv_2_1", "conv_3", "conv_3_1", "conv_4",
-            "conv_4_1", "conv_5", "conv_5_1", "fc_0", "fc_1"
+            "conv_in", "conv_0", "conv_0_1", "conv_1", "conv_1_1", "conv_2",
+            "conv_2_1", "conv_3", "conv_3_1", "conv_4", "conv_4_1", "conv_5",
+            "conv_5_1", "fc_0", "fc_1"
         ]
 
-        if self.cfg.cnn_weight_path is not None:
+        if self.cfg.cnn_weight_path is not None \
+            and self.cfg.cnn_weight_path.lower() != 'none':
             cnn_model = torch.load(self.cfg.cnn_weight_path)
             own_state = self.model.state_dict()
             for name, param in cnn_model.items():
