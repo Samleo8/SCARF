@@ -2,18 +2,19 @@
 
 dl_log() {
     LOG_TYPE=${1:-"all"}
-    INSTANCE=${2:-"power"}
+    EXP_NAME=${2:-"train_DTU"}
+    INSTANCE=${3:-"power"}
 
     case $LOG_TYPE in
     "args" | "config" | "metadata")
-        gscpfrom ~/vl/project/stereo-nerf/logs/train_DTU/args.txt ./logs/train_DTU/ $INSTANCE
-        gscpfrom ~/vl/project/stereo-nerf/logs/train_DTU/config.txt ./logs/train_DTU/ $INSTANCE
+        gscpfrom ~/vl/project/stereo-nerf/logs/${EXP_NAME}/args.txt ./logs/${EXP_NAME}/ $INSTANCE
+        gscpfrom ~/vl/project/stereo-nerf/logs/${EXP_NAME}/config.txt ./logs/${EXP_NAME}/ $INSTANCE
         ;;
     "tensorboard")
-        gscpfrom ~/vl/project/stereo-nerf/logs/train_DTU/tensorboard ./logs/train_DTU/ $INSTANCE
+        gscpfrom ~/vl/project/stereo-nerf/logs/${EXP_NAME}/tensorboard ./logs/${EXP_NAME}/ $INSTANCE
         ;;
     "training_visualization" | "vis")
-        gscpfrom ~/vl/project/stereo-nerf/logs/train_DTU/training_visualization ./logs/train_DTU/ $INSTANCE
+        gscpfrom ~/vl/project/stereo-nerf/logs/${EXP_NAME}/training_visualization ./logs/${EXP_NAME}/ $INSTANCE
         ;;
     "all")
         dl_log metadata
@@ -24,10 +25,10 @@ dl_log() {
         # Download a specific checkpoint
         CKPT_ID=${LOG_TYPE%.tar}
         echo "Downloading checkpoint $CKPT_ID"
-        gscpfrom ~/vl/project/stereo-nerf/logs/train_DTU/$LOG_TYPE ./logs/train_DTU/ $INSTANCE
+        gscpfrom ~/vl/project/stereo-nerf/logs/${EXP_NAME}/$LOG_TYPE ./logs/${EXP_NAME}/ $INSTANCE
 
         # Download the corresponding visualizations
-        gscpfrom ~/vl/project/stereo-nerf/logs/train_DTU/training_visualization ./logs/train_DTU/epoch_${CKPT_ID}_scan* $INSTANCE
+        gscpfrom ~/vl/project/stereo-nerf/logs/${EXP_NAME}/training_visualization ./logs/${EXP_NAME}/epoch_${CKPT_ID}_scan* $INSTANCE
         ;;
     *)
         dl_log "all"
@@ -35,11 +36,13 @@ dl_log() {
     esac
 }
 
-LOG_TYPE=${1:-all}
-INSTANCE=${2:-power}
+# Script to download logs from the server
+LOG_TYPE=${1:-"all"}
+EXP_NAME=${2:-"train_DTU"}
+INSTANCE=${3:-"power"}
 
-mkdir -p logs/train_DTU
-mkdir -p logs/train_DTU/training_visualization
-mkdir -p logs/train_DTU/tensorboard
+mkdir -p logs/${EXP_NAME}
+mkdir -p logs/${EXP_NAME}/training_visualization
+mkdir -p logs/${EXP_NAME}/tensorboard
 
 dl_log $LOG_TYPE $INSTANCE
