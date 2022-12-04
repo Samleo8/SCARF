@@ -259,13 +259,21 @@ class Implicit4D():
                 self.val_min = None
             self.optimizer.load_state_dict(ckpt['optimizer_state_dict'])
 
-            # Load model, support for parallelization
+            # CNN Weight Freezing
+            conv_layers = [
+                "conv_in", "conv_0", "conv_0_1", "conv_1", "conv_1_1",
+                "conv_2", "conv_2_1", "conv_3", "conv_3_1", "conv_4",
+                "conv_4_1", "conv_5", "conv_5_1", "fc_0", "fc_1"
+            ]
+
+            # Support for parallelization
             parallelized = isinstance(self.model,
                                       (DataParallel, DistributedDataParallel))
             parallelized_fine = isinstance(
                 self.model_fine, (DataParallel, DistributedDataParallel))
             assert parallelized == parallelized_fine, 'Both models must have same parallelization'
 
+            # Load model
             if parallelized:
                 self.model.module.load_state_dict(
                     ckpt['network_fn_state_dict'])
@@ -289,17 +297,14 @@ class Implicit4D():
 
             print('Current learning-rate: ',
                   self.optimizer.param_groups[0]['lr'])
-            
 
-            conv_layers = ["conv_in", "conv_0", "conv_0_1", "conv_1", "conv_1_1", "conv_2", "conv_2_1", "conv_3", "conv_3_1", "conv_4", "conv_4_1", "conv_5", "conv_5_1", "fc_0", "fc_1"]
-            
             if self.cfg.cnn_weight_path is not None:
                 cnn_model = torch.load(self.cfg.cnn_weight_path)
                 own_state = self.model.state_dict()
                 for name, param in cnn_model.items():
                     if name not in conv_layers:
                         continue
-                    if isinstance(param, Parameter):
+                    if isinstance(param, nn.parameter.Parameter):
                         param = param.data
                     try:
                         own_state[name].copy_(param)
