@@ -1,11 +1,12 @@
 #!/bin/bash
 
 # This script is used to start tensorboard in a headless environment
-EXP_NAME=${1:-"train_DTU"}
+EXP_NAME=${1:-"all"}
 
 LOG_DIR=logs/${EXP_NAME}/tensorboard
+
 if [ $1 == "all" ]; then
-    LOG_DIR=logs
+    LOG_DIR=logs/train_DTU*/tensorboard
 fi
 
 killall tensorboard
