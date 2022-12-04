@@ -304,6 +304,8 @@ class Implicit4D():
 
         if self.cfg.cnn_weight_path is not None \
             and self.cfg.cnn_weight_path.lower() != 'none':
+            print('Loading pretrained CNN weights from ',
+                  self.cfg.cnn_weight_path)
             cnn_model = torch.load(self.cfg.cnn_weight_path)
             own_state = self.model.state_dict()
             for name, param in cnn_model.items():
