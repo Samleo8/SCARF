@@ -321,6 +321,7 @@ class Implicit4D():
                     continue
 
         # Freeze CNN weights
+        print(self.cfg.freeze_cnn, type(self.cfg.freeze_cnn))
         if self.cfg.freeze_cnn:
             print('Freezing CNN Layers')
             for layer in (self.model.conv_in, self.model.conv_0,
