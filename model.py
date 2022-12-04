@@ -259,13 +259,6 @@ class Implicit4D():
                 self.val_min = None
             self.optimizer.load_state_dict(ckpt['optimizer_state_dict'])
 
-            # CNN Weight Freezing
-            conv_layers = [
-                "conv_in", "conv_0", "conv_0_1", "conv_1", "conv_1_1",
-                "conv_2", "conv_2_1", "conv_3", "conv_3_1", "conv_4",
-                "conv_4_1", "conv_5", "conv_5_1", "fc_0", "fc_1"
-            ]
-
             # Support for parallelization
             parallelized = isinstance(self.model,
                                       (DataParallel, DistributedDataParallel))
@@ -298,7 +291,13 @@ class Implicit4D():
             print('Current learning-rate: ',
                   self.optimizer.param_groups[0]['lr'])
 
-        # Load pretrained CNN weights
+        # CNN Weight Freezing
+        conv_layers = [
+            "conv_in", "conv_0", "conv_0_1", "conv_1", "conv_1_1",
+            "conv_2", "conv_2_1", "conv_3", "conv_3_1", "conv_4",
+            "conv_4_1", "conv_5", "conv_5_1", "fc_0", "fc_1"
+        ]
+
         if self.cfg.cnn_weight_path is not None:
             cnn_model = torch.load(self.cfg.cnn_weight_path)
             own_state = self.model.state_dict()
