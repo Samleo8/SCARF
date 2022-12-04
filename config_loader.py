@@ -31,7 +31,7 @@ def config_parser():
     parser.add_argument("--disable_pos_encoding", action='store_true')
 
     parser.add_argument("--cnn_weight_path", type=str, default=None)
-    parser.add_argument("--freze_cnn", action='store_true')
+    parser.add_argument("--freeze_cnn", action='store_true')
 
     # training options
     parser.add_argument(
