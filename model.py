@@ -292,14 +292,14 @@ class Implicit4D():
             
 
             conv_layers = ["conv_in", "conv_0", "conv_0_1", "conv_1", "conv_1_1", "conv_2", "conv_2_1", "conv_3", "conv_3_1", "conv_4", "conv_4_1", "conv_5", "conv_5_1", "fc_0", "fc_1"]
-            
+
             if self.cfg.cnn_weight_path is not None:
                 cnn_model = torch.load(self.cfg.cnn_weight_path)
                 own_state = self.model.state_dict()
                 for name, param in cnn_model.items():
                     if name not in conv_layers:
                         continue
-                    if isinstance(param, Parameter):
+                    if isinstance(param, nn.parameter.Parameter):
                         param = param.data
                     try:
                         own_state[name].copy_(param)
