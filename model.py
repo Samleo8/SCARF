@@ -298,6 +298,7 @@ class Implicit4D():
             print('Current learning-rate: ',
                   self.optimizer.param_groups[0]['lr'])
 
+        # Load pretrained CNN weights
         if self.cfg.cnn_weight_path is not None:
             cnn_model = torch.load(self.cfg.cnn_weight_path)
             own_state = self.model.state_dict()
@@ -313,17 +314,17 @@ class Implicit4D():
                     print('Did not find {}'.format(name))
                     continue
 
-
+        # Freeze CNN weights
         if self.cfg.freeze_cnn:
             print('Freezing CNN Layers')
-            for layer in (self.model.conv_in,
-                            self.model.conv_0, self.model.conv_0_1,
-                            self.model.conv_1, self.model.conv_1_1,
-                            self.model.conv_2, self.model.conv_2_1,
-                            self.model.conv_3, self.model.conv_3_1,
-                            self.model.conv_4, self.model.conv_4_1,
-                            self.model.conv_5, self.model.conv_5_1,
-                            self.model.fc_0, self.model.fc_1):
+            for layer in (self.model.conv_in, self.model.conv_0,
+                          self.model.conv_0_1, self.model.conv_1,
+                          self.model.conv_1_1, self.model.conv_2,
+                          self.model.conv_2_1, self.model.conv_3,
+                          self.model.conv_3_1, self.model.conv_4,
+                          self.model.conv_4_1, self.model.conv_5,
+                          self.model.conv_5_1, self.model.fc_0,
+                          self.model.fc_1):
                 for param in layer.parameters():
                     param.requires_grad = False
 
