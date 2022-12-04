@@ -191,6 +191,7 @@ class Implicit4D():
         all_ret = {}
         for batch in tqdm(data):
             # batch = [torch.Tensor(arr) for arr in batch]
+            # TODO: Dump this to the damn GPU
             if specific_pose:
                 rel_ref_cam_locs, idx, focal = batch[-3:]
 
@@ -212,6 +213,8 @@ class Implicit4D():
             for k in ret:
                 if k not in all_ret:
                     all_ret[k] = []
+
+                # TODO: This is probably not the best way to do this
                 all_ret[k].append(ret[k].cpu())
 
         # concat all results to single outputs
