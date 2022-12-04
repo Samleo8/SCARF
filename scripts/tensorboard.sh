@@ -11,7 +11,7 @@ while [ $# -gt 0 ]; do
 done
 
 killall tensorboard
-nohup tensorboard --logdir=$LOG_DIR --port=6006 &>/dev/null &
+nohup tensorboard --logdir_spec=$LOG_DIR --port=6006 &>/dev/null &
 
 PID=$!
 echo "Tensorboard started in background (${PID}) at port 6006"
