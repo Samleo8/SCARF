@@ -24,5 +24,6 @@ half_res = False
 # generate_specific_samples = [scan23,scan106]
 generate_specific_samples = [scan23]
 
+num_transformer_layers = 2
 render_factor = 8
 vis_render_factor = 20
