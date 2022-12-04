@@ -36,7 +36,7 @@ def config_parser():
                         help='path to pretrained cnn weights')
     parser.add_argument("--freeze_cnn",
                         type=bool,
-                        action='store_true',
+                        default=False,
                         help='whether to freeze cnn weights')
 
     # training options
