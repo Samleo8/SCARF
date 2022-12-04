@@ -1,13 +1,14 @@
 #!/bin/bash
 
 # This script is used to start tensorboard in a headless environment
-EXP_NAME=${1:-"all"}
+EXP_NAME=${1:-"train_DTU"}
+LOG_DIR="${EXP_NAME}:./logs/${EXP_NAME}/tensorboard"
 
-LOG_DIR=logs/${EXP_NAME}/tensorboard
-
-if [ $1 == "all" ]; then
-    LOG_DIR=logs/train_DTU*/tensorboard
-fi
+while [ $# -gt 0 ]; do
+    shift
+    EXP_NAME=$1
+    LOG_DIR=",${EXP_NAME}:./logs/${EXP_NAME}/tensorboard"
+done
 
 killall tensorboard
 nohup tensorboard --logdir=LOG_DIR --port=6006 &>/dev/null &
