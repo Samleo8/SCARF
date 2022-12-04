@@ -45,4 +45,4 @@ mkdir -p logs/${EXP_NAME}
 mkdir -p logs/${EXP_NAME}/training_visualization
 mkdir -p logs/${EXP_NAME}/tensorboard
 
-dl_log $LOG_TYPE $INSTANCE
+dl_log $LOG_TYPE $EXP_NAME $INSTANCE
