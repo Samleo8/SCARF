@@ -291,7 +291,7 @@ class Implicit4D():
             print('Current learning-rate: ',
                   self.optimizer.param_groups[0]['lr'])
 
-        # CNN Weight Freezing
+        # CNN Weight Loading
         conv_layers = [
             "conv_in", "conv_0", "conv_0_1", "conv_1", "conv_1_1",
             "conv_2", "conv_2_1", "conv_3", "conv_3_1", "conv_4",
