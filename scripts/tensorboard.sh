@@ -7,7 +7,7 @@ LOG_DIR="${EXP_NAME}:./logs/${EXP_NAME}/tensorboard"
 while [ $# -gt 0 ]; do
     shift
     EXP_NAME=$1
-    LOG_DIR=",${EXP_NAME}:./logs/${EXP_NAME}/tensorboard"
+    LOG_DIR="${LOG_DIR},${EXP_NAME}:./logs/${EXP_NAME}/tensorboard"
 done
 
 killall tensorboard
