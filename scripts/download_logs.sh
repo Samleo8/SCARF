@@ -20,6 +20,11 @@ dl_log() {
         dl_log tensorboard
         dl_log training_visualization
         ;;
+    *.tar)
+        # Download a specific checkpoint
+        echo "Downloading checkpoint $LOG_TYPE"
+        gscpfrom ~/vl/project/stereo-nerf/logs/train_DTU/$LOG_TYPE ./logs/train_DTU/ $INSTANCE
+        ;;
     *)
         dl_log "all"
         ;;
@@ -30,7 +35,7 @@ LOG_TYPE=${1:-all}
 INSTANCE=${2:-power}
 
 mkdir -p logs/train_DTU
-mkdir logs/train_DTU/training_visualization
-mkdir logs/train_DTU/tensorboard
+mkdir -p logs/train_DTU/training_visualization
+mkdir -p logs/train_DTU/tensorboard
 
 dl_log $LOG_TYPE $INSTANCE
