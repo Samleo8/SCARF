@@ -14,7 +14,7 @@ lrate_decay = 50
 i_testset = 1000
 i_print = 1
 raw_noise_std = 0
-sigmoid = True # TODO: Need to check this because the old code would give sigmoid=True even though the config file had sigmoid=False
+sigmoid = True # NOTE: old code would give sigmoid=True even though the config file had sigmoid=False
 near = 500
 far = 1000
 fine_model_duplicate = True
