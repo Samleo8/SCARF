@@ -543,7 +543,7 @@ class Implicit4DNN(nn.Module):
 
             # We still have a feature linear projection, but there's no size reduction
             self.fc_0 = nn.Linear(in_features=self.cnn_feature_size,
-                                  out_features=self.intermediate_feature_size)
+                                  out_features=self.compressed_feature_size)
         else:
             # For feature size reduction
             self.fc_0 = nn.Linear(in_features=self.cnn_feature_size,
