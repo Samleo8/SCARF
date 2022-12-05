@@ -327,10 +327,6 @@ class Implicit4D():
             pretrained_model = torch.load(
                 self.cfg.pretrained_path)['network_fn_state_dict']
 
-            if has_checkpoint:
-                print(
-                    "No checkpoint found, using pretrained model's state dict")
-
             for name, param in pretrained_model.items():
                 if isinstance(param, nn.parameter.Parameter):
                     param = param.data
@@ -356,6 +352,10 @@ class Implicit4D():
                     except:
                         print('Did not find {}'.format(name))
                         continue
+        elif use_pretrained:
+            print(
+                'NOTE: Pretrained model is not loaded, since a checkpoint is available'
+            )
 
         # CNN Weight Loading
         conv_layers = [
@@ -484,7 +484,8 @@ class Implicit4DNN(nn.Module):
         print("> Num Attention Heads:", self.num_attn_heads)
         print("> Positional Encoding:", self.use_pos_encoding)
         print("> Compression:", not self.no_compression)
-        print("> Compressed Feature Size (before rounding):", self.compressed_feature_size)
+        print("> Compressed Feature Size (before rounding):",
+              self.compressed_feature_size)
 
         #========================IMAGE ENCODER=============================
         # input should be (Scenes/Time instant x Views, img_channels, H, W)
@@ -602,9 +603,8 @@ class Implicit4DNN(nn.Module):
         self.compressed_feature_size = (
             self.compressed_feature_size //
             self.num_attn_heads) * self.num_attn_heads
-        print(
-            "> Compressed Feature Size (after rounding):",
-            self.compressed_feature_size)
+        print("> Compressed Feature Size (after rounding):",
+              self.compressed_feature_size)
 
         if self.no_compression:
             # We still have a feature linear projection, but there's no size reduction
