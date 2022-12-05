@@ -484,6 +484,7 @@ class Implicit4DNN(nn.Module):
         print("> Num Attention Heads:", self.num_attn_heads)
         print("> Positional Encoding:", self.use_pos_encoding)
         print("> Compression:", not self.no_compression)
+        print("> Compressed Feature Size (before rounding):", self.compressed_feature_size)
 
         #========================IMAGE ENCODER=============================
         # input should be (Scenes/Time instant x Views, img_channels, H, W)
@@ -602,7 +603,7 @@ class Implicit4DNN(nn.Module):
             self.compressed_feature_size //
             self.num_attn_heads) * self.num_attn_heads
         print(
-            "> Compressed Feature Size (rounded down to num-attn-head-divisible):",
+            "> Compressed Feature Size (after rounding):",
             self.compressed_feature_size)
 
         if self.no_compression:
