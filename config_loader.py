@@ -24,21 +24,42 @@ def config_parser():
     )
 
     # architecture options
-    parser.add_argument("--intermediate_feature_size", type=int, default=256)
-    parser.add_argument("--compressed_feature_size", type=int, default=128)
-    parser.add_argument("--num_attn_heads", type=int, default=8)
-    parser.add_argument("--num_transformer_layers", type=int, default=2)
-    parser.add_argument("--disable_pos_encoding", action='store_true')
+    parser.add_argument("--no_compression",
+                        type=int,
+                        default=128,
+                        help='Disable compression')
+    parser.add_argument("--intermediate_feature_size",
+                        type=int,
+                        default=256,
+                        help="Intermediate compression size")
+    parser.add_argument("--compressed_feature_size",
+                        type=int,
+                        default=128,
+                        help="Final compression size")
+    parser.add_argument("--num_attn_heads",
+                        type=int,
+                        default=8,
+                        help="Number of attention heads")
+    parser.add_argument("--num_transformer_layers",
+                        type=int,
+                        default=2,
+                        help="Number of transformer layers")
+    parser.add_argument("--disable_pos_encoding",
+                        action='store_true',
+                        help="Disable positional encoding")
 
     # pretraining and freezing options
     parser.add_argument("--pretrained_path",
                         type=str,
                         default=None,
                         help='path to pretrained model weights')
-    parser.add_argument("--cnn_weight_path",
-                        type=str,
-                        default=None,
-                        help='path to pretrained cnn weights. setting this will override pretrained model weights.')
+    parser.add_argument(
+        "--cnn_weight_path",
+        type=str,
+        default=None,
+        help=
+        'path to pretrained cnn weights. setting this will override pretrained model weights.'
+    )
     parser.add_argument("--freeze_cnn",
                         action='store_true',
                         help='whether to freeze cnn weights')

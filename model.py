@@ -328,7 +328,9 @@ class Implicit4D():
             and self.cfg.cnn_weight_path.lower() != 'none':
             print('Loading pretrained CNN weights from ',
                   self.cfg.cnn_weight_path)
-            print('NOTE: This will overwrite the weights in the pretrained model')
+            print(
+                'NOTE: This will overwrite the weights in the pretrained model'
+            )
             cnn_model = torch.load(self.cfg.cnn_weight_path)
 
             for name, param in cnn_model.items():
@@ -410,6 +412,7 @@ class Implicit4DNN(nn.Module):
 
             self.batch_size /= cfg.n_gpus
 
+        self.no_compression = cfg.no_compression
         self.intermediate_feature_size = cfg.intermediate_feature_size
         self.compressed_feature_size = cfg.compressed_feature_size
         self.num_attn_heads = cfg.num_attn_heads
@@ -424,6 +427,7 @@ class Implicit4DNN(nn.Module):
         print("> Num Transformer Layers:", self.num_transformer_layers)
         print("> Num Attention Heads:", self.num_attn_heads)
         print("> Positional Encoding:", self.use_pos_encoding)
+        print("> Compression:", not self.no_compression)
 
         #========================IMAGE ENCODER=============================
         # input should be (Scenes/Time instant x Views, img_channels, H, W)
@@ -534,11 +538,18 @@ class Implicit4DNN(nn.Module):
         self.cnn_feature_size = (3 + 16 + 32 + 64 + 128 + 128 + 128 + 128)
 
         #=======================FEATURE LINEAR PROJECTION========================
-        # For feature size reduction
-        self.fc_0 = nn.Linear(in_features=self.cnn_feature_size,
-                              out_features=self.intermediate_feature_size)
-        self.fc_1 = nn.Linear(in_features=self.intermediate_feature_size,
-                              out_features=self.compressed_feature_size)
+        if self.no_compression:
+            self.compressed_feature_size = self.cnn_feature_size
+
+            # We still have a feature linear projection, but there's no size reduction
+            self.fc_0 = nn.Linear(in_features=self.cnn_feature_size,
+                                  out_features=self.intermediate_feature_size)
+        else:
+            # For feature size reduction
+            self.fc_0 = nn.Linear(in_features=self.cnn_feature_size,
+                                  out_features=self.intermediate_feature_size)
+            self.fc_1 = nn.Linear(in_features=self.intermediate_feature_size,
+                                  out_features=self.compressed_feature_size)
 
         #========================SIMILARITY ENCODER=============================
         # Replaces stereo similarity and correspondences with an attention (transformer) mechanism
@@ -563,8 +574,8 @@ class Implicit4DNN(nn.Module):
         self.transformer_pool = nn.MaxPool1d(kernel_size=self.num_ref_views)
 
         #========================NERF DECODER=============================
-        # TODO: Change number of in features
         self.transformer_size = self.compressed_feature_size
+
         # TODO: Can we use a transformer decoder directly?
         self.fc_2 = nn.Linear(in_features=self.transformer_size,
                               out_features=256)
@@ -684,10 +695,15 @@ class Implicit4DNN(nn.Module):
         features = features.reshape(
             (self.batch_size * rays * num_samples * self.num_ref_views,
              self.cnn_feature_size))
+
+        # NOTE: Even without compression, we still have a learnt linear projection
         features = self.fc_0(features)
         features = self.actvn(features)
-        features = self.fc_1(features)
-        features = self.actvn(features)
+
+        # If there is no compression, then we don't do fc1
+        if not self.no_compression:
+            features = self.fc_1(features)
+            features = self.actvn(features)
 
         # out (batch_size x rays x num_samples x num_ref_views, compressed_feature_size)
 
@@ -698,8 +714,7 @@ class Implicit4DNN(nn.Module):
              self.compressed_feature_size))
         # (batch_size x rays x num_samples, num_ref_views, cnn_feature_size)
 
-        # TODO: Positional encoding
-        if (self.use_pos_encoding):
+        if self.use_pos_encoding:
             pos_enc = self.positional_encoder(features)
             features = features + pos_enc
 
