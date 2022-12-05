@@ -558,10 +558,10 @@ class Implicit4DNN(nn.Module):
         # NOTE: positional encoding needs to be added to the number of features, ViT style
         # NOTE: Internal feature encoding is the encoding within a feature
         # Feature Vector: (batch_size * rays * num_samples, num_ref_views, compressed_feature_size)
-        # TODO: Check if we are learning the same position across different views or does it not matter
         self.positional_encoder = PositionalEncoding1D(
             channels=self.compressed_feature_size)
 
+        print(" > Compressed Feature Size:", self.compressed_feature_size)
         # Actual transformer encoder
         self.stereo_transformer_layer = nn.TransformerEncoderLayer(
             d_model=self.compressed_feature_size,
