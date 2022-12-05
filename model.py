@@ -302,7 +302,7 @@ class Implicit4D():
 
         # Loading of pretrained model
         if self.cfg.pretrained_path is not None \
-            and self.cfg.cnn_weight_path.lower() != 'none':
+            and self.cfg.pretrained_path.lower() != 'none':
             print('Loading pretrained model from ', self.cfg.pretrained_path)
             pretrained_model = torch.load(self.cfg.pretrained_path)
 
