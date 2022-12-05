@@ -422,6 +422,10 @@ class Implicit4D():
                     param.requires_grad = False
 
     def save_model(self, global_step):
+        if global_step == 0:
+            print("NOTE: Not saving empty model at step 0")
+            return
+
         path = os.path.join(self.cfg.basedir, self.cfg.expname,
                             '{:06d}.tar'.format(global_step))
 
