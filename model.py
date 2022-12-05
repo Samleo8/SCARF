@@ -284,8 +284,7 @@ class Implicit4D():
             # Load optimizer state
             if self.cfg.fine_tune:
                 self.val_min = None
-            self.optimizer.load_state_dict(ckpt['optimizer_state_dict'],
-                                           strict=strict)
+            self.optimizer.load_state_dict(ckpt['optimizer_state_dict'])
 
             # Load model
             if parallelized:
@@ -320,8 +319,8 @@ class Implicit4D():
 
         print(own_state.keys())
 
-        # Loading of pretrained model
-        if use_pretrained:
+        # Loading of pretrained model, if no checkpoint is available
+        if use_pretrained and not has_checkpoint:
             print('Loading pretrained model from ', self.cfg.pretrained_path)
             pretrained_model = torch.load(self.cfg.pretrained_path)
 
