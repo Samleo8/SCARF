@@ -1,4 +1,4 @@
-expname = train_DTU
+expname = train_DTU_2L_nocompress
 basedir = ./logs
 datadir = ./data/DTU_MVS/
 dataset_type = DTU
