@@ -32,4 +32,4 @@ pretrained_path = ./logs/train_DTU/088000.tar # pretrained to load params from
 
 # Architectural
 num_transformer_layers = 2
-num_attn_heads = 16
+no_compression = True

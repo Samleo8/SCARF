@@ -8,4 +8,4 @@ echo "" >nohup2.out
 NUM_PROC=8
 
 export CUDA_VISIBLE_DEVICES=1
-python3 trainer.py --config configs/train_DTU.txt --num_workers=$NUM_PROC --no_parallel $@
+python3 trainer.py --config configs/train_DTU_2L_nocompress.txt --num_workers=$NUM_PROC --no_parallel $@
