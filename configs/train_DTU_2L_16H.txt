@@ -20,11 +20,16 @@ far = 1000
 fine_model_duplicate = True
 precrop_iters = 10000
 precrop_frac = 0.5
-half_res = False
-# generate_specific_samples = [scan23,scan106]
-generate_specific_samples = [scan23]
 
-num_transformer_layers = 2
-num_attn_heads = 16
+# Rendering
+half_res = False
+generate_specific_samples = [scan23] # [scan23,scan106]
 render_factor = 8
 vis_render_factor = 20
+
+# Pretrained models
+transformer_weight_path = ./logs/train_DTU/088000.tar # approximate best CNN weights based on validation set
+
+# Architectural
+num_transformer_layers = 2
+num_attn_heads = 16

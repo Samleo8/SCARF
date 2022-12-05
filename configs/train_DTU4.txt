@@ -20,13 +20,17 @@ far = 1000
 fine_model_duplicate = True
 precrop_iters = 10000
 precrop_frac = 0.5
+
+# Rendering
 half_res = False
-# generate_specific_samples = [scan23,scan106]
-generate_specific_samples = [scan23]
+generate_specific_samples = [scan23] # [scan23,scan106]
+render_factor = 8
+vis_render_factor = 20
+
+# Pretrained Weights
 cnn_weight_path = ./logs/train_DTU/055000.tar # approximate best CNN weights based on validation set
 # cnn_weight_path = ./logs/train_DTU/075000.tar # weights from original training set
 freeze_cnn = False
 
+# Architectural
 num_transformer_layers = 4
-render_factor = 8
-vis_render_factor = 20
