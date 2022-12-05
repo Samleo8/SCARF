@@ -545,7 +545,7 @@ class Implicit4DNN(nn.Module):
         self.compressed_feature_size = (
             self.compressed_feature_size //
             self.num_attn_heads) * self.num_attn_heads
-        print("> Compressed Feature Size:", self.compressed_feature_size)
+        print("> Compressed Feature Size (rounded down to num-attn-head-divisible):", self.compressed_feature_size)
 
         if self.no_compression:
             # We still have a feature linear projection, but there's no size reduction
