@@ -258,6 +258,8 @@ class Implicit4D():
 
         has_checkpoint = False
         strict = True
+        use_fine_model = (self.model_fine is not None
+                          and not self.cfg.fine_model_duplicate)
 
         print('Found ckpts', ckpts)
         if len(ckpts) > 0 and not self.cfg.no_reload:
@@ -295,7 +297,7 @@ class Implicit4D():
                                            strict=strict)
 
             # Load fine model
-            if self.model_fine is not None and not self.cfg.fine_model_duplicate:
+            if use_fine_model:
                 if parallelized_fine:
                     self.model_fine.module.load_state_dict(
                         ckpt['network_fine_state_dict'], strict=strict)
@@ -316,13 +318,14 @@ class Implicit4D():
         # TODO: Check parallelization
         own_state = self.model.module.state_dict() \
             if parallelized else self.model.state_dict()
-
-        print(own_state.keys())
+        own_state_fine = self.model_fine.module.state_dict() \
+            if parallelized_fine else self.model_fine.state_dict()
 
         # Loading of pretrained model, if no checkpoint is available
         if use_pretrained and not has_checkpoint:
             print('Loading pretrained model from ', self.cfg.pretrained_path)
-            pretrained_model = torch.load(self.cfg.pretrained_path)
+            pretrained_model = torch.load(
+                self.cfg.pretrained_path)['network_fn_state_dict']
 
             if has_checkpoint:
                 print(
@@ -332,14 +335,27 @@ class Implicit4D():
                 if isinstance(param, nn.parameter.Parameter):
                     param = param.data
 
-                print("(pretrained)", name)
-
                 try:
                     own_state[name].copy_(param)
                     print('Copied {}'.format(name))
                 except:
                     print('Did not find {}'.format(name))
                     continue
+
+            if use_fine_model:
+                pretrained_model_fine = torch.load(
+                    self.cfg.pretrained_path)['network_fine_state_dict']
+
+                for name, param in pretrained_model.items():
+                    if isinstance(param, nn.parameter.Parameter):
+                        param = param.data
+
+                    try:
+                        own_state[name].copy_(param)
+                        print('Copied {}'.format(name))
+                    except:
+                        print('Did not find {}'.format(name))
+                        continue
 
         # CNN Weight Loading
         conv_layers = [
@@ -355,7 +371,8 @@ class Implicit4D():
             print(
                 'NOTE: This will overwrite the weights in the pretrained model'
             )
-            cnn_model = torch.load(self.cfg.cnn_weight_path)
+            cnn_model = torch.load(
+                self.cfg.cnn_weight_path)['network_fn_state_dict']
 
             for name, param in cnn_model.items():
                 if name not in conv_layers:
@@ -375,6 +392,21 @@ class Implicit4D():
                 except:
                     print('Did not find {}'.format(name))
                     continue
+
+            if use_fine_model:
+                for name, param in cnn_model.items():
+                    if name not in conv_layers:
+                        continue
+
+                    if isinstance(param, nn.parameter.Parameter):
+                        param = param.data
+
+                    try:
+                        own_state_fine[name].copy_(param)
+                        print('Copied {}'.format(name))
+                    except:
+                        print('Did not find {}'.format(name))
+                        continue
 
         if self.cfg.freeze_cnn:
             print('Freezing CNN Layers')
