@@ -252,8 +252,17 @@ class Implicit4D():
                                        (DataParallel, DistributedDataParallel))
         assert parallelized == parallelized_fine, 'Both models must have same parallelization'
 
+        # Checkpoint and pretrained model loading
+        use_pretrained = self.cfg.pretrained_path is not None \
+            and self.cfg.pretrained_path.lower() != 'none'
+
+        has_checkpoint = False
+        strict = True
+
         print('Found ckpts', ckpts)
         if len(ckpts) > 0 and not self.cfg.no_reload:
+            has_checkpoint = True
+
             # Load last checkpoint
             ckpt_path = ckpts[-1]
             print('Reloading from', ckpt_path)
@@ -264,27 +273,36 @@ class Implicit4D():
                 self.val_min = ckpt['val_min']
             except:
                 self.val_min = None
+        elif use_pretrained:
+            ckpt_path = self.cfg.pretrained_path
+            print('Using state dict of pretrained model from', ckpt_path)
+            ckpt = torch.load(ckpt_path)
+            strict = False
 
+        # Load model
+        if has_checkpoint:
             # Load optimizer state
             if self.cfg.fine_tune:
                 self.val_min = None
-            self.optimizer.load_state_dict(ckpt['optimizer_state_dict'])
+            self.optimizer.load_state_dict(ckpt['optimizer_state_dict'],
+                                           strict=strict)
 
             # Load model
             if parallelized:
                 self.model.module.load_state_dict(
                     ckpt['network_fn_state_dict'])
             else:
-                self.model.load_state_dict(ckpt['network_fn_state_dict'])
+                self.model.load_state_dict(ckpt['network_fn_state_dict'],
+                                           strict=strict)
 
             # Load fine model
             if self.model_fine is not None and not self.cfg.fine_model_duplicate:
                 if parallelized_fine:
                     self.model_fine.module.load_state_dict(
-                        ckpt['network_fine_state_dict'])
+                        ckpt['network_fine_state_dict'], strict=strict)
                 else:
                     self.model_fine.load_state_dict(
-                        ckpt['network_fine_state_dict'])
+                        ckpt['network_fine_state_dict'], strict=strict)
 
             # LR rate decay if needed
             if self.cfg.lrate_decay_off:
@@ -300,15 +318,22 @@ class Implicit4D():
         own_state = self.model.module.state_dict() \
             if parallelized else self.model.state_dict()
 
+        print(own_state.keys())
+
         # Loading of pretrained model
-        if self.cfg.pretrained_path is not None \
-            and self.cfg.pretrained_path.lower() != 'none':
+        if use_pretrained:
             print('Loading pretrained model from ', self.cfg.pretrained_path)
             pretrained_model = torch.load(self.cfg.pretrained_path)
+
+            if has_checkpoint:
+                print(
+                    "No checkpoint found, using pretrained model's state dict")
 
             for name, param in pretrained_model.items():
                 if isinstance(param, nn.parameter.Parameter):
                     param = param.data
+
+                print("(pretrained)", name)
 
                 try:
                     own_state[name].copy_(param)
@@ -545,7 +570,9 @@ class Implicit4DNN(nn.Module):
         self.compressed_feature_size = (
             self.compressed_feature_size //
             self.num_attn_heads) * self.num_attn_heads
-        print("> Compressed Feature Size (rounded down to num-attn-head-divisible):", self.compressed_feature_size)
+        print(
+            "> Compressed Feature Size (rounded down to num-attn-head-divisible):",
+            self.compressed_feature_size)
 
         if self.no_compression:
             # We still have a feature linear projection, but there's no size reduction
