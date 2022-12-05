@@ -595,9 +595,6 @@ class Implicit4DNN(nn.Module):
         self.positional_encoder = PositionalEncoding1D(
             channels=self.compressed_feature_size)
 
-        print(" > Compressed Feature Size (after rounding):",
-              self.compressed_feature_size)
-
         # Actual transformer encoder
         self.stereo_transformer_layer = nn.TransformerEncoderLayer(
             d_model=self.compressed_feature_size,
