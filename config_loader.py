@@ -25,8 +25,7 @@ def config_parser():
 
     # architecture options
     parser.add_argument("--no_compression",
-                        type=int,
-                        default=128,
+                        action='store_true',
                         help='Disable compression')
     parser.add_argument("--intermediate_feature_size",
                         type=int,
