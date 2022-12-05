@@ -14,6 +14,10 @@ EXP_NAME=${1:-"train_DTU"}
 
 LOG_DIR="./logs/${EXP_NAME}/tensorboard"
 
+if [ EXP_NAME == "all" ]; then
+    LOG_DIR="./logs/"
+fi
+
 killall tensorboard
 nohup tensorboard --logdir=$LOG_DIR --port=6006 &>/dev/null &
 
