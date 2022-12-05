@@ -245,6 +245,13 @@ class Implicit4D():
                 if 'tar' in f
             ]
 
+        # Support for parallelization
+        parallelized = isinstance(self.model,
+                                  (DataParallel, DistributedDataParallel))
+        parallelized_fine = isinstance(self.model_fine,
+                                       (DataParallel, DistributedDataParallel))
+        assert parallelized == parallelized_fine, 'Both models must have same parallelization'
+
         print('Found ckpts', ckpts)
         if len(ckpts) > 0 and not self.cfg.no_reload:
             # Load last checkpoint
@@ -262,13 +269,6 @@ class Implicit4D():
             if self.cfg.fine_tune:
                 self.val_min = None
             self.optimizer.load_state_dict(ckpt['optimizer_state_dict'])
-
-            # Support for parallelization
-            parallelized = isinstance(self.model,
-                                      (DataParallel, DistributedDataParallel))
-            parallelized_fine = isinstance(
-                self.model_fine, (DataParallel, DistributedDataParallel))
-            assert parallelized == parallelized_fine, 'Both models must have same parallelization'
 
             # Load model
             if parallelized:
@@ -295,6 +295,28 @@ class Implicit4D():
             print('Current learning-rate: ',
                   self.optimizer.param_groups[0]['lr'])
 
+        # Loading of pretrained models
+        # TODO: Check parallelization
+        own_state = self.model.module.state_dict() \
+            if parallelized else self.model.state_dict()
+
+        # Loading of pretrained model
+        if self.cfg.pretrained_path is not None \
+            and self.cfg.cnn_weight_path.lower() != 'none':
+            print('Loading pretrained model from ', self.cfg.pretrained_path)
+            pretrained_model = torch.load(self.cfg.pretrained_path)
+
+            for name, param in pretrained_model.items():
+                if isinstance(param, nn.parameter.Parameter):
+                    param = param.data
+
+                try:
+                    own_state[name].copy_(param)
+                    print('Copied {}'.format(name))
+                except:
+                    print('Did not find {}'.format(name))
+                    continue
+
         # CNN Weight Loading
         conv_layers = [
             "conv_in", "conv_0", "conv_0_1", "conv_1", "conv_1_1", "conv_2",
@@ -306,21 +328,28 @@ class Implicit4D():
             and self.cfg.cnn_weight_path.lower() != 'none':
             print('Loading pretrained CNN weights from ',
                   self.cfg.cnn_weight_path)
+            print('NOTE: This will overwrite the weights in the pretrained model')
             cnn_model = torch.load(self.cfg.cnn_weight_path)
-            own_state = self.model.state_dict()
+
             for name, param in cnn_model.items():
                 if name not in conv_layers:
                     continue
+
                 if isinstance(param, nn.parameter.Parameter):
                     param = param.data
+
                 try:
+                    # TODO: Freeze weight here?
+                    # if self.cfg.freeze_cnn:
+                    #     print('Freezing CNN weight', name)
+                    #     param.requires_grad = False
+
                     own_state[name].copy_(param)
                     print('Copied {}'.format(name))
                 except:
                     print('Did not find {}'.format(name))
                     continue
 
-        # Freeze CNN weights
         if self.cfg.freeze_cnn:
             print('Freezing CNN Layers')
             for layer in (self.model.conv_in, self.model.conv_0,
@@ -768,6 +797,7 @@ if __name__ == "__main__":
 
     # Create fake model
     test_model = Implicit4DNN(cfg, device=device)
+    print(test_model)
 
     if cfg.n_gpus > 1:
         print("Using", cfg.n_gpus, "GPUs!")

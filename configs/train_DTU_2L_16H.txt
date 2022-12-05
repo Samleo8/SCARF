@@ -28,7 +28,7 @@ render_factor = 8
 vis_render_factor = 20
 
 # Pretrained models
-transformer_weight_path = ./logs/train_DTU/088000.tar # approximate best CNN weights based on validation set
+pretrained_path = ./logs/train_DTU/088000.tar # pretrained to load params from
 
 # Architectural
 num_transformer_layers = 2

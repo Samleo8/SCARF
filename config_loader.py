@@ -30,10 +30,15 @@ def config_parser():
     parser.add_argument("--num_transformer_layers", type=int, default=2)
     parser.add_argument("--disable_pos_encoding", action='store_true')
 
+    # pretraining and freezing options
+    parser.add_argument("--pretrained_path",
+                        type=str,
+                        default=None,
+                        help='path to pretrained model weights')
     parser.add_argument("--cnn_weight_path",
                         type=str,
                         default=None,
-                        help='path to pretrained cnn weights')
+                        help='path to pretrained cnn weights. setting this will override pretrained model weights.')
     parser.add_argument("--freeze_cnn",
                         action='store_true',
                         help='whether to freeze cnn weights')
