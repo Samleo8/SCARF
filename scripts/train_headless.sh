@@ -19,3 +19,4 @@ echo ${PID} >.train_pid
 
 # check nohup
 tail -f nohup.out
+
