@@ -33,4 +33,4 @@ num_reference_views = 10
 
 # NOTE: Put experiment name where checkpoint is here
 ckpt_expname = train_DTU_2L_16H
-render_factor = 8
+render_factor = 10
