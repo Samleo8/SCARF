@@ -153,6 +153,7 @@ class Implicit4D():
             ret['acc0'] = acc_map_0
             ret['z_std'] = torch.std(z_samples, dim=-1,
                                      unbiased=False)  # [N_rays]
+                                     
         for k in ret:
             if (torch.isnan(ret[k]).any() or torch.isinf(ret[k]).any()):
                 print(f"! [Numerical Error] {k} contains nan or inf.")
@@ -191,10 +192,10 @@ class Implicit4D():
         all_ret = {}
         for batch in tqdm(data):
             # batch = [torch.Tensor(arr) for arr in batch]
-            # TODO: Dump this to the damn GPU
             if specific_pose:
                 rel_ref_cam_locs, idx, focal = batch[-3:]
 
+                # NOTE: Actually, this is a list of tensors
                 inputs = [
                     tensor.reshape([-1] + list(tensor.shape[2:]))
                     for tensor in batch[:-3]
