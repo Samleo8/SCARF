@@ -16,6 +16,11 @@ dl_log() {
     "training_visualization" | "vis")
         gscpfrom ~/vl/project/stereo-nerf/logs/${EXP_NAME}/training_visualization ./logs/${EXP_NAME}/ $INSTANCE
         ;;
+    "render" | "renderings")
+        # Download renderings
+        # NOTE: Need to run script ./scripts/compile_renderings from within system to do so properly
+        gscpfrom ~/vl/project/stereo-nerf/logs/${EXP_NAME}/renderings ./logs/${EXP_NAME}/renderings $INSTANCE
+        ;;
     "all")
         dl_log metadata
         dl_log tensorboard
