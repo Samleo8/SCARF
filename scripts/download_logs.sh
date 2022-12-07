@@ -19,7 +19,7 @@ dl_log() {
     "render" | "renderings")
         # Download renderings
         # NOTE: Need to run script ./scripts/compile_renderings from within system to do so properly
-        gscpfrom ~/vl/project/stereo-nerf/logs/${EXP_NAME}/renderings ./logs/${EXP_NAME}/renderings $INSTANCE
+        gscpfrom ~/vl/project/stereo-nerf/logs/${EXP_NAME}/renderings ./logs/${EXP_NAME} $INSTANCE
         ;;
     "all")
         dl_log metadata
