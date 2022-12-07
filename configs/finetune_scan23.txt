@@ -16,11 +16,10 @@ lrate_decay = 250
 i_print = 1
 
 raw_noise_std = 0
-sigmoid = False
+sigmoid = True # stupid argparse
 near = 500
 far = 1000
 fine_model_duplicate = True
-
 
 precrop_iters = 10000
 precrop_frac = 0.5
@@ -31,3 +30,7 @@ i_saveckpt = 200
 i_testset = 200
 
 num_reference_views = 10
+
+# NOTE: Put experiment name where checkpoint is here
+ckpt_exp = train_DTU_2L_16H
+render_factor = 8

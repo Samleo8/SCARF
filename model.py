@@ -239,9 +239,17 @@ class Implicit4D():
             and self.cfg.ckpt_path.lower() != 'none':
             ckpts = [os.path.join(basedir, expname, self.cfg.ckpt_path)]
         else:
+            # For rendering: load the name of the experiment to fine tune from
+            if self.cfg.ckpt_exp is not None \
+                and self.cfg.ckpt_exp.lower() != 'none':
+                _expname = self.cfg.ckpt_exp
+            # Otherwise, just use the current experiment name
+            else:
+                _expname = expname
+
             ckpts = [
-                os.path.join(basedir, expname, f)
-                for f in sorted(os.listdir(os.path.join(basedir, expname)))
+                os.path.join(basedir, _expname, f)
+                for f in sorted(os.listdir(os.path.join(basedir, _expname)))
                 if 'tar' in f
             ]
 
