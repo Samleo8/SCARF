@@ -27,7 +27,7 @@ for FOLDER in $FOLDERS; do
     # Get view number
     POSE=$(echo $FOLDER | cut -d'_' -f4)
 
-    echo "Copying rendering for epoch $EPOCH, scan $SCAN, pose $POSE"
+    echo "Copying rendering for epoch $EPOCH, scan $SCAN, pose $POSE, as sequence $SEQ"
 
     # Create folder
     RENDER_OUT_FOLDER=${BASE_RENDER_FOLDER}/${SCAN}_${POSE}/
