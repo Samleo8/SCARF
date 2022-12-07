@@ -1,5 +1,9 @@
 #!/bin/bash
 
-./scripts/download_logs.sh render train_DTU
-./scripts/download_logs.sh render train_DTU_2L_16H
-./scripts/download_logs.sh render train_DTU_2L_nocompress
+EXPERIMENTS=(train_DTU train_DTU_2L_16H train_DTU_2L_nocompress)
+
+for EXP in ${EXPERIMENTS[@]}; do
+    ./scripts/download_logs.sh render $EXP
+    ./scripts/gen_render_video.sh $EXP
+done
+
