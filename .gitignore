@@ -1,7 +1,6 @@
-__pycache__
+__pycache__/
 .idea
 !.gitkeep
-/logs/*
 data/DTU_MVS
 data/DTU_MVS_local
 data/DTU_MVS_git
@@ -10,3 +9,10 @@ slurm
 *.out
 *.zip
 trash
+
+# Attempt to not ignore the render.mp4 and render_noloop.gif files
+!*/render.mp4
+!*/render_noloop.gif
+
+# Ignore other logs
+logs/*
