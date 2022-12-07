@@ -240,9 +240,9 @@ class Implicit4D():
             ckpts = [os.path.join(basedir, expname, self.cfg.ckpt_path)]
         else:
             # For rendering: load the name of the experiment to fine tune from
-            if self.cfg.ckpt_exp is not None \
-                and self.cfg.ckpt_exp.lower() != 'none':
-                _expname = self.cfg.ckpt_exp
+            if self.cfg.ckpt_expname is not None \
+                and self.cfg.ckpt_expname.lower() != 'none':
+                _expname = self.cfg.ckpt_expname
             # Otherwise, just use the current experiment name
             else:
                 _expname = expname

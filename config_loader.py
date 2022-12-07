@@ -112,6 +112,13 @@ def config_parser():
         default=None,
         help='Specific NN parameter file (npy) to reload for the network.'
         'Given string is appended to the experiments folder path.')
+    parser.add_argument(
+        "--ckpt_expname",
+        type=str,
+        default=None,
+        help=
+        'Experiment name to load checkpoint and render from. If not given, the experiment from the config file is used.'
+    )
     parser.add_argument("--batch_size",
                         type=int,
                         default=1,
