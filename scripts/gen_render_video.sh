@@ -13,4 +13,5 @@ for SUBFOLDER in $RENDER_BASE_FOLDER/*; do
     echo "Processing $SUBFOLDER"
     RENDER_FOLDER=$SUBFOLDER
     ffmpeg -y -framerate $FPS -i $RENDER_FOLDER/%0005d.png -loop -1 -profile:v high -crf 28 -pix_fmt yuv420p $RENDER_FOLDER/render.mp4
+    ffmpeg -y -framerate $FPS -i $RENDER_FOLDER/%0005d.png -loop 0 $RENDER_FOLDER/render_noloop.gif
 done
