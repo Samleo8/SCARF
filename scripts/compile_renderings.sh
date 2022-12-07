@@ -16,6 +16,12 @@ for FOLDER in $FOLDERS; do
 
     # Get epoch number
     EPOCH=$(echo $FOLDER | cut -d'_' -f2)
+
+    # Get it as a sequence for video processing
+    STEP_SIZE=1000
+    SEQ=$((EPOCH / $STEP_SIZE))
+    SEQ=$(printf "%05d\n" $SEQ)
+
     # Get scan number
     SCAN=$(echo $FOLDER | cut -d'_' -f3)
     # Get view number
@@ -28,5 +34,5 @@ for FOLDER in $FOLDERS; do
     mkdir -p $RENDER_OUT_FOLDER
 
     # Copy rendering
-    cp ${BASE_VIS_FOLDER}/${FOLDER}/rendering.png ${RENDER_OUT_FOLDER}/$EPOCH.png
+    cp ${BASE_VIS_FOLDER}/${FOLDER}/rendering.png ${RENDER_OUT_FOLDER}/${SEQ}.png
 done

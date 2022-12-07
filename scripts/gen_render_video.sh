@@ -12,6 +12,6 @@ RENDER_BASE_FOLDER=./logs/$EXP_NAME/renderings
 for SUBFOLDER in $RENDER_BASE_FOLDER/*; do
     echo "Processing $SUBFOLDER"
     RENDER_FOLDER=$SUBFOLDER
-    ffmpeg -y -framerate $FPS -i $RENDER_FOLDER/*.png -loop -1 -profile:v high -crf 28 -pix_fmt yuv420p $RENDER_FOLDER/render.mp4
+    ffmpeg -y -framerate $FPS -i $RENDER_FOLDER/%0005d.png -loop -1 -profile:v high -crf 28 -pix_fmt yuv420p $RENDER_FOLDER/render.mp4
     cd -
 done
