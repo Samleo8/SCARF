@@ -1,7 +1,18 @@
 
-# Stereo Attention Radiance Fields (SARF)
+# Stereo Cross-Attention Radiance Fields (SCARF)
 
 This is a modification of the originial SRF paper, but using attention as the mechanism for implicit stereo correspondences.
+
+## Authors
+
+Samuel Leong (http://samleo8.github.io/) [Email: scleong at andrew.cmu.edu]
+Alex Strasser [Email: arstrasse at andrew.cmu.edu]
+
+## Results
+
+## 
+
+---
 
 ## Original Paper/Authors
 
