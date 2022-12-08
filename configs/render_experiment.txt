@@ -1,4 +1,5 @@
-expname = finetune_scan23
+# NOTE: Set experiment name in flags
+# expname = render_experiment
 basedir = ./logs
 datadir = ./data/DTU_MVS/
 dataset_type = DTU
