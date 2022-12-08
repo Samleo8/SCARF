@@ -6,11 +6,13 @@ This is a modification of the originial SRF paper, but using attention as the me
 ## Authors
 
 Samuel Leong (http://samleo8.github.io/) [Email: scleong at andrew.cmu.edu]
+
 Alex Strasser [Email: arstrasse at andrew.cmu.edu]
 
 ## Results
 
-## 
+Final presentation for the class is publicly viewable [here](https://docs.google.com/presentation/d/1BXCPMn_tfyXVVvL5m5Y0Ear06_MKOi1l6b6xrLuzZBk/edit?usp=sharing)
+
 
 ---
 
