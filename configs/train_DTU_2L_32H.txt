@@ -1,0 +1,35 @@
+expname = train_DTU_2L_32H
+basedir = ./logs
+datadir = ./data/DTU_MVS/
+dataset_type = DTU
+
+no_ndc = True
+white_bkgd = False
+split = split.pkl
+N_importance = 128
+N_samples = 64 # orig: 64; small: 16
+N_rays_test = 128 # orig: 250; small: 16
+N_rand = 25 # orig: 250
+lrate_decay = 50
+i_testset = 10 # 1000
+i_print = 1
+raw_noise_std = 0
+sigmoid = True # NOTE: old code would give sigmoid=True even though the config file had sigmoid=False
+near = 500
+far = 1000
+fine_model_duplicate = True
+precrop_iters = 10000
+precrop_frac = 0.5
+
+# Rendering
+half_res = False
+generate_specific_samples = [scan23] # [scan23,scan106]
+render_factor = 8
+vis_render_factor = 20
+
+# Pretrained models
+pretrained_path = ./logs/train_DTU_2L_16H/063000.tar # pretrained to load params
+
+# Architectural
+num_transformer_layers = 2
+num_attn_heads = 32
