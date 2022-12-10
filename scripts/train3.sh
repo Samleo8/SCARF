@@ -1,7 +1,7 @@
 #!/bin/bash
 
 git pull
-echo "" >nohup2.out
+echo "" >nohup3.out
 
 # NUM_PROC=$(nproc)
 # echo "NOTE: Using $NUM_PROC workers (number of CPUs in VM)."
