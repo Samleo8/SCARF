@@ -505,8 +505,8 @@ class Implicit4DNN(nn.Module):
         init_conv_size = 3
         conv_sizes = np.array([16, 32, 64, 128, 128, 128, 128])
         if (self.reduce_features):
-            # conv_sizes = [int(x / 2) for x in conv_sizes]
             conv_sizes = (conv_sizes / 2).astype(int)
+            conv_sizes = conv_sizes[:-2]
 
         self.conv_in = nn.Conv2d(in_channels=init_conv_size,
                                  out_channels=conv_sizes[0],
@@ -581,35 +581,37 @@ class Implicit4DNN(nn.Module):
                                   padding_mode='zeros')
         # after max pooling: (H/32, W/32)
 
-        self.conv_4 = nn.Conv2d(in_channels=conv_sizes[4],
-                                out_channels=conv_sizes[4],
-                                kernel_size=3,
-                                stride=1,
-                                dilation=1,
-                                padding=1,
-                                padding_mode='zeros')
-        self.conv_4_1 = nn.Conv2d(in_channels=conv_sizes[4],
-                                  out_channels=conv_sizes[5],
-                                  kernel_size=3,
-                                  stride=1,
-                                  dilation=1,
-                                  padding=1,
-                                  padding_mode='zeros')
-        # after max pooling: (H/64, W/64)
-        self.conv_5 = nn.Conv2d(in_channels=conv_sizes[5],
-                                out_channels=conv_sizes[5],
-                                kernel_size=3,
-                                stride=1,
-                                dilation=1,
-                                padding=1,
-                                padding_mode='zeros')
-        self.conv_5_1 = nn.Conv2d(in_channels=conv_sizes[5],
-                                  out_channels=conv_sizes[6],
-                                  kernel_size=3,
-                                  stride=1,
-                                  dilation=1,
-                                  padding=1,
-                                  padding_mode='zeros')
+        
+        if (not self.reduce_features):
+            self.conv_4 = nn.Conv2d(in_channels=conv_sizes[4],
+                                    out_channels=conv_sizes[4],
+                                    kernel_size=3,
+                                    stride=1,
+                                    dilation=1,
+                                    padding=1,
+                                    padding_mode='zeros')
+            self.conv_4_1 = nn.Conv2d(in_channels=conv_sizes[4],
+                                    out_channels=conv_sizes[5],
+                                    kernel_size=3,
+                                    stride=1,
+                                    dilation=1,
+                                    padding=1,
+                                    padding_mode='zeros')
+            # after max pooling: (H/64, W/64)
+            self.conv_5 = nn.Conv2d(in_channels=conv_sizes[5],
+                                    out_channels=conv_sizes[5],
+                                    kernel_size=3,
+                                    stride=1,
+                                    dilation=1,
+                                    padding=1,
+                                    padding_mode='zeros')
+            self.conv_5_1 = nn.Conv2d(in_channels=conv_sizes[5],
+                                    out_channels=conv_sizes[6],
+                                    kernel_size=3,
+                                    stride=1,
+                                    dilation=1,
+                                    padding=1,
+                                    padding_mode='zeros')
 
         # self.cnn_feature_size = (3 + 16 + 32 + 64 + 128 + 128 + 128 + 128)
         self.cnn_feature_size = init_conv_size + conv_sizes.sum()
@@ -679,8 +681,10 @@ class Implicit4DNN(nn.Module):
         self.conv1_1_bn = nn.BatchNorm2d(conv_sizes[2])
         self.conv2_1_bn = nn.BatchNorm2d(conv_sizes[3])
         self.conv3_1_bn = nn.BatchNorm2d(conv_sizes[4])
-        self.conv4_1_bn = nn.BatchNorm2d(conv_sizes[5])
-        self.conv5_1_bn = nn.BatchNorm2d(conv_sizes[6])
+
+        if not self.reduce_features:
+            self.conv4_1_bn = nn.BatchNorm2d(conv_sizes[5])
+            self.conv5_1_bn = nn.BatchNorm2d(conv_sizes[6])
 
         # Move to device
         if device is None:
