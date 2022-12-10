@@ -1,0 +1,43 @@
+@font-face {
+    font-family: 'QuickSand';
+    src: url('../fonts/quicksand/static/Quicksand-Regular.ttf');
+}
+
+body {
+    padding: 1%;
+    text-align: center;
+    font-family: 'QuickSand';
+}
+
+.title {
+    font-size: 55px;
+    font-weight: bold;
+}
+
+.subtitle {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+div.header {
+
+}
+
+cite {
+
+}
+
+figure {
+
+}
+
+figure img {
+    
+}
+
+figure span {
+}
+
+div.title {
+
+}
