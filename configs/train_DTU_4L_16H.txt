@@ -1,4 +1,4 @@
-expname = train_DTU_2L_32H
+expname = train_DTU_4L_16H
 basedir = ./logs
 datadir = ./data/DTU_MVS/
 dataset_type = DTU
@@ -28,8 +28,8 @@ render_factor = 8
 vis_render_factor = 20
 
 # Pretrained models
-pretrained_path = ./logs/train_DTU_2L_16H/063000.tar # pretrained to load params
+pretrained_path = ./logs/train_DTU/088000.tar # pretrained to load params from
 
 # Architectural
 num_transformer_layers = 2
-num_attn_heads = 32
+num_attn_heads = 16
