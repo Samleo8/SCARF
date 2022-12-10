@@ -508,7 +508,7 @@ class Implicit4DNN(nn.Module):
         conv_sizes = np.array([16, 32, 64, 128, 128, 128, 128])
         if (self.reduce_features):
             # conv_sizes = [int(x / 2) for x in conv_sizes]
-            conv_sizes /= 2
+            conv_sizes = (conv_sizes / 2).astype(int)
 
         self.conv_in = nn.Conv2d(in_channels=init_conv_size,
                                  out_channels=conv_sizes[0],
