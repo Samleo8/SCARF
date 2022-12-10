@@ -24,6 +24,9 @@ def config_parser():
     )
 
     # architecture options
+    parser.add_argument("--reduce_features",
+                        action='store_true',
+                        help='Reduce feature sizes and number of features. No compression by default.')
     parser.add_argument("--no_compression",
                         action='store_true',
                         help='Disable compression')

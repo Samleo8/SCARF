@@ -153,7 +153,7 @@ class Implicit4D():
             ret['acc0'] = acc_map_0
             ret['z_std'] = torch.std(z_samples, dim=-1,
                                      unbiased=False)  # [N_rays]
-                                     
+
         for k in ret:
             if (torch.isnan(ret[k]).any() or torch.isinf(ret[k]).any()):
                 print(f"! [Numerical Error] {k} contains nan or inf.")
@@ -487,6 +487,7 @@ class Implicit4DNN(nn.Module):
         self.num_attn_heads = cfg.num_attn_heads
         self.num_transformer_layers = cfg.num_transformer_layers
         self.use_pos_encoding = not cfg.disable_pos_encoding
+        self.reduce_features = cfg.reduce_features
 
         self.cfg = cfg
 
@@ -503,8 +504,14 @@ class Implicit4DNN(nn.Module):
         #========================IMAGE ENCODER=============================
         # input should be (Scenes/Time instant x Views, img_channels, H, W)
 
-        self.conv_in = nn.Conv2d(in_channels=3,
-                                 out_channels=16,
+        init_conv_size = 3
+        conv_sizes = np.array([16, 32, 64, 128, 128, 128, 128])
+        if (self.reduce_features):
+            # conv_sizes = [int(x / 2) for x in conv_sizes]
+            conv_sizes /= 2
+
+        self.conv_in = nn.Conv2d(in_channels=init_conv_size,
+                                 out_channels=conv_sizes[0],
                                  kernel_size=3,
                                  stride=1,
                                  dilation=1,
@@ -512,15 +519,15 @@ class Implicit4DNN(nn.Module):
                                  padding_mode='zeros')
         # after max pooling: (H/2, W/2)
 
-        self.conv_0 = nn.Conv2d(in_channels=16,
-                                out_channels=32,
+        self.conv_0 = nn.Conv2d(in_channels=conv_sizes[0],
+                                out_channels=conv_sizes[0],
                                 kernel_size=3,
                                 stride=1,
                                 dilation=1,
                                 padding=1,
                                 padding_mode='zeros')
-        self.conv_0_1 = nn.Conv2d(in_channels=32,
-                                  out_channels=32,
+        self.conv_0_1 = nn.Conv2d(in_channels=conv_sizes[0],
+                                  out_channels=conv_sizes[1],
                                   kernel_size=3,
                                   stride=1,
                                   dilation=1,
@@ -528,15 +535,15 @@ class Implicit4DNN(nn.Module):
                                   padding_mode='zeros')
         # after max pooling: (H/4, W/4)
 
-        self.conv_1 = nn.Conv2d(in_channels=32,
-                                out_channels=64,
+        self.conv_1 = nn.Conv2d(in_channels=conv_sizes[1],
+                                out_channels=conv_sizes[1],
                                 kernel_size=3,
                                 stride=1,
                                 dilation=1,
                                 padding=1,
                                 padding_mode='zeros')
-        self.conv_1_1 = nn.Conv2d(in_channels=64,
-                                  out_channels=64,
+        self.conv_1_1 = nn.Conv2d(in_channels=conv_sizes[1],
+                                  out_channels=conv_sizes[2],
                                   kernel_size=3,
                                   stride=1,
                                   dilation=1,
@@ -544,15 +551,15 @@ class Implicit4DNN(nn.Module):
                                   padding_mode='zeros')
         # after max pooling: (H/8, W/8)
 
-        self.conv_2 = nn.Conv2d(in_channels=64,
-                                out_channels=128,
+        self.conv_2 = nn.Conv2d(in_channels=conv_sizes[2],
+                                out_channels=conv_sizes[2],
                                 kernel_size=3,
                                 stride=1,
                                 dilation=1,
                                 padding=1,
                                 padding_mode='zeros')
-        self.conv_2_1 = nn.Conv2d(in_channels=128,
-                                  out_channels=128,
+        self.conv_2_1 = nn.Conv2d(in_channels=conv_sizes[2],
+                                  out_channels=conv_sizes[3],
                                   kernel_size=3,
                                   stride=1,
                                   dilation=1,
@@ -560,15 +567,15 @@ class Implicit4DNN(nn.Module):
                                   padding_mode='zeros')
         # after max pooling: (H/16, W/16)
 
-        self.conv_3 = nn.Conv2d(in_channels=128,
-                                out_channels=128,
+        self.conv_3 = nn.Conv2d(in_channels=conv_sizes[3],
+                                out_channels=conv_sizes[3],
                                 kernel_size=3,
                                 stride=1,
                                 dilation=1,
                                 padding=1,
                                 padding_mode='zeros')
-        self.conv_3_1 = nn.Conv2d(in_channels=128,
-                                  out_channels=128,
+        self.conv_3_1 = nn.Conv2d(in_channels=conv_sizes[3],
+                                  out_channels=conv_sizes[4],
                                   kernel_size=3,
                                   stride=1,
                                   dilation=1,
@@ -576,40 +583,41 @@ class Implicit4DNN(nn.Module):
                                   padding_mode='zeros')
         # after max pooling: (H/32, W/32)
 
-        self.conv_4 = nn.Conv2d(in_channels=128,
-                                out_channels=128,
+        self.conv_4 = nn.Conv2d(in_channels=conv_sizes[4],
+                                out_channels=conv_sizes[4],
                                 kernel_size=3,
                                 stride=1,
                                 dilation=1,
                                 padding=1,
                                 padding_mode='zeros')
-        self.conv_4_1 = nn.Conv2d(in_channels=128,
-                                  out_channels=128,
+        self.conv_4_1 = nn.Conv2d(in_channels=conv_sizes[4],
+                                  out_channels=conv_sizes[5],
                                   kernel_size=3,
                                   stride=1,
                                   dilation=1,
                                   padding=1,
                                   padding_mode='zeros')
         # after max pooling: (H/64, W/64)
-        self.conv_5 = nn.Conv2d(in_channels=128,
-                                out_channels=128,
+        self.conv_5 = nn.Conv2d(in_channels=conv_sizes[5],
+                                out_channels=conv_sizes[5],
                                 kernel_size=3,
                                 stride=1,
                                 dilation=1,
                                 padding=1,
                                 padding_mode='zeros')
-        self.conv_5_1 = nn.Conv2d(in_channels=128,
-                                  out_channels=128,
+        self.conv_5_1 = nn.Conv2d(in_channels=conv_sizes[5],
+                                  out_channels=conv_sizes[6],
                                   kernel_size=3,
                                   stride=1,
                                   dilation=1,
                                   padding=1,
                                   padding_mode='zeros')
 
-        self.cnn_feature_size = (3 + 16 + 32 + 64 + 128 + 128 + 128 + 128)
+        # self.cnn_feature_size = (3 + 16 + 32 + 64 + 128 + 128 + 128 + 128)
+        self.cnn_feature_size = init_conv_size + conv_sizes.sum()
 
         #=======================FEATURE LINEAR PROJECTION========================
-        if self.no_compression:
+        if self.no_compression or self.reduce_features:
             self.compressed_feature_size = self.cnn_feature_size
 
         # NOTE: Still need to compress to smallest feature size that is divisible by num_attn_heads
@@ -664,13 +672,13 @@ class Implicit4DNN(nn.Module):
         self.maxpool = nn.MaxPool2d(2)
 
         # Batch norms for the conv layers
-        self.conv_in_bn = nn.BatchNorm2d(16)
-        self.conv0_1_bn = nn.BatchNorm2d(32)
-        self.conv1_1_bn = nn.BatchNorm2d(64)
-        self.conv2_1_bn = nn.BatchNorm2d(128)
-        self.conv3_1_bn = nn.BatchNorm2d(128)
-        self.conv4_1_bn = nn.BatchNorm2d(128)
-        self.conv5_1_bn = nn.BatchNorm2d(128)
+        self.conv_in_bn = nn.BatchNorm2d(conv_sizes[0])
+        self.conv0_1_bn = nn.BatchNorm2d(conv_sizes[1])
+        self.conv1_1_bn = nn.BatchNorm2d(conv_sizes[2])
+        self.conv2_1_bn = nn.BatchNorm2d(conv_sizes[3])
+        self.conv3_1_bn = nn.BatchNorm2d(conv_sizes[4])
+        self.conv4_1_bn = nn.BatchNorm2d(conv_sizes[5])
+        self.conv5_1_bn = nn.BatchNorm2d(conv_sizes[6])
 
         # Move to device
         if device is None:
@@ -734,31 +742,38 @@ class Implicit4DNN(nn.Module):
         feature_5 = F.grid_sample(
             net, ref_pts, align_corners=True
         )  # out (batch_size x num_ref_views, 128, rays, num_samples)
-        net = self.maxpool(
-            net)  # out (batch_size x num_ref_views, 128, H/32, W/32)
 
-        net = self.actvn(self.conv_4(net))
-        net = self.actvn(self.conv_4_1(net))
-        net = self.conv4_1_bn(net)
-        feature_6 = F.grid_sample(
-            net, ref_pts, align_corners=True
-        )  # out (batch_size x num_ref_views, 128, rays, num_samples)
-        net = self.maxpool(
-            net)  # out (batch_size x num_ref_views, 128, H/64, W/64)
+        if (not self.reduce_features):
+            net = self.maxpool(
+                net)  # out (batch_size x num_ref_views, 128, H/32, W/32)
 
-        net = self.actvn(self.conv_5(net))
-        net = self.actvn(self.conv_5_1(net))
-        net = self.conv5_1_bn(net)
-        feature_7 = F.grid_sample(
-            net, ref_pts, align_corners=True
-        )  # out (batch_size x num_ref_views, 128, rays, num_samples)
+            net = self.actvn(self.conv_4(net))
+            net = self.actvn(self.conv_4_1(net))
+            net = self.conv4_1_bn(net)
 
-        # here every channel corresponds to one feature.
-        features = torch.cat(
-            (feature_0, feature_1, feature_2, feature_3, feature_4, feature_5,
-             feature_6, feature_7),
-            dim=1
-        )  # out (batch_size x num_ref_views, cnn_feature_size, rays, num_samples),
+            feature_6 = F.grid_sample(
+                net, ref_pts, align_corners=True
+            )  # out (batch_size x num_ref_views, 128, rays, num_samples)
+            net = self.maxpool(
+                net)  # out (batch_size x num_ref_views, 128, H/64, W/64)
+
+            net = self.actvn(self.conv_5(net))
+            net = self.actvn(self.conv_5_1(net))
+            net = self.conv5_1_bn(net)
+            feature_7 = F.grid_sample(
+                net, ref_pts, align_corners=True
+            )  # out (batch_size x num_ref_views, 128, rays, num_samples)
+
+            # here every channel corresponds to one feature.
+            features = torch.cat(
+                (feature_0, feature_1, feature_2, feature_3, feature_4,
+                 feature_5, feature_6, feature_7),
+                dim=1
+            )  # out (batch_size x num_ref_views, cnn_feature_size, rays, num_samples),
+        else:
+            features = torch.cat((feature_0, feature_1, feature_2, feature_3,
+                                  feature_4, feature_5),
+                                 dim=1)
 
         # reshape
         features = features.reshape((self.batch_size, self.num_ref_views,
