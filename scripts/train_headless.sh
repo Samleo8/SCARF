@@ -6,7 +6,7 @@ echo "" >nohup.out
 # kill all previous running processes
 kill $(cat .train_pid)
 for i in {1..5}; do
-    killall python3
+    killall python3 && echo "Successfully killed all python processes" || echo "No python processes to kill"
 done
 
 # run training headless
@@ -19,4 +19,3 @@ echo ${PID} >.train_pid
 
 # check nohup
 tail -f nohup.out
-
