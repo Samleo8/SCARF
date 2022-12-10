@@ -67,56 +67,83 @@
 
     <h1>Results</h1>
 
+    <div class="gallery" fignum="3">
     <table>
         <tr>
             <td>
                 <figure>
                     <img src="images/render23_2L_8H.png">
-                    <div class="caption">Figure 3: Renering of scene 23, with compression, 2 layers of 8 heads cross attention
-                        layers.</div>
+                    <div class="caption">Figure 3a: 2 layers, 8 heads</div>
                 </figure>
             </td>
             <td>
                 <figure>
                     <img src="images/render23_2L_16H.png">
-                    <div class="caption">Figure 4: Renering of scene 23, with compression, 2 layers of 16 heads cross attention
-                        layers.</div>
+                    <div class="caption">Figure 3b: 2 layers, 16 heads</div>
                 </figure>
             </td>
             <td>
                 <figure>
                     <img src="images/render23_2L_32H.png">
-                    <div class="caption">Figure 5: Renering of scene 23, with compression, 2 layers of 32 heads cross attention
-                        layers.</div>
+                    <div class="caption">Figure 3c: 2 layers, 32 heads</div>
                 </figure>
             </td>
             <td>
                 <figure>
                     <img src="images/render23_2L_32H.png">
-                    <div class="caption">Figure 5: Renering of scene 23, with compression, 2 layers of 32 heads cross attention
-                        layers.</div>
+                    <div class="caption">Figure 3d: 2 layers, 32 heads</div>
                 </figure>
             </td>
             <td>
                 <figure>
                     <img src="images/render23_4L_16H.png">
-                    <div class="caption">Figure 6: Renering of scene 23, with compression, 4 layers of 16 heads cross attention
-                        layers.</div>
+                    <div class="caption">Figure 3e: 4 layers, 16 heads</div>
                 </figure>
             </td>
             <td>
                 <figure>
                     <img src="images/no_compression.png">
-                    <div class="caption">Figure 7: Renering of scene 23, with no compression.</div>
+                    <div class="caption">Figure 3f: Rendering of scene 23, with no compression.</div>
                 </figure>
             </td>
-
         </tr>
 
     </table>
-    
+        <div class="caption">
+            Figure 3: Gallery of results for rendering of Scene 23 of the DTU Dataset <a href="#cite-4">[4]</a>
+        </div>
+    </div>
 
     
+    <p>
+        Our first experiment was to see whether or not the feature compression layer was necessary. We found that the
+        network performed much better with the feature compression layer. It did not learn a significant amount of information in the scene by iteration 50k, as shown in Figure <a class="figref">4</a>.
+    </p>
+
+    <figure>
+        <img src="images/loss23_2L_8H.png">
+        <div class="caption">Figure 4: Loss of the network with 2 layers and 8 heads</div>
+    </figure>
+
+    <p> 
+        Next, we trained a baseline proof of concept design using 2 layers of 8 heads. We found that this performed reasonably well and was able to learn the basics of the scene. We used transfer learning from this experiment for the rest of our future experiments. We also found that the network finished improving by iteration 63k, as shown in Figure <a class="figref">4</a>.
+    </p>
+
+    <figure>
+        <img src="images/loss23_2L_16H.png">
+        <div class="caption">Figure 5: Loss of the network with 2 layers and 16 heads</div>
+    </figure>
+
+    <p>
+        We then experimented with different numbers of layers and heads. First, we added more heads to the transformer. We transfered the weights from the 2 layer 8 head model and found that the network performed much better with 16 heads. We also found that the network finished improving by iteration 50k, as shown in Figure <a class="figref">5</a>. We also trained with 32 heads. We found (INSERT RESULTS HERE)
+    </p>
+
+    <p>
+        Next, we added more layers to the transformer. We transfered the weights from the 2 layer 8 head model and found that the network performed even better with 4 layers.
+    </p>
+
+
+
 
     <h1>References</h1>
 
@@ -126,6 +153,8 @@
         <li id="cite-2">Mildenhall, Ben, et al. 'NeRF: Representing Scenes as Neural Radiance Fields for View
             Synthesis'. CoRR, vol. abs/2003.08934, 2020, https://arxiv.org/abs/2003.08934.</li>
         <li id="cite-3">Some random NeRF + tranformer paper</li>
+        <li id="cite-4">Jensen, Rasmus, et al. "Large scale multi-view stereopsis evaluation." Proceedings of the IEEE
+            conference on computer vision and pattern recognition. 2014.</li>
     </ol>
 
     <!-- Modal -->
@@ -139,49 +168,55 @@
                 <div class="modal-body">
                     <img src="" class="modal-image img-fluid" style="width: 100%" />
                 </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
+    </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
-        </script>
-        <script>
-            // Populate model information
-            var _modal = new bootstrap.Modal(document.getElementById("modal"))
-            var _modal_title = document.getElementsByClassName("modal-title")
-            var _modal_image = document.getElementsByClassName("modal-image")
-            var _images = document.querySelectorAll("figure img")
-            for (var i = 0; i < _images.length; i++) {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+    </script>
+    <script>
+        // Populate model information
+        var _modal = new bootstrap.Modal(document.getElementById("modal"))
+        var _modal_title = document.getElementsByClassName("modal-title")
+        var _modal_image = document.getElementsByClassName("modal-image")
+        var _images = document.querySelectorAll("figure img")
+        for (var i = 0; i < _images.length; i++) {
 
-                (function(index) {
-                    var title = _images[index].parentNode.children[1].innerHTML
-                    var image = _images[index].src;
-                    _images[index].addEventListener("click", function() {
-                        for (var j = 0; j < _modal_title.length; j++) {
-                            _modal_title[j].innerHTML = title
-                        }
+            (function(index) {
+                var title = _images[index].parentNode.children[1].innerHTML
+                var image = _images[index].src;
+                _images[index].addEventListener("click", function() {
+                    for (var j = 0; j < _modal_title.length; j++) {
+                        _modal_title[j].innerHTML = title
+                    }
 
-                        _modal_image[0].src = image
-                        _modal.show()
-                    })
-                })(i)
+                    _modal_image[0].src = image
+                    _modal.show()
+                })
+            })(i)
 
-            }
+        }
 
-            // Populate figure IDs
-            var _figures = document.getElementsByTagName("figure")
+        // Populate figure IDs
+        var _figures = document.getElementsByTagName("figure")
 
-            for (var i = 0; i < _figures.length; i++) {
-                _figures[i].id = "fig-" + i
-            }
+        for (var i = 0; i < _figures.length; i++) {
+            _figures[i].id = "fig-" + i;
+        }
 
-            // Popular 
+        // Populate references to images
+        var _figrefs = document.getElementsByClassName("figref")
+        id = 0;
+        for (var i = 0; i < figures.length; i++) {
+            _figrefs[i].href = "#fig-" + id;
+            id++;
+        }
 
-        </script>
+    </script>
 </body>
 
 </html>
