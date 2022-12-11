@@ -13,6 +13,10 @@
         <div class="title">SCARF: Stereo Cross-Attention Radiance Fields</div>
         <div class="subtitle">Using a cross-attention mechanism for rendering in Stereo Radiance Fields
             <a href="#cite-1" class="cite">[1]</a></div>
+
+        <div class="links">
+            <a href="https://github.com/Samleo8/SCARF" target="_blank" class="btn btn-primary large-font">Github</a>
+        </div>
     </div>
 
     <h1 id="sec-intro">Introduction</h1>
@@ -46,8 +50,10 @@
         First, we investigated the architecture from the SRF paper shown in Figure <a class="figref">1</a>. We
         discovered that the image encoding pairing, unsupervised stereo module, multi-view extraction, and
         correspondence encoding could all be
-        replaced with a cross-attention mechanism, implemented using a transformer, ViT style
-        <a href="#cite-1" class="cite">[1]</a> This makes intuitive sense, because cross-attention. This drastically
+        replaced by a (cross-)attention mechanism. Practically, this was implemented using a transformer encoder,
+        borrowing from the ideas of the Vision Transformer (ViT) <a href="#cite-4" class="cite">[4]</a>. This makes
+        intuitive sense, because stereo is about finding correspondences between different features in the image, the
+        process of which can be reframed as cross-attending across features. This drastically
         simplified our architecture shown in Figure
         <a class="figref">2</a>.
     </p>
@@ -56,17 +62,20 @@
         In order to reduce model size, we added an image feature compression layer, which reduces the size of the image
         features. We opt to go with a compression fully connected network instead of reducing the complexity of the
         feature detection since this both reprojects into a space to help the transformer learn, and also allows for
-        some learning of relation between multiscale features before the transformer. We experimented both with and
+        some learning of relation between multi-scale features before the transformer encoder. We experimented both with
+        and
         without the feature compression layer (see results) and found that the network performed much better with it.
     </p>
 
     <p>
-        After feature compression, we use transformers to learn the relation between different views. We experimented
-        with different numbers of cross attention layers and heads per layer.
+        After feature compression, we feed a sequence of feature vectors (one per view) into a transformer encoder,
+        which aims to learn the relation between different views. The feature vectors were positionally encoded in the
+        same way as ViT <a href="#cite-4" class="cite">[4]</a>. We experimented
+        with different numbers of transformer encoder layers and heads per layer.
     </p>
 
     <p>
-        Finally, we pass the output of the transformer layer through the fully connected "Radiance Field Decoder", which
+        Finally, we pass the output of the transformer layer through the fully connected "Radiance Field Decoder" (basically 2 FC layers), which
         results in an RGB-&sigma; value for each 3D point.
     </p>
 
@@ -183,66 +192,66 @@
                 <div class="modal-body">
                     <img class="modal-image img-fluid" style="width:100%" src="" />
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
-    </script>
-    <script>
-        // Populate model information
-        var _modal = new bootstrap.Modal(document.getElementById("modal"));
-        var _modal_title = document.getElementsByClassName("modal-title");
-        var _modal_image = document.getElementsByClassName("modal-image");
-        var _images = document.querySelectorAll("figure img");
-        for (var i = 0; i < _images.length; i++) {
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+        </script>
+        <script>
+            // Populate model information
+            var _modal = new bootstrap.Modal(document.getElementById("modal"));
+            var _modal_title = document.getElementsByClassName("modal-title");
+            var _modal_image = document.getElementsByClassName("modal-image");
+            var _images = document.querySelectorAll("figure img");
+            for (var i = 0; i < _images.length; i++) {
 
-            (function(index) {
-                var title = _images[index].parentNode.children[1].innerHTML;
-                var image = _images[index].src;
-                _images[index].addEventListener("click", function() {
-                    for (var j = 0; j < _modal_title.length; j++) {
-                        _modal_title[j].innerHTML = title;
-                    }
+                (function(index) {
+                    var title = _images[index].parentNode.children[1].innerHTML;
+                    var image = _images[index].src;
+                    _images[index].addEventListener("click", function() {
+                        for (var j = 0; j < _modal_title.length; j++) {
+                            _modal_title[j].innerHTML = title;
+                        }
 
-                    _modal_image[0].src = image;
-                    _modal.show();
-                })
-            })(i)
+                        _modal_image[0].src = image;
+                        _modal.show();
+                    })
+                })(i)
 
-        }
-
-        // Populate figure IDs
-        var _figures = document.getElementsByTagName("figure");
-
-        var id = 0;
-        for (var i = 0; i < _figures.length; i++) {
-            var fig = _figures[i];
-            fig.id = "fig-" + id;
-
-            // Ignore figures that are part of a gallery
-            if (fig.parentNode.tagName != "TD") {
-                fig.id = "fig-" + id;
-                id++;
             }
-        }
 
-        // Populate references to images
-        var _figrefs = document.getElementsByClassName("figref")
-        for (var i = 0; i < _figrefs.length; i++) {
-            var _figref = _figrefs[i];
+            // Populate figure IDs
+            var _figures = document.getElementsByTagName("figure");
 
-            var figId = _figref.innerHTML.replace(/[A-Za-z]+/g, '');
-            console.log(_figref.innerHTML, figId);
+            var id = 0;
+            for (var i = 0; i < _figures.length; i++) {
+                var fig = _figures[i];
+                fig.id = "fig-" + id;
 
-            _figref.href = "#fig-" + figId;
-        }
+                // Ignore figures that are part of a gallery
+                if (fig.parentNode.tagName != "TD") {
+                    fig.id = "fig-" + id;
+                    id++;
+                }
+            }
 
-    </script>
+            // Populate references to images
+            var _figrefs = document.getElementsByClassName("figref")
+            for (var i = 0; i < _figrefs.length; i++) {
+                var _figref = _figrefs[i];
+
+                var figId = _figref.innerHTML.replace(/[A-Za-z]+/g, '');
+                console.log(_figref.innerHTML, figId);
+
+                _figref.href = "#fig-" + figId;
+            }
+
+        </script>
 </body>
 
 </html>
