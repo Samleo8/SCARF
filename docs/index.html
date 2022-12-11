@@ -149,15 +149,19 @@
             </table>
             <div class="caption">
                 Figure 3: Gallery of results for rendering of Scene 23 of the DTU Dataset
-                <a href="#cite-5" class="cite">[5]</a>. Images are generated with compression unless otherwise stated.
+                <a href="#cite-5" class="cite">[5]</a>
+                <br />
+                Images are generated with compression unless otherwise stated.
             </div>
         </div>
 
 
         <p>
-            Our first experiment was to see whether or not the feature compression layer was necessary. We found that
+            Our first experiment was to see whether or not the feature compression layer was necessary. We found
+            that
             the
-            network performed much better with the feature compression layer. It did not learn a significant amount of
+            network performed much better with the feature compression layer. It did not learn a significant amount
+            of
             information in the scene by iteration 50k, as shown in Figure <a class="figref">3f</a>.
         </p>
 
@@ -167,10 +171,12 @@
         </figure>
 
         <p>
-            Next, we trained a baseline proof of concept design using 2 layers of 8 heads. We found that this performed
+            Next, we trained a baseline proof of concept design using 2 layers of 8 heads. We found that this
+            performed
             reasonably well and was able to learn the basics of the scene. We used transfer learning from this
             experiment
-            for the rest of our future experiments. We also found that the network finished improving by iteration 63k,
+            for the rest of our future experiments. We also found that the network finished improving by iteration
+            63k,
             as
             shown in Figure <a class="figref">4</a>.
         </p>
@@ -190,7 +196,8 @@
         </p>
 
         <p>
-            Next, we added more layers to the transformer. We transfered the weights from the 2 layer 8 head model and
+            Next, we added more layers to the transformer. We transfered the weights from the 2 layer 8 head model
+            and
             found
             that the network performed even better with 4 layers.
         </p>
@@ -199,17 +206,22 @@
         <h1>References</h1>
 
         <ol>
-            <li id="cite-1">Chibane, Julian, et al. 'Stereo Radiance Fields (SRF): Learning View Synthesis from Sparse
+            <li id="cite-1">Chibane, Julian, et al. 'Stereo Radiance Fields (SRF): Learning View Synthesis from
+                Sparse
                 Views
-                of Novel Scenes'. IEEE Conference on Computer Vision and Pattern Recognition (CVPR), IEEE, 2021.</li>
+                of Novel Scenes'. IEEE Conference on Computer Vision and Pattern Recognition (CVPR), IEEE, 2021.
+            </li>
             <li id="cite-2">Mildenhall, Ben, et al. 'NeRF: Representing Scenes as Neural Radiance Fields for View
                 Synthesis'. CoRR, vol. abs/2003.08934, 2020, https://arxiv.org/abs/2003.08934.</li>
-            <li id="cite-3">Reizenstein, Jeremy, et al. "Common objects in 3d: Large-scale learning and evaluation of
-                real-life 3d category reconstruction." Proceedings of the IEEE/CVF International Conference on Computer
+            <li id="cite-3">Reizenstein, Jeremy, et al. "Common objects in 3d: Large-scale learning and evaluation
+                of
+                real-life 3d category reconstruction." Proceedings of the IEEE/CVF International Conference on
+                Computer
                 Vision. 2021.</li>
             <li id="cite-4">Ranftl, René, Alexey Bochkovskiy, and Vladlen Koltun. "Vision transformers for dense
                 prediction." Proceedings of the IEEE/CVF International Conference on Computer Vision. 2021.</li>
-            <li id="cite-5">Jensen, Rasmus, et al. "Large scale multi-view stereopsis evaluation." Proceedings of the
+            <li id="cite-5">Jensen, Rasmus, et al. "Large scale multi-view stereopsis evaluation." Proceedings of
+                the
                 IEEE
                 conference on computer vision and pattern recognition. 2014.</li>
         </ol>
