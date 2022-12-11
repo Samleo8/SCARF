@@ -181,71 +181,68 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <img src="" class="modal-image img-fluid" style="width: 100%" />
+                    <img class="modal-image img-fluid" style="width:100%" src="" />
                 </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
+    </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
-        </script>
-        <script>
-            // Populate model information
-            var _modal = new bootstrap.Modal(document.getElementById("modal"))
-            var _modal_title = document.getElementsByClassName("modal-title")
-            var _modal_image = document.getElementsByClassName("modal-image")
-            var _images = document.querySelectorAll("figure img")
-            for (var i = 0; i < _images.length; i++) {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+    </script>
+    <script>
+        // Populate model information
+        var _modal = new bootstrap.Modal(document.getElementById("modal"));
+        var _modal_title = document.getElementsByClassName("modal-title");
+        var _modal_image = document.getElementsByClassName("modal-image");
+        var _images = document.querySelectorAll("figure img");
+        for (var i = 0; i < _images.length; i++) {
 
-                (function(index) {
-                    var title = _images[index].parentNode.children[1].innerHTML
-                    var image = _images[index].src;
-                    _images[index].addEventListener("click", function() {
-                        for (var j = 0; j < _modal_title.length; j++) {
-                            _modal_title[j].innerHTML = title
-                        }
+            (function(index) {
+                var title = _images[index].parentNode.children[1].innerHTML;
+                var image = _images[index].src;
+                _images[index].addEventListener("click", function() {
+                    for (var j = 0; j < _modal_title.length; j++) {
+                        _modal_title[j].innerHTML = title;
+                    }
 
-                        _modal_image[0].src = image
-                        _modal.show()
-                    })
-                })(i)
+                    _modal_image[0].src = image;
+                    _modal.show();
+                })
+            })(i)
 
-            }
+        }
 
-            // Populate figure IDs
-            var _figures = document.getElementsByTagName("figure")
+        // Populate figure IDs
+        var _figures = document.getElementsByTagName("figure");
 
-            var id = 0;
-            for (var i = 0; i < _figures.length; i++) {
-                fig = _figures[i]
+        var id = 0;
+        for (var i = 0; i < _figures.length; i++) {
+            var fig = _figures[i];
+            fig.id = "fig-" + id;
+
+            // Ignore figures that are part of a gallery
+            if (fig.parentNode.tagName != "TD") {
                 fig.id = "fig-" + id;
-
-                console.log(fig.parentNode.tagName);
-                if (fig.parentNode.tagName != "TD") {
-                    fig.id = "fig-" + id;
-                    id++;
-                }
+                id++;
             }
+        }
 
-            // Populate gallery figures
-            var _galleries = document.getElementsByClassName("gallery");
-            for (var i = 0; i < _galleries.length; i++) {
-                var fignum = _galleries.getAttribute("fignum");
+        // Populate references to images
+        var _figrefs = document.getElementsByClassName("figref")
+        for (var i = 0; i < _figrefs.length; i++) {
+            var _figref = _figrefs[i];
 
-            }
+            var figId = _figref.innerHTML.replace(/[A-Za-z]+/g, '');
+            console.log(_figref.innerHTML, figId);
 
-            // Populate references to images
-            var _figrefs = document.getElementsByClassName("figref")
-            for (var i = 0; i < _figrefs.length; i++) {
-                _figref = _figrefs[i]
-                _figref.href = "#fig-" + _figref.innerHTML;
-            }
+            _figref.href = "#fig-" + figId;
+        }
 
-        </script>
+    </script>
 </body>
 
 </html>
