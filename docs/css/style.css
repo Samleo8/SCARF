@@ -10,7 +10,17 @@ body {
 }
 
 .body {
-    margin: 0 25%;
+    margin: 0 20%;
+}
+
+.body p {
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+.body h1, .body h2, .body h3, .body h4, .body h5, .body h6 {
+    margin-top: 50px;
+    margin-bottom: 20px;
 }
 
 .header {
@@ -125,7 +135,7 @@ figure:hover img {
     box-shadow: none;
 }
 
-figure .caption {
+.caption {
     font-size: 18px;
     font-style: italic;
     padding: 20px 0px;
