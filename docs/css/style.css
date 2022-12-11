@@ -13,6 +13,12 @@ body {
     margin: 0 20%;
 }
 
+@media only screen and (max-width: 960px) {
+  .body {
+    margin: 0 5%;
+  }
+}
+
 .body p {
     text-align: justify;
     text-justify: inter-word;
