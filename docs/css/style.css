@@ -93,6 +93,7 @@ div.header {
 }
 
 a:not(.btn) {
+    border-radius: 5px;
     color: red;
 
     transition: all ease-in-out 0.3s;
@@ -101,23 +102,29 @@ a:not(.btn) {
 a:not(.btn):hover {
     background: red;
     color: white;
-    opacity: 0.7;
+    opacity: 0.6;
 
-    font-size: 18px;
+    padding-top: 0px;
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-bottom: 3px;
 }
-
 
 .cite {
     vertical-align: top;
     font-size: 16px;
     font-style: normal;
     
-    padding: 1.5px;
-    padding-top: 0px;
-    padding-bottom: 3px;
-
     margin: 0 auto;
-    margin-left: 2px;
+    /* margin-left: -1px; */
+}
+
+a.cite:hover {
+    font-size: 17px;
+}
+
+.author-emails a:hover {
+    font-size: 17px;
 }
 
 .gallery {
