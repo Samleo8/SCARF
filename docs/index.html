@@ -35,19 +35,18 @@
     <div class="body">
         <h1 id="sec-intro">Introduction</h1>
         <p>
-            In Stereo Cross Attention Radiance Fields, we explore adding attention-based techniques to Stereo Radiance
+            In Stereo Cross-Attention Radiance Fields (SCARF), we explore adding attention-based techniques to Stereo
+            Radiance
             Fields <a href="#cite-1" class="cite">[1]</a>. In recent years, there have been great advances in
             attention/transformer-based
-            techniques which allow for faster training and consistent architecture across models. (INSERT CITATION
-            HERE).
+            techniques which allow for faster training and consistent architecture across models.
+            <!-- (INSERT CITATION HERE). -->
             Although transformer-based techniques have already been applied to the original NeRF
             paper <a href="#cite-2" class="cite">[2]</a><a href="#cite-3" class="cite">[3]</a>, we aim to apply it to
-            the
-            SRF
-            paper, which, instead of learning the scene, aims to emulate multi-view stereo. Their method allows for
-            training
-            with sparse views (only 10 instead of 100), and also learns how to perform multi-view stereo correspondences
-            rather than a single scene, thus allowing for rendering of novel scenes in a single pass (with fine-tuning).
+            the SRF paper, which, instead of learning the scene, aims to emulate and learn multi-view stereo. Their
+            method allows for training with sparse views (only 10 instead of 100), and also learns how to perform
+            multi-view stereo correspondences rather than learning only a single scene, thus allowing for rendering of
+            novel scenes in a single pass (with fine-tuning).
         </p>
 
         <figure>
@@ -57,18 +56,19 @@
 
         <figure>
             <img src="images/architecture.png">
-            <div class="caption">Figure 2: Our architecture diagram. The top portion of the diagram is taken from the
-                SRF
-                paper. <a href="#cite-1" class="cite">[1]</a></div>
+            <div class="caption">Figure 2: SCARF architecture diagram. The top portion of the diagram is taken directly
+                from the
+                SRF paper. <a href="#cite-1" class="cite">[1]</a></div>
         </figure>
 
 
         <h1>Methods</h1>
         <p>
             First, we investigated the architecture from the SRF paper shown in Figure <a class="figref">1</a>. We
-            discovered that the image encoding pairing, unsupervised stereo module, multi-view extraction, and
+            discovered that the feature pairing, unsupervised stereo module, multi-view extraction, and
             correspondence encoding could all be
-            replaced by a (cross-)attention mechanism. Practically, this was implemented using a transformer encoder,
+            replaced by a (cross-)attention mechanism. Practically, this was implemented in PyTorch using a transformer
+            encoder,
             borrowing from the ideas of the Vision Transformer (ViT) <a href="#cite-4" class="cite">[4]</a>. This makes
             intuitive sense, because stereo is about finding correspondences between different features in the image,
             the
@@ -141,14 +141,15 @@
                     <td>
                         <figure>
                             <img src="images/no_compression.png">
-                            <div class="caption">Figure 3f: Rendering of scene 23, with no compression.</div>
+                            <div class="caption">Figure 3f: 2 layers, 8 heads, with no compression.</div>
                         </figure>
                     </td>
                 </tr>
 
             </table>
             <div class="caption">
-                Figure 3: Gallery of results for rendering of Scene 23 of the DTU Dataset <a href="#cite-5">[5]</a>
+                Figure 3: Gallery of results for rendering of Scene 23 of the DTU Dataset
+                <a href="#cite-5">[5]. Images are generated with compression unless otherwise stated.</a>
             </div>
         </div>
 
@@ -157,7 +158,7 @@
             Our first experiment was to see whether or not the feature compression layer was necessary. We found that
             the
             network performed much better with the feature compression layer. It did not learn a significant amount of
-            information in the scene by iteration 50k, as shown in Figure <a class="figref">4</a>.
+            information in the scene by iteration 50k, as shown in Figure <a class="figref">3f</a>.
         </p>
 
         <figure>
