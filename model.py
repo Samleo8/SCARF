@@ -356,7 +356,7 @@ class Implicit4D():
                         param = param.data
 
                     try:
-                        own_state[name].copy_(param)
+                        own_state_fine[name].copy_(param)
                         print('Copied {}'.format(name))
                     except:
                         print('Did not find {}'.format(name))
