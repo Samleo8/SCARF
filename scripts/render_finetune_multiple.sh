@@ -7,11 +7,7 @@ PIDS=""
 for EXP_NAME in "${EXP_NAMES[@]}"; do
     echo "Processing $EXP_NAME on GPU $CNT"
 
-    if [ $CNT -eq 0 ]; then
-        ./scripts/render_finetune.sh ${EXP_NAME} "scan23" $CNT "--num_transformer_layers 4 --num_attn_heads 16" &
-    else
-        ./scripts/render_finetune.sh ${EXP_NAME} "scan23" $CNT &
-    fi
+    ./scripts/render_finetune.sh ${EXP_NAME} "scan23" $CNT &
     PIDS="$! $PIDS"
 
     CNT=$((CNT + 1))
