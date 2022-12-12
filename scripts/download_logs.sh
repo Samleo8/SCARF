@@ -1,17 +1,22 @@
 #!/bin/bash
 
+scpfrom() {
+    awsscpfrom $@
+    # gscpfrom $@
+}
+
 dl_log() {
     LOG_TYPE=${1:-"all"}
     EXP_NAME=${2:-"train_DTU"}
-    INSTANCE=${3:-"power"}
+    INSTANCE=${3:-"main"}
 
     case $LOG_TYPE in
     "args" | "config" | "metadata")
-        gscpfrom ~/vl/project/stereo-nerf/logs/${EXP_NAME}/args.txt ./logs/${EXP_NAME}/ $INSTANCE
-        gscpfrom ~/vl/project/stereo-nerf/logs/${EXP_NAME}/config.txt ./logs/${EXP_NAME}/ $INSTANCE
+        scpfrom ~/vl/project/stereo-nerf/logs/${EXP_NAME}/args.txt ./logs/${EXP_NAME}/ $INSTANCE
+        scpfrom ~/vl/project/stereo-nerf/logs/${EXP_NAME}/config.txt ./logs/${EXP_NAME}/ $INSTANCE
         ;;
     "tensorboard")
-        gscpfrom ~/vl/project/stereo-nerf/logs/${EXP_NAME}/tensorboard ./logs/${EXP_NAME}/ $INSTANCE
+        scpfrom ~/vl/project/stereo-nerf/logs/${EXP_NAME}/tensorboard ./logs/${EXP_NAME}/ $INSTANCE
         ;;
     "training_visualization" | "vis")
         gscpfrom ~/vl/project/stereo-nerf/logs/${EXP_NAME}/training_visualization ./logs/${EXP_NAME}/ $INSTANCE
@@ -19,7 +24,7 @@ dl_log() {
     "render" | "renderings")
         # Download renderings
         # NOTE: Need to run script ./scripts/compile_renderings from within system to do so properly
-        gscpfrom ~/vl/project/stereo-nerf/logs/${EXP_NAME}/renderings ./logs/${EXP_NAME} $INSTANCE
+        scpfrom ~/vl/project/stereo-nerf/logs/${EXP_NAME}/renderings ./logs/${EXP_NAME} $INSTANCE
         ;;
     "all")
         dl_log metadata
@@ -31,10 +36,10 @@ dl_log() {
         CKPT_ID=${LOG_TYPE%.tar}
         CKPT_ID=$(expr $CKPT_ID + 0)
         echo "Downloading checkpoint $CKPT_ID"
-        gscpfrom ~/vl/project/stereo-nerf/logs/${EXP_NAME}/$LOG_TYPE ./logs/${EXP_NAME}/ $INSTANCE
+        scpfrom ~/vl/project/stereo-nerf/logs/${EXP_NAME}/$LOG_TYPE ./logs/${EXP_NAME}/ $INSTANCE
 
         # Download the corresponding visualizations
-        gscpfrom ~/vl/project/stereo-nerf/logs/${EXP_NAME}/training_visualization/epoch_${CKPT_ID}_scan* ./logs/${EXP_NAME}/training_visualization $INSTANCE
+        scpfrom ~/vl/project/stereo-nerf/logs/${EXP_NAME}/training_visualization/epoch_${CKPT_ID}_scan* ./logs/${EXP_NAME}/training_visualization $INSTANCE
         ;;
     *)
         dl_log "all"
@@ -44,8 +49,8 @@ dl_log() {
 
 # Script to download logs from the server
 LOG_TYPE=${1:-"all"}
-EXP_NAME=${2:-"train_DTU"}
-INSTANCE=${3:-"power"}
+EXP_NAME=${2:-"train_DTU_4L_16H"}
+INSTANCE=${3:-"main"}
 
 mkdir -p logs/${EXP_NAME}
 mkdir -p logs/${EXP_NAME}/training_visualization
