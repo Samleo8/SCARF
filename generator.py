@@ -161,6 +161,13 @@ def render_and_save(i4d, dataset, render_data, savedir, img_outpath,
     return rgb
 
 
+def str2bool(x):
+    if isinstance(x, bool):
+        return x
+
+    return x.lower() in ("true", "1")
+
+
 if __name__ == '__main__':
     import config_loader
     import model
@@ -177,6 +184,7 @@ if __name__ == '__main__':
     if os.path.exists(archi_file):
         with open(archi_file, 'r') as f:
             orig_params = DefaultConfigFileParser().parse(f)
+            print('orig_params', orig_params)
     else:
         print(
             f'WARNING: Could not find {archi_file}. Architectural options are not being loaded and thus can be incorrect.'
@@ -187,16 +195,20 @@ if __name__ == '__main__':
         orig_params.get('num_transformer_layers', cfg.num_transformer_layers))
     cfg.num_attn_heads = int(
         orig_params.get('num_attn_heads', cfg.num_attn_heads))
-    cfg.no_compression = bool(
+    cfg.no_compression = str2bool(
         orig_params.get('no_compression', cfg.no_compression))
-    cfg.reduce_features = bool(
+    cfg.reduce_features = str2bool(
         orig_params.get('reduce_features', cfg.reduce_features))
 
-    print("================Overriding the architectural parameters=======================")
+    print(
+        "================Overriding the architectural parameters======================="
+    )
     print('cfg.num_transformer_layers', cfg.num_transformer_layers)
     print('cfg.num_attn_heads', cfg.num_attn_heads)
     print('cfg.no_compression', cfg.no_compression)
     print('cfg.reduce_features', cfg.reduce_features)
+
+    exit()
 
     # Generate/Render the images
     mode = 'test'
