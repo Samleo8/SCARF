@@ -15,7 +15,8 @@ if [[ -z $NUM ]]; then
 fi
 
 # run training headless
-nohup ./scripts/train${NUM}.sh $@ &
+shift
+nohup ./scripts/train${NUM}.sh $@ &> nohup${NUM}.out &
 
 # save PID
 PID=$!
