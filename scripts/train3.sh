@@ -7,5 +7,5 @@ echo "" >nohup3.out
 # echo "NOTE: Using $NUM_PROC workers (number of CPUs in VM)."
 NUM_PROC=16
 
-export CUDA_VISIBLE_DEVICES=0
+export CUDA_VISIBLE_DEVICES=2
 python3 trainer.py --config configs/train_DTU_2L_16H_reduced2.txt --num_workers=$NUM_PROC --no_parallel $@
