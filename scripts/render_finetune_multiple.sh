@@ -7,7 +7,8 @@ PIDS=""
 for EXP_NAME in "${EXP_NAMES[@]}"; do
     echo "Processing $EXP_NAME on GPU $CNT"
 
-    ./scripts/render_finetune.sh ${EXP_NAME} "scan23" $CNT &
+    echo "" >nohup_render${CNT}.out
+    nohup ./scripts/render_finetune.sh ${EXP_NAME} "scan23" $CNT &>nohup_render${CNT}.out &
     PIDS="$! $PIDS"
 
     CNT=$((CNT + 1))
