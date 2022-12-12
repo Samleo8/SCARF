@@ -2,7 +2,7 @@
 
 EXP_NAMES=(train_DTU_4L_16H train_DTU_2L_32H)
 
-CNT=1
+CNT=0
 PIDS=""
 for EXP_NAME in "${EXP_NAMES[@]}"; do
     echo "Processing $EXP_NAME on GPU $CNT"
