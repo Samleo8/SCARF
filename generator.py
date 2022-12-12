@@ -91,7 +91,7 @@ def render_pose(cfg, i4d, dataset, epoch, specific_obj, pose):
 
     savedir = os.path.join(
         basedir, expname, 'renderings',
-        f'{specific_obj}_epoch_{epoch}_renderfactor_{cfg.render_factor}_batch_{cfg.fixed_batch}'
+        f'{specific_obj}_epoch_{epoch}_renderfactor_{cfg.render_factor}'
     )
     os.makedirs(savedir, exist_ok=True)
 
