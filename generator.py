@@ -164,10 +164,33 @@ def render_and_save(i4d, dataset, render_data, savedir, img_outpath,
 if __name__ == '__main__':
     import config_loader
     import model
+    from configargparse import DefaultConfigFileParser
 
     cfg = config_loader.get_config()
     cfg.video = True
 
+    # Override architectural information from original experiment file
+    orig_expname = cfg.expname.replace("render_", "")
+    archi_file = os.path.join("configs", orig_expname + ".txt")
+    print('archi_file', archi_file)
+
+    if os.path.exists(archi_file):
+        with open(archi_file, 'r') as f:
+            orig_params = DefaultConfigFileParser().parse(f)
+    else:
+        print(
+            f'WARNING: Could not find {archi_file}. Architectural options are not being loaded and thus can be incorrect.'
+        )
+
+    ## Override the original parameters
+    cfg.num_transformer_layers = orig_params.get('num_transformer_layers',
+                                                 cfg.num_transformer_layers)
+    cfg.num_attn_heads = orig_params.get('num_attn_heads', cfg.num_attn_heads)
+    cfg.no_compression = orig_params.get('no_compression', cfg.no_compression)
+    cfg.reduce_features = orig_params.get('reduce_features',
+                                          cfg.reduce_features)
+
+    # Generate/Render the images
     mode = 'test'
     dataset = SceneDataset(cfg, mode)
     i4d = model.Implicit4D(cfg, dataset.proj_pts_to_ref_torch)
