@@ -184,7 +184,7 @@ if __name__ == '__main__':
     if os.path.exists(archi_file):
         with open(archi_file, 'r') as f:
             orig_params = DefaultConfigFileParser().parse(f)
-            print('orig_params', orig_params)
+            # print('orig_params', orig_params)
     else:
         print(
             f'WARNING: Could not find {archi_file}. Architectural options are not being loaded and thus can be incorrect.'
@@ -207,8 +207,6 @@ if __name__ == '__main__':
     print('cfg.num_attn_heads', cfg.num_attn_heads)
     print('cfg.no_compression', cfg.no_compression)
     print('cfg.reduce_features', cfg.reduce_features)
-
-    exit()
 
     # Generate/Render the images
     mode = 'test'
