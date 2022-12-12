@@ -183,12 +183,14 @@ if __name__ == '__main__':
         )
 
     ## Override the original parameters
-    cfg.num_transformer_layers = orig_params.get('num_transformer_layers',
-                                                 cfg.num_transformer_layers)
-    cfg.num_attn_heads = orig_params.get('num_attn_heads', cfg.num_attn_heads)
-    cfg.no_compression = orig_params.get('no_compression', cfg.no_compression)
-    cfg.reduce_features = orig_params.get('reduce_features',
-                                          cfg.reduce_features)
+    cfg.num_transformer_layers = int(
+        orig_params.get('num_transformer_layers', cfg.num_transformer_layers))
+    cfg.num_attn_heads = int(
+        orig_params.get('num_attn_heads', cfg.num_attn_heads))
+    cfg.no_compression = bool(
+        orig_params.get('no_compression', cfg.no_compression))
+    cfg.reduce_features = bool(
+        orig_params.get('reduce_features', cfg.reduce_features))
 
     # Generate/Render the images
     mode = 'test'
