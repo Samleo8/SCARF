@@ -16,3 +16,5 @@ trash
 
 # Ignore other logs
 logs/*
+
+.*_pid
