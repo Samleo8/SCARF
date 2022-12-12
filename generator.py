@@ -192,6 +192,12 @@ if __name__ == '__main__':
     cfg.reduce_features = bool(
         orig_params.get('reduce_features', cfg.reduce_features))
 
+    print("================Overriding the architectural parameters=======================")
+    print('cfg.num_transformer_layers', cfg.num_transformer_layers)
+    print('cfg.num_attn_heads', cfg.num_attn_heads)
+    print('cfg.no_compression', cfg.no_compression)
+    print('cfg.reduce_features', cfg.reduce_features)
+
     # Generate/Render the images
     mode = 'test'
     dataset = SceneDataset(cfg, mode)
