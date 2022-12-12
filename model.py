@@ -518,13 +518,13 @@ class Implicit4DNN(nn.Module):
         # after max pooling: (H/2, W/2)
 
         self.conv_0 = nn.Conv2d(in_channels=conv_sizes[0],
-                                out_channels=conv_sizes[0],
+                                out_channels=conv_sizes[1],
                                 kernel_size=3,
                                 stride=1,
                                 dilation=1,
                                 padding=1,
                                 padding_mode='zeros')
-        self.conv_0_1 = nn.Conv2d(in_channels=conv_sizes[0],
+        self.conv_0_1 = nn.Conv2d(in_channels=conv_sizes[1],
                                   out_channels=conv_sizes[1],
                                   kernel_size=3,
                                   stride=1,
@@ -534,13 +534,13 @@ class Implicit4DNN(nn.Module):
         # after max pooling: (H/4, W/4)
 
         self.conv_1 = nn.Conv2d(in_channels=conv_sizes[1],
-                                out_channels=conv_sizes[1],
+                                out_channels=conv_sizes[2],
                                 kernel_size=3,
                                 stride=1,
                                 dilation=1,
                                 padding=1,
                                 padding_mode='zeros')
-        self.conv_1_1 = nn.Conv2d(in_channels=conv_sizes[1],
+        self.conv_1_1 = nn.Conv2d(in_channels=conv_sizes[2],
                                   out_channels=conv_sizes[2],
                                   kernel_size=3,
                                   stride=1,
@@ -550,13 +550,13 @@ class Implicit4DNN(nn.Module):
         # after max pooling: (H/8, W/8)
 
         self.conv_2 = nn.Conv2d(in_channels=conv_sizes[2],
-                                out_channels=conv_sizes[2],
+                                out_channels=conv_sizes[3],
                                 kernel_size=3,
                                 stride=1,
                                 dilation=1,
                                 padding=1,
                                 padding_mode='zeros')
-        self.conv_2_1 = nn.Conv2d(in_channels=conv_sizes[2],
+        self.conv_2_1 = nn.Conv2d(in_channels=conv_sizes[3],
                                   out_channels=conv_sizes[3],
                                   kernel_size=3,
                                   stride=1,
@@ -566,13 +566,13 @@ class Implicit4DNN(nn.Module):
         # after max pooling: (H/16, W/16)
 
         self.conv_3 = nn.Conv2d(in_channels=conv_sizes[3],
-                                out_channels=conv_sizes[3],
+                                out_channels=conv_sizes[4],
                                 kernel_size=3,
                                 stride=1,
                                 dilation=1,
                                 padding=1,
                                 padding_mode='zeros')
-        self.conv_3_1 = nn.Conv2d(in_channels=conv_sizes[3],
+        self.conv_3_1 = nn.Conv2d(in_channels=conv_sizes[4],
                                   out_channels=conv_sizes[4],
                                   kernel_size=3,
                                   stride=1,
@@ -583,13 +583,13 @@ class Implicit4DNN(nn.Module):
 
         if (not self.reduce_features):
             self.conv_4 = nn.Conv2d(in_channels=conv_sizes[4],
-                                    out_channels=conv_sizes[4],
+                                    out_channels=conv_sizes[5],
                                     kernel_size=3,
                                     stride=1,
                                     dilation=1,
                                     padding=1,
                                     padding_mode='zeros')
-            self.conv_4_1 = nn.Conv2d(in_channels=conv_sizes[4],
+            self.conv_4_1 = nn.Conv2d(in_channels=conv_sizes[5],
                                       out_channels=conv_sizes[5],
                                       kernel_size=3,
                                       stride=1,
@@ -598,13 +598,13 @@ class Implicit4DNN(nn.Module):
                                       padding_mode='zeros')
             # after max pooling: (H/64, W/64)
             self.conv_5 = nn.Conv2d(in_channels=conv_sizes[5],
-                                    out_channels=conv_sizes[5],
+                                    out_channels=conv_sizes[6],
                                     kernel_size=3,
                                     stride=1,
                                     dilation=1,
                                     padding=1,
                                     padding_mode='zeros')
-            self.conv_5_1 = nn.Conv2d(in_channels=conv_sizes[5],
+            self.conv_5_1 = nn.Conv2d(in_channels=conv_sizes[6],
                                       out_channels=conv_sizes[6],
                                       kernel_size=3,
                                       stride=1,
