@@ -100,6 +100,7 @@ def render_pose(cfg, i4d, dataset, epoch, specific_obj, pose):
 
     if os.path.exists(img_outpath):
         # Rendering already exists.
+        print(f'Rendering for pose {pose[0]} already exists! Skipping...')
         return
 
     dataloader.dataset.load_specific_input = specific_obj
