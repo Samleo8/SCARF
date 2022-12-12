@@ -1,6 +1,6 @@
 #!/bin/bash
 
-EXP_NAMES=(train_DTU_4L_16H train_DTU_2L_32H train_DTU_2L_16H_reduced)
+EXP_NAMES=(train_DTU_4L_16H train_DTU_2L_32H)
 
 CNT=1
 PIDS=""
