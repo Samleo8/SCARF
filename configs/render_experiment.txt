@@ -35,3 +35,4 @@ num_reference_views = 10
 # NOTE: Set experiment name in flags
 # ckpt_expname = train_DTU
 render_factor = 4
+num_transformer_layers = 4
