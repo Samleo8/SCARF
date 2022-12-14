@@ -4,8 +4,7 @@
 <head>
     <meta charset="utf-8">
     <title>SCARF</title>
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" -->
-        <!-- crossorigin="anonymous"> -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" crossorigin="anonymous"> -->
     <script src="https://kit.fontawesome.com/d9a8590a21.js" crossorigin="anonymous"></script>
     <link href="https://bootswatch.com/5/journal/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
@@ -43,7 +42,8 @@
         <p>
             In Stereo Cross-Attention Radiance Fields (SCARF), we explore adding attention-based techniques to Stereo
             Radiance Fields <a href="#cite-1" class="cite">[1]</a>. In recent years, there have been great advances in
-            attention/transformer-based techniques which allow for faster training and consistent architecture across models.
+            attention/transformer-based techniques which allow for faster training and consistent architecture across
+            models.
             Although transformer-based techniques have already been applied to the original NeRF
             paper <a href="#cite-2" class="cite">[2]</a> <a href="#cite-3" class="cite">[3]</a>, we aim to apply it to
             the SRF paper, which, instead of learning the scene, aims to emulate and learn multi-view stereo. Their
@@ -142,19 +142,26 @@
             </div>
             <div class="caption">
                 Figure 3: Gallery of results for rendering of Scene 23 of the DTU Dataset
-                 <a href="#cite-5" class="cite">[5]</a> with different feature reduction techniques.
-                <br />
+                <a href="#cite-5" class="cite">[5]</a> with different feature reduction techniques.
+                <div class="footnote">NOTE: All rendered images are downscaled by 4 because of compute constraints.
+                </div>
             </div>
         </div>
 
         <p>
-            Our first experiment was to see the trade-offs between no compression, reduced features, and image compression. We found that the network was not able to learn quickly with the large transformer size. It did not learn a significant amount of information in the scene by iteration 50k, as shown in Figure <a class="figref">3a</a>. Between feature compression and network reduction, we found that the feature compression was able to do a much better job at learning quickly, reconstructing finer details like color, and minimizing artifacts
+            Our first experiment was to see the trade-offs between no compression, reduced features, and image
+            compression. We found that the network was not able to learn quickly with the large transformer size. It did
+            not learn a significant amount of information in the scene by iteration 50k, as shown in Figure
+            <a class="figref">3a</a>. Between feature compression and network reduction, we found that the feature
+            compression was able to do a much better job at learning quickly, reconstructing finer details like color,
+            and minimizing artifacts
         </p>
 
         <h2 id="results-2">Experiment 2: Transformer Heads</h2>
 
         <p>
-            For the transformer, we first varied the nubmer of heads used in each cross attention layer. We held the number of layers constant at 2, and attempted 8, 16, and 32 heads.
+            For the transformer, we first varied the nubmer of heads used in each cross attention layer. We held the
+            number of layers constant at 2, and attempted 8, 16, and 32 heads.
         </p>
 
         <div class="gallery" fignum="4">
@@ -181,28 +188,42 @@
             <div class="caption flex-row">
                 Figure 4: Gallery of results for rendering of Scene 23 of the DTU Dataset
                 <a href="#cite-5" class="cite">[5]</a> with varied number of transformer heads.
-                <br />
+                <div></div>
                 Images are generated with compression and without feature reduction.
+                <div class="footnote">
+                    NOTE: All rendered images are downscaled by 4 because of compute constraints.
+                </div>
             </div>
         </div>
 
         <p>
             As can be seen in Figure <a class="figref">4</a>, increasing the number of heads was significant in
-            improving the quality of the results, in particular the detail and vibrancy of colors. For example, the rendering with only 8 heads
-            (Figure <a class="figref">4a</a>) looks faded, but the rendering with 16 heads (Figure <a class="figref">4b</a>) looks much more vibrant. We begin to see distinct colors for the different houses and the umbrellas on the patio are yellow as they should be. However, some of the colors still seem faded, and there are some "blurring" artifacts near the patio area where the umbrellas are.
+            improving the quality of the results, in particular the detail and vibrancy of colors. For example, the
+            rendering with only 8 heads
+            (Figure <a class="figref">4a</a>) looks faded, but the rendering with 16 heads (Figure
+            <a class="figref">4b</a>) looks much more vibrant. We begin to see distinct colors for the different
+            houses and the umbrellas on the patio are yellow as they should be. However, some of the colors still
+            seem faded, and there are some "blurring" artifacts near the patio area where the umbrellas are.
         </p>
-        <p>    
-            The rendering with 32 heads (Figure <a class="figref">4c</a>) looks even better, and is our best result overall. The house and patio colors look much more vibrant and closer to the ground truth. There is also increased detail for the windows, roofs and other objects in the scene. While the model is larger and takes longer to train on its own, using pretrained weights from previous heads allowed us to reduce training time significantly. 
+        <p>
+            The rendering with 32 heads (Figure <a class="figref">4c</a>) looks even better, and is our best result
+            overall. The house and patio colors look much more vibrant and closer to the ground truth. There is also
+            increased detail for the windows, roofs and other objects in the scene. While the model is larger and
+            takes longer to train on its own, using pretrained weights from previous heads allowed us to reduce
+            training time significantly.
         </p>
 
         <p>
-            The results make intuitive sense, because increasing the number of heads increases the number of feature subspaces to cross-attend to. This may allow the model to learn more complex and different relationships between features, and therefore increases the level of detail and color vibrancy in the rendered scene.
+            The results make intuitive sense, because increasing the number of heads increases the number of feature
+            subspaces to cross-attend to. This may allow the model to learn more complex and different relationships
+            between features, and therefore increases the level of detail and color vibrancy in the rendered scene.
         </p>
 
         <h2>Experiment 3: Transformer Layers</h2>
 
         <p>
-            We then varied the nubmer of transformer cross attention layers. We held the number of heads constant at 16, and attempted 2 and 4 layers.
+            We then varied the nubmer of transformer cross attention layers. We held the number of heads constant at
+            16, and attempted 2 and 4 layers.
         </p>
 
         <div class="gallery" fignum="5">
@@ -223,14 +244,19 @@
             <div class="caption flex-row">
                 Figure 5: Gallery of results for rendering of Scene 23 of the DTU
                 Dataset <a href="#cite-5" class="cite">[5]</a> with varied number of transformer layers.
-                <br />
+                <div></div>
                 Images are generated with compression and without feature reduction.
+                <div class="footnote">
+                    NOTE: All rendered images are downscaled by 4 because of compute constraints.
+                </div>
             </div>
         </div>
 
         <p>
-            Finally, we added more layers to the transformer. We transfered the weights from the 2 layer 8 head model
-            and found that the network performed even better with 4 layers. The performance of the 4 layer 16 head model is comparable to the performance of the 2 layer 32 head model.
+            Finally, we added more layers to the transformer. We transfered the weights from the 2 layer 8 head
+            model
+            and found that the network performed even better with 4 layers. The performance of the 4 layer 16
+            head model is comparable to the performance of the 2 layer 32 head model.
         </p>
 
         <h1>Future Work</h1>
@@ -248,28 +274,31 @@
 
 
     <div class="references" id="references">
-    <h1>References</h1>
+        <h1>References</h1>
 
-    <ol>
-        <li id="cite-1">Chibane, Julian, et al. 'Stereo Radiance Fields (SRF): Learning View Synthesis from
-            Sparse
-            Views
-            of Novel Scenes'. IEEE Conference on Computer Vision and Pattern Recognition (CVPR), IEEE, 2021.
-        </li>
-        <li id="cite-2">Mildenhall, Ben, et al. 'NeRF: Representing Scenes as Neural Radiance Fields for View
-            Synthesis'. CoRR, vol. abs/2003.08934, 2020, https://arxiv.org/abs/2003.08934.</li>
-        <li id="cite-3">Reizenstein, Jeremy, et al. "Common objects in 3d: Large-scale learning and evaluation
-            of
-            real-life 3d category reconstruction." Proceedings of the IEEE/CVF International Conference on
-            Computer
-            Vision. 2021.</li>
-        <li id="cite-4">Ranftl, René, Alexey Bochkovskiy, and Vladlen Koltun. "Vision transformers for dense
-            prediction." Proceedings of the IEEE/CVF International Conference on Computer Vision. 2021.</li>
-        <li id="cite-5">Jensen, Rasmus, et al. "Large scale multi-view stereopsis evaluation." Proceedings of
-            the
-            IEEE
-            conference on computer vision and pattern recognition. 2014.</li>
-    </ol>
+        <ol>
+            <li id="cite-1">Chibane, Julian, et al. 'Stereo Radiance Fields (SRF): Learning View Synthesis from
+                Sparse
+                Views
+                of Novel Scenes'. IEEE Conference on Computer Vision and Pattern Recognition (CVPR), IEEE, 2021.
+            </li>
+            <li id="cite-2">Mildenhall, Ben, et al. 'NeRF: Representing Scenes as Neural Radiance Fields for
+                View
+                Synthesis'. CoRR, vol. abs/2003.08934, 2020, https://arxiv.org/abs/2003.08934.</li>
+            <li id="cite-3">Reizenstein, Jeremy, et al. "Common objects in 3d: Large-scale learning and
+                evaluation
+                of
+                real-life 3d category reconstruction." Proceedings of the IEEE/CVF International Conference on
+                Computer
+                Vision. 2021.</li>
+            <li id="cite-4">Ranftl, René, Alexey Bochkovskiy, and Vladlen Koltun. "Vision transformers for dense
+                prediction." Proceedings of the IEEE/CVF International Conference on Computer Vision. 2021.</li>
+            <li id="cite-5">Jensen, Rasmus, et al. "Large scale multi-view stereopsis evaluation." Proceedings
+                of
+                the
+                IEEE
+                conference on computer vision and pattern recognition. 2014.</li>
+        </ol>
 
     </div>
 
@@ -320,13 +349,12 @@
             // Populate figure IDs
             var _figures = document.getElementsByTagName("figure");
 
-            var id = 0;
+            var id = 1;
             for (var i = 0; i < _figures.length; i++) {
                 var fig = _figures[i];
-                fig.id = "fig-" + id;
 
                 // Ignore figures that are part of a gallery
-                if (fig.parentNode.className != "gallery-item") {
+                if (fig.parentNode.className.indexOf("gallery-item") != -1) {
                     fig.id = "fig-" + id;
                     id++;
                 }
