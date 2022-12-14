@@ -20,29 +20,49 @@ Website report can be found at [https://samleo8.github.io/SCARF/](https://samleo
 ![Teaser](teaser.png)
 
 ## Install
-A linux system with a python environment manager [conda](https://www.anaconda.com/) (or pip) is required for the project.
 
-The following commands clone the repo on your machine and install an environment, "srf", containing all dependencies. 
+A linux system with either [conda](https://www.anaconda.com/) or [pip](https://pypi.org/) is required for the project.
 
-```
+First, clone the repo.
+
+```bash
 git clone git@github.com:Samleo8/SCARF.git
 cd SCARF
-conda env create -f srf_env.yml
 ```
 
-or with pip
+Then, install the dependencies with either pip
 
-```
+```bash
 pip install -r requirements.txt
+```
+
+or with the "srf" conda environment
+
+```
+conda env create -f srf_env.yml
 ```
 
 ## Pretrained Models
 
-Pretrained models can be found in our public Google drive here.
+Our pretrained SCARF models can be found in our publicly-accessible Google drive: [https://drive.google.com/drive/u/0/folders/1D-Ku0_liA_F2-CRVCK7figIN2BOSWrQY](https://drive.google.com/drive/u/0/folders/1D-Ku0_liA_F2-CRVCK7figIN2BOSWrQY). Please download them into the `./logs/` directory.
 
 ### Bash Scripts (recommended)
 
 If you are on a system that supports bash/shell scripts, you can use the scripts in the `./scripts` folder to do basically everything.
+
+To synthesise novel views of a pretrained model, use the following script
+
+```bash
+./scripts/render_finetune.sh [EXP_NAME [SAMPLE [POSE [CUDA_VISIBLE_DEVICES]]]] 
+```
+
+For example, to render the pretrained model for experiment `train_DTU_2L_32H` on pose 10 (choose from 0-51 inclusive) of scan 23, with CUDA device 2, use the following script
+
+```bash
+./scripts/render_finetune.sh train_DTU_2L_32H scan23 10 2
+```
+
+There is also a script (`./scripts/render_finetune_multiple.sh`) for rendering multiple experiments across different GPUs, but requires that you modify the bash script to suit your needs.
 
 ### Raw Python Code
 
@@ -51,7 +71,7 @@ To synthesise novel views of a pretrained and finetuned model use the following 
 python generator.py --config configs/finetune_scan23.txt --generate_specific_samples scan23 --gen_pose 0
 ```
 
-where `--gen_pose` is a camera pose of a video sequence from 0-51 (including both). 
+where `--gen_pose` is a camera pose of a video sequence from 0-51 (including both).
 We also provide a second model that can be used by switching both "23" to "106" in the previous command.
 
 In order to do a 3D reconstruction please run:
@@ -71,9 +91,10 @@ python 3d_reconstruction.py --config configs/finetune_scan106.txt --generate_spe
 
 Use the download script `./scripts/download_data.sh` to download the data, and have it save into the `./data/DTU_MVS/` directory.
 
-Alternatively, use these commands the [DTU MVS dataset](https://roboimagedata.compute.dtu.dk/?page_id=36) is downloaded and put in 
-place. 
-```
+Alternatively, use these commands. The [DTU MVS dataset](https://roboimagedata.compute.dtu.dk/?page_id=36) is downloaded and put in 
+place.
+
+```bash
 wget http://roboimagedata2.compute.dtu.dk/data/MVS/Rectified.zip -P data/
 unzip data/Rectified.zip -d data/
 mv data/Rectified/* data/DTU_MVS
@@ -81,21 +102,39 @@ rmdir data/Rectified
 ```
 
 ### Start Training
-Start to train a model with a specific configuration file using:
-```
-python trainer.py --config configs/train_DTU.txt
+
+To setup your own experiments, copy modify the config files in the `./configs` folder. Remember to change the `expname` variable to a unique name.
+
+To start training, use the provided script
+
+```bash
+./scripts/train.sh [EXP_NAME [CUDA_VISIBLE_DEVICES (Def: all) [NUM_WORKERS (Def: nproc)]]]
 ```
 
-####Fine-tuning
+For example, to train the model for experiment `train_DTU_2L_32H` on CUDA device 2, with 4 workers, use the following script
+
+```bash
+./scripts/train.sh train_DTU_2L_32H 2 4
+```
+
+#### Multi-GPU Training (EXPERIMENTAL)
+
+This has not been tested, but it may be possible to train on multiple GPUs by removing the `--noparallel` flag in the `train.sh` script, and setting the `--batch_size` to the number of GPUs available.
+
+#### Fine-tuning
+
 Next we optimize a model trained in the previous step on a specific scene given by 11 test images.
 
 Create a new experiment folder containing the trained model:
-```
+
+```bash
 mkdir logs/start_finetuning_scan23
 cp logs/train_DTU/<your-val-min-checkpoint>.tar logs/start_finetuning_scan23/
 ```
+
 And start fine-tuning with:
-```
+
+```bash
 python trainer.py --config configs/start_finetuning_scan23.txt
 ```
 
@@ -103,11 +142,12 @@ Initial improvements are obtained at 1k iterations, further improvements are obt
 After training, novel view synthesis and 3D reconstruction can be performed as seen in the above quickstart, but
 specifying the corresponding configuration file.
 
+To fine-tune on a different scan, say with ID X, copy the config file `configs/start_finetune_scan23.txt`
 
-To fine-tune on a different scan, say with ID X, copy the config file `configs/start_finetune_scan23.txt` 
-```
+```bash
 cp configs/start_finetune_scan23.txt configs/start_finetune_scanX.txt
 ```
+
 and change "scan23" to "scanX" in the `expname`, `fine_tune` and `generate_specific_samples` variables of the
 configuration, where X is the ID of the desired scan. Similarly, you'd need to change "scan23" to "scanX" in the above
 experiment folder name.
