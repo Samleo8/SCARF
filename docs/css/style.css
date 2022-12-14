@@ -20,16 +20,6 @@ body {
     margin-top: 50px;
 }
 
-@media only screen and (max-width: 960px) {
-    .body {
-    margin: 0 5%;
-    }
-
-    .references {
-        margin: 0 5%;
-    }
-}
-
 .body p {
     text-align: justify;
     text-justify: inter-word;
@@ -42,8 +32,8 @@ body {
 }
 
 .header {
-    margin-top: 60px;
-    margin-bottom: 50px;
+    margin-top: 80px;
+    margin-bottom: 80px;
     padding: 25px 0px;
     background-color: rgb(247, 235, 219);
     box-shadow: rgb(184, 77, 61, 0.25) 0px 0px 25px 10px;
@@ -99,11 +89,7 @@ body {
     font-size: 28px;
     font-family: "News Cycle","Arial Narrow Bold",sans-serif;
     padding: 5px 20px;
-    margin: 0px 8px;
-}
-
-div.header {
-    margin-bottom: 80px;
+    margin: 5px 8px;
 }
 
 a:not(.btn) {
@@ -166,18 +152,6 @@ a.cite:hover {
 .gallery-item {
     width: 33%;
     min-width: 380px;
-}
-
-@media only screen and (max-width: 960px) {
-    .gallery {
-        width: 100%;
-        margin-left: 0;
-    }
-
-    .gallery-item {
-        width: 50%;
-        min-width: 380px;
-    }
 }
 
 figure {
@@ -244,6 +218,8 @@ ul, ol {
     counter-increment: list;
 }
 
+/** Floating triangle for GitHub repo **/
+
 .float-triangle {
     position: fixed;
     top: 0;
@@ -294,4 +270,26 @@ ul, ol {
 
 .float-triangle:hover a {
     font-size: 36px;
+}
+
+
+/** Mobile Responsive: 1080px **/
+@media only screen and (max-width: 1080px) {
+    .body {
+        margin: 0 8%;
+    }
+
+    .references {
+        margin: 0 5%;
+    }
+
+    .gallery {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .gallery-item {
+        width: 50%;
+        min-width: 380px;
+    }
 }
