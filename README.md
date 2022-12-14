@@ -20,15 +20,31 @@ Website report can be found at [https://samleo8.github.io/SCARF/](https://samleo
 ![Teaser](teaser.png)
 
 ## Install
-A linux system with python environment manager [conda](https://www.anaconda.com/) is required for the project.
+A linux system with a python environment manager [conda](https://www.anaconda.com/) (or pip) is required for the project.
 
 The following commands clone the repo on your machine and install an environment, "srf", containing all dependencies. 
+
 ```
-git clone https://github.com/jchibane/srf.git
-cd SRF_git
+git clone git@github.com:Samleo8/SCARF.git
+cd SCARF
 conda env create -f srf_env.yml
 ```
-## Quick Start with Pretrained Model
+
+or with pip
+
+```
+pip install -r requirements.txt
+```
+
+## Pretrained Models
+
+Pretrained models can be found in our public Google drive here.
+
+### Bash Scripts (recommended)
+
+If you are on a system that supports bash/shell scripts, you can use the scripts in the `./scripts` folder to do basically everything.
+
+### Raw Python Code
 
 To synthesise novel views of a pretrained and finetuned model use the following command
 ```
