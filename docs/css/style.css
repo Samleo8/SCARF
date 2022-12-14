@@ -46,7 +46,7 @@ body {
     margin-bottom: 50px;
     padding: 25px 0px;
     background-color: rgb(247, 235, 219);
-    box-shadow: rgb(184, 77, 61, 0.3) 0px 0px 25px 10px;
+    box-shadow: rgb(184, 77, 61, 0.25) 0px 0px 25px 10px;
 }
 
 .title {
