@@ -189,7 +189,10 @@
         <p>
             As can be seen in Figure <a class="figref">4</a>, increasing the number of heads was significant in
             improving the quality of the results, in particular the detail and vibrancy of colors. For example, the rendering with only 8 heads
-            (Figure <a class="figref">4a</a>) looks faded, but the rendering with 16 heads (Figure <a class="figref">4b</a>) looks much more vibrant. We begin to see distinct colors for the different houses and the umbrellas on the patio are yellow as they should be. However, some of the colors still seem faded, and there is some "blurring" near the patio area where the umbrellas are. The rendering with 32 heads (Figure <a class="figref">4c</a>) looks even better. The house and patio colors look much more vibrant and closer to the ground truth. There is also increased detail for the windows, roofs and other objects in the scene. While the model is larger and takes longer to train on its own, using pretrained weights from previous heads allowed us to reduce training time significantly. 
+            (Figure <a class="figref">4a</a>) looks faded, but the rendering with 16 heads (Figure <a class="figref">4b</a>) looks much more vibrant. We begin to see distinct colors for the different houses and the umbrellas on the patio are yellow as they should be. However, some of the colors still seem faded, and there are some "blurring" artifacts near the patio area where the umbrellas are.
+        </p>
+        <p>    
+            The rendering with 32 heads (Figure <a class="figref">4c</a>) looks even better, and is our best result overall. The house and patio colors look much more vibrant and closer to the ground truth. There is also increased detail for the windows, roofs and other objects in the scene. While the model is larger and takes longer to train on its own, using pretrained weights from previous heads allowed us to reduce training time significantly. 
         </p>
 
         <p>

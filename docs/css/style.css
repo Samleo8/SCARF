@@ -31,6 +31,7 @@ body {
 .body p {
     text-align: justify;
     text-justify: inter-word;
+    margin: 25px 0;
 }
 
 .body h1, .body h2, .body h3, .body h4, .body h5, .body h6 {
