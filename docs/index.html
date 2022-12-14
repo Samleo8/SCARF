@@ -36,7 +36,7 @@
             <span class="fa fa-images"></span>&nbsp;&nbsp;Results</a>
         </div>
 
-        <div class="teaser gallery">
+        <div class="teaser gallery" fignum="0">
             <div class="gallery-row d-flex flex-row flex-wrap">
                 <div class="gallery-item p-2">
                     <figure>
@@ -79,7 +79,7 @@
 
         <figure>
             <img src="images/srf_architecture.png">
-            <div class="caption">Figure 1: SRF architecture diagram<a href="#cite-1" class="cite">[1]</a></div>
+            <div class="caption">Figure 1: SRF architecture diagram. <a href="#cite-1" class="cite">[1]</a></div>
         </figure>
 
         <figure>
@@ -284,7 +284,7 @@
             head model is comparable to the performance of the 2 layer 32 head model.
         </p>
 
-        <h1>Future Work</h1>
+        <h1 id="future-work">Future Work</h1>
 
         <p>
             More experimentation is needed to understand the following:
@@ -298,8 +298,8 @@
     </div>
 
 
-    <div class="references" id="references">
-        <h1>References</h1>
+    <div class="references">
+        <h1 id="references">References</h1>
 
         <ol>
             <li id="cite-1">Chibane, Julian, et al. 'Stereo Radiance Fields (SRF): Learning View Synthesis from
@@ -374,15 +374,23 @@
             // Populate figure IDs
             var _figures = document.getElementsByTagName("figure");
 
-            var id = 0; // ignore the first figure
+            var id = 1;
             for (var i = 0; i < _figures.length; i++) {
                 var fig = _figures[i];
 
                 // Ignore figures that are part of a gallery
-                if (fig.parentNode.className.indexOf("gallery-item") != -1) {
+                if (!fig.parentNode.className.startsWith("gallery-item")) {
                     fig.id = "fig-" + id;
                     id++;
                 }
+            }
+
+            // Populate gallery ids
+            var _galleries = document.getElementsByClassName("gallery");
+            for (var i = 0; i < _galleries.length; i++) {
+                var gal = _galleries[i];
+                var id = gal.getAttribute("fignum");
+                gal.id = "fig-" + id;
             }
 
             // Populate references to images
@@ -391,7 +399,6 @@
                 var _figref = _figrefs[i];
 
                 var figId = _figref.innerHTML.replace(/[A-Za-z]+/g, '');
-                console.log(_figref.innerHTML, figId);
 
                 _figref.href = "#fig-" + figId;
             }
