@@ -14,7 +14,7 @@ body {
 }
 
 .references {
-    margin: 0 10%;
+    margin: 0 12%;
     margin-top: 50px;
 }
 
@@ -183,13 +183,37 @@ figure:hover img {
 }
 
 .caption {
-    font-size: 18px;
+    font-size: 20px;
     font-style: italic;
     padding: 0px 0px;
+}
+
+.gallery-item .caption {
+    font-size: 18px;
 }
 
 .footnote {
     font-size: 14px;
     font-style: italic;
     padding: 13px 0px;
+}
+
+ul, ol {
+    text-align: left;
+    margin-left: 5px;
+}
+
+.references ol {
+    counter-reset: list;
+}
+
+.references ol > li {
+    list-style: none;
+    margin: 20px 100px;
+    text-indent: -80px;
+}
+
+.references ol > li:before {
+    content: "[" counter(list) "] ";
+    counter-increment: list;
 }
