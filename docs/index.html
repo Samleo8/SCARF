@@ -65,166 +65,214 @@
         <h1 id="methods">Methods</h1>
         <p>
             First, we investigated the architecture from the SRF paper shown in Figure <a class="figref">1</a>. We
-            discovered that the feature pairing, unsupervised stereo module, multi-view extraction, and
+            hypothesized that the feature pairing, unsupervised stereo module, multi-view extraction, and
             correspondence encoding could all be
             replaced by a (cross-)attention mechanism. Practically, this was implemented in PyTorch using a transformer
             encoder,
             borrowing from the ideas of the Vision Transformer (ViT) <a href="#cite-4" class="cite">[4]</a>. This makes
             intuitive sense, because stereo is about finding correspondences between different features in the image,
-            the
-            process of which can be reframed as cross-attending across features. This drastically
+            the process of which can be reframed as cross-attending across features. This drastically
             simplified our architecture shown in Figure
             <a class="figref">2</a>.
         </p>
 
         <p>
-            In order to reduce model size, we added an image feature compression layer, which reduces the size of the
-            image
-            features. We opt to go with a compression fully connected network instead of reducing the complexity of the
-            feature detection since this both reprojects into a space to help the transformer learn, and also allows for
-            some learning of relation between multi-scale features before the transformer encoder. We experimented both
-            with
-            and
-            without the feature compression layer (see results) and found that the network performed much better with
-            it.
+            After the image features layer, we first feed into an image feature compression network. This helps to reduce the number of parameters that the transformer network needed to learn.
         </p>
-
+        
         <p>
             After feature compression, we feed a sequence of feature vectors (one per view) into a transformer encoder,
             which aims to learn the relation between different views. The feature vectors were positionally encoded in
             the
-            same way as ViT <a href="#cite-4" class="cite">[4]</a>. We experimented
-            with different numbers of transformer encoder layers and heads per layer.
+            same way as ViT <a href="#cite-4" class="cite">[4]</a>. 
+        </p>
+        
+        <p>
+            TRANSFORMER
         </p>
 
         <p>
             Finally, we pass the output of the transformer layer through the fully connected "Radiance Field Decoder"
-            (basically 2 FC layers), which
-            results in an RGB-&sigma; value for each 3D point.
+            (2 FC layers), which results in an RGB-&sigma; value for each 3D point.
         </p>
 
         <h1>Results</h1>
 
-        <div class="gallery" fignum="3">
-            <table>
-                <tr>
-                    <td>
-                        <figure>
-                            <img src="images/render23_2L_8H.png">
-                            <div class="caption">Figure 3a: 2 layers, 8 heads</div>
-                        </figure>
-                    </td>
-                    <td>
-                        <figure>
-                            <img src="images/render23_2L_16H.png">
-                            <div class="caption">Figure 3b: 2 layers, 16 heads</div>
-                        </figure>
-                    </td>
-                    <td>
-                        <figure>
-                            <img src="images/render23_2L_32H.png">
-                            <div class="caption">Figure 3c: 2 layers, 32 heads</div>
-                        </figure>
-                    </td>
-                    <td>
-                        <figure>
-                            <img src="images/render23_2L_32H.png">
-                            <div class="caption">Figure 3d: 2 layers, 32 heads</div>
-                        </figure>
-                    </td>
-                    <td>
-                        <figure>
-                            <img src="images/render23_4L_16H.png">
-                            <div class="caption">Figure 3e: 4 layers, 16 heads</div>
-                        </figure>
-                    </td>
-                    <td>
-                        <figure>
-                            <img src="images/no_compression.png">
-                            <div class="caption">Figure 3f: 2 layers, 8 heads, with no compression.</div>
-                        </figure>
-                    </td>
-                </tr>
+        <h2>Experiment 1: Feature Compression</h2>
 
-            </table>
+        <p>
+            First, we experimented with two different techniques in order to reduce the model size. First, we attempted
+            to use a reduced image feature extraction network. This reduced network used half the number of channels for
+            each layer, and dropped the last two convolution layers from the SRF paper. This significantly reduced the
+            number of parameters that the transformer needed to learn.
+        </p>
+
+        <p>
+            The other technique we used to reduce model size was an image feature compression layer, which reduces the
+            size of the image features. This technique both reprojects into a space to help the transformer learn, and
+            also allows for some learning of relation between multi-scale features before the transformer encoder.
+        </p>
+
+        <div class="gallery" fignum="3">
+            <div class="gallery-row d-flex flex-row flex-wrap">
+                <div class="gallery-item p-2">
+                    <figure>
+                        <img src="images/render23_2L_8H_nocompress.png">
+                        <div class="caption">Figure 3a: 2 layers, 8 heads, with no compression.</div>
+                    </figure>
+                </div>
+                <div class="gallery-item p-2">
+                    <figure>
+                        <img src="images/render23_2L_16H_reduced.png">
+                        <div class="caption">Figure 3b: 2 layers, 16 heads, with reduced feature network.</div>
+                    </figure>
+                </div>
+                <div class="gallery-item p-2">
+                    <figure>
+                        <img src="images/render23_2L_8H.png">
+                        <div class="caption">Figure 3c: 2 layers, 8 heads, with compression.</div>
+                    </figure>
+                </div>
+            </div>
             <div class="caption">
                 Figure 3: Gallery of results for rendering of Scene 23 of the DTU Dataset
-                <a href="#cite-5" class="cite">[5]</a>
+                 <a href="#cite-5" class="cite">[5]</a> with different feature reduction techniques.
                 <br />
-                Images are generated with compression unless otherwise stated.
             </div>
         </div>
 
+        <p>
+            Our first experiment was to see the trade-offs between no compression, reduced features, and image compression. We found that the network was not able to learn quickly with the large transformer size. It did not learn a significant amount of information in the scene by iteration 50k, as shown in Figure <a class="figref">3a</a>. Between feature compression and network reduction, we found that the feature compression was able to do a much better job at improving parameter learning quickly.
+        </p>
+
+        <h2>Experiment 2: Transformer Heads</h2>
 
         <p>
-            Our first experiment was to see whether or not the feature compression layer was necessary. We found
-            that
-            the
-            network performed much better with the feature compression layer. It did not learn a significant amount
+            For the transformer, we first varied the nubmer of heads used in each cross attention layer. We held the number of layers constant at 2, and attempted 8, 16, and 32 heads.
+        </p>
+
+        <div class="gallery" fignum="4">
+            <div class="gallery-row d-flex flex-row flex-row">
+                <div class="gallery-item p-2">
+                    <figure>
+                        <img src="images/render23_2L_8H.png">
+                        <div class="caption">Figure 4a: 2 layers, 8 heads</div>
+                    </figure>
+                </div>
+                <div class="gallery-item p-2">
+                    <figure>
+                        <img src="images/render23_2L_16H.png">
+                        <div class="caption">Figure 4b: 2 layers, 16 heads</div>
+                    </figure>
+                </div>
+                <div class="gallery-item p-2">
+                    <figure>
+                        <img src="images/render23_2L_32H.png">
+                        <div class="caption">Figure 4c: 2 layers, 32 heads</div>
+                    </figure>
+                </div>
+            </div>
+            <div class="caption flex-row">
+                Figure 4: Gallery of results for rendering of Scene 23 of the DTU Dataset
+                <a href="#cite-5" class="cite">[5]</a> with varied number of transformer heads.
+                <br />
+                Images are generated with compression and without feature reduction.
+            </div>
+        </div>
+
+        <p>
+            As can be seen in Figure <a class="figref">4</a>, increasing the number of heads was significant in improving the quality of the results, in particular the detail and vibrancy 
+        </p>
+
+        <h2>Experiment 3: Transformer Layers</h2>
+
+        <p>
+            We then varied the nubmer of transformer cross attention layers. We held the number of heads constant at 16, and attempted 2 and 4 layers.
+        </p>
+
+        <div class="gallery" fignum="5">
+            <div class="gallery-row d-flex flex-wrap">
+                <div class="gallery-item p-2">
+                    <figure>
+                        <img src="images/render23_2L_16H.png">
+                        <div class="caption">Figure 5a: 2 layers, 16 heads.</div>
+                    </figure>
+                </div>
+                <div class="gallery-item p-2">
+                    <figure>
+                        <img src="images/render23_4L_16H.png">
+                        <div class="caption">Figure 5b: 4 layers, 16 heads</div>
+                    </figure>
+                </div>
+            </div>
+            <div class="caption flex-row">
+                Figure 5: Gallery of results for rendering of Scene 23 of the DTU
+                Dataset <a href="#cite-5" class="cite">[5]</a> with varied number of transformer layers.
+                <br />
+                Images are generated with compression and without feature reduction.
+            </div>
+        </div>
+    </div>
+
+
+    <figure>
+        <img src="images/loss23_2L_8H.png">
+        <div class="caption">Figure 4: Loss of the network with 2 layers and 8 heads</div>
+    </figure>
+
+    <p>
+        Next, we trained a baseline proof of concept design using 2 layers of 8 heads. We found that this
+        performed
+        reasonably well and was able to learn the basics of the scene. We used transfer learning from this
+        experiment
+        for the rest of our future experiments. We also found that the network finished improving by iteration
+        63k, as shown in Figure <a class="figref">4</a>.
+    </p>
+
+    <figure>
+        <img src="images/loss23_2L_16H.png">
+        <div class="caption">Figure 5: Loss of the network with 2 layers and 16 heads</div>
+    </figure>
+
+    <p>
+        We then experimented with different numbers of layers and heads. First, we added more heads to the
+        transformer.
+        We transfered the weights from the 2 layer 8 head model and found that the network performed much better
+        with 16
+        heads. We also found that the network finished improving by iteration 50k, as shown in Figure
+        <a class="figref">5</a>. We also trained with 32 heads. We found (INSERT RESULTS HERE)
+    </p>
+
+    <p>
+        Next, we added more layers to the transformer. We transfered the weights from the 2 layer 8 head model
+        and
+        found
+        that the network performed even better with 4 layers.
+    </p>
+
+
+    <h1>References</h1>
+
+    <ol>
+        <li id="cite-1">Chibane, Julian, et al. 'Stereo Radiance Fields (SRF): Learning View Synthesis from
+            Sparse
+            Views
+            of Novel Scenes'. IEEE Conference on Computer Vision and Pattern Recognition (CVPR), IEEE, 2021.
+        </li>
+        <li id="cite-2">Mildenhall, Ben, et al. 'NeRF: Representing Scenes as Neural Radiance Fields for View
+            Synthesis'. CoRR, vol. abs/2003.08934, 2020, https://arxiv.org/abs/2003.08934.</li>
+        <li id="cite-3">Reizenstein, Jeremy, et al. "Common objects in 3d: Large-scale learning and evaluation
             of
-            information in the scene by iteration 50k, as shown in Figure <a class="figref">3f</a>.
-        </p>
-
-        <figure>
-            <img src="images/loss23_2L_8H.png">
-            <div class="caption">Figure 4: Loss of the network with 2 layers and 8 heads</div>
-        </figure>
-
-        <p>
-            Next, we trained a baseline proof of concept design using 2 layers of 8 heads. We found that this
-            performed
-            reasonably well and was able to learn the basics of the scene. We used transfer learning from this
-            experiment
-            for the rest of our future experiments. We also found that the network finished improving by iteration
-            63k,
-            as
-            shown in Figure <a class="figref">4</a>.
-        </p>
-
-        <figure>
-            <img src="images/loss23_2L_16H.png">
-            <div class="caption">Figure 5: Loss of the network with 2 layers and 16 heads</div>
-        </figure>
-
-        <p>
-            We then experimented with different numbers of layers and heads. First, we added more heads to the
-            transformer.
-            We transfered the weights from the 2 layer 8 head model and found that the network performed much better
-            with 16
-            heads. We also found that the network finished improving by iteration 50k, as shown in Figure
-            <a class="figref">5</a>. We also trained with 32 heads. We found (INSERT RESULTS HERE)
-        </p>
-
-        <p>
-            Next, we added more layers to the transformer. We transfered the weights from the 2 layer 8 head model
-            and
-            found
-            that the network performed even better with 4 layers.
-        </p>
-
-
-        <h1>References</h1>
-
-        <ol>
-            <li id="cite-1">Chibane, Julian, et al. 'Stereo Radiance Fields (SRF): Learning View Synthesis from
-                Sparse
-                Views
-                of Novel Scenes'. IEEE Conference on Computer Vision and Pattern Recognition (CVPR), IEEE, 2021.
-            </li>
-            <li id="cite-2">Mildenhall, Ben, et al. 'NeRF: Representing Scenes as Neural Radiance Fields for View
-                Synthesis'. CoRR, vol. abs/2003.08934, 2020, https://arxiv.org/abs/2003.08934.</li>
-            <li id="cite-3">Reizenstein, Jeremy, et al. "Common objects in 3d: Large-scale learning and evaluation
-                of
-                real-life 3d category reconstruction." Proceedings of the IEEE/CVF International Conference on
-                Computer
-                Vision. 2021.</li>
-            <li id="cite-4">Ranftl, René, Alexey Bochkovskiy, and Vladlen Koltun. "Vision transformers for dense
-                prediction." Proceedings of the IEEE/CVF International Conference on Computer Vision. 2021.</li>
-            <li id="cite-5">Jensen, Rasmus, et al. "Large scale multi-view stereopsis evaluation." Proceedings of
-                the
-                IEEE
-                conference on computer vision and pattern recognition. 2014.</li>
-        </ol>
+            real-life 3d category reconstruction." Proceedings of the IEEE/CVF International Conference on
+            Computer
+            Vision. 2021.</li>
+        <li id="cite-4">Ranftl, René, Alexey Bochkovskiy, and Vladlen Koltun. "Vision transformers for dense
+            prediction." Proceedings of the IEEE/CVF International Conference on Computer Vision. 2021.</li>
+        <li id="cite-5">Jensen, Rasmus, et al. "Large scale multi-view stereopsis evaluation." Proceedings of
+            the
+            IEEE
+            conference on computer vision and pattern recognition. 2014.</li>
+    </ol>
 
     </div>
 
@@ -281,7 +329,7 @@
                 fig.id = "fig-" + id;
 
                 // Ignore figures that are part of a gallery
-                if (fig.parentNode.tagName != "TD") {
+                if (fig.parentNode.className != "gallery-item") {
                     fig.id = "fig-" + id;
                     id++;
                 }

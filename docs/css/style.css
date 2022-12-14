@@ -131,6 +131,17 @@ a.cite:hover {
     width: 100%;
     margin-top: 30px;
     margin-bottom: 50px;
+    text-align: center;
+}
+
+.gallery-row {
+    justify-content: center;
+    margin-bottom: 5px;
+}
+
+.gallery-item {
+    width: 380px;
+    min-width: 200px;
 }
 
 figure {
@@ -142,6 +153,7 @@ figure {
 figure img {
     width: 90%;
     transition: all ease-in-out 0.3s;
+    margin-bottom: 8px;
 }
 
 figure:hover img {
@@ -157,7 +169,7 @@ figure:hover img {
 .caption {
     font-size: 18px;
     font-style: italic;
-    padding: 20px 0px;
+    padding: 0px 0px;
 }
 
 .footnote {
