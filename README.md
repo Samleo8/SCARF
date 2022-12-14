@@ -3,7 +3,7 @@
 
 This is a modification of the original SRF paper, but using attention as the mechanism for implicit stereo correspondences.
 
-Our website report can be found [here](https://samleo8.github.io/SCARF/).
+Our website report with extended results can be found at [https://samleo8.github.io/SCARF/](https://samleo8.github.io/SCARF/).
 
 ## Authors
 
@@ -18,26 +18,6 @@ Final presentation for the class is publicly viewable [here](https://docs.google
 Website report can be found at [https://samleo8.github.io/SCARF/](https://samleo8.github.io/SCARF/).
 
 ![Teaser](teaser.png)
-
----
-
-## Original Paper/Authors
-
-> [Julian Chibane](http://virtualhumans.mpi-inf.mpg.de/people/Chibane.html), 
-> [Aayush Bansal](http://www.cs.cmu.edu/~aayushb/),
-> [Verica Lazova](http://virtualhumans.mpi-inf.mpg.de/people/Lazova.html),
-> [Gerard Pons-Moll](http://virtualhumans.mpi-inf.mpg.de/people/pons-moll.html) <br />
-> Stereo Radiance Fields (SRF): Learning View Synthesis for Sparse Views of Novel Scenes <br />
-> In IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2021
-
-![Original Teaser](teaser_orig.png)
-
-[Paper](https://virtualhumans.mpi-inf.mpg.de/papers/chibane21SRF/chibane21srf.pdf) - 
-[Supplementaty](https://virtualhumans.mpi-inf.mpg.de/papers/chibane21SRF/chibane21srf_supp.pdf) -
-[Video](https://virtualhumans.mpi-inf.mpg.de/srf/#video) -
-[Project Website](https://virtualhumans.mpi-inf.mpg.de/srf/) -
-[Arxiv](https://arxiv.org/abs/2104.06935) -
-If you find our project useful, please cite us. [Citation (Bibtex)](https://virtualhumans.mpi-inf.mpg.de/srf/#citation)
 
 ## Install
 A linux system with python environment manager [conda](https://www.anaconda.com/) is required for the project.
@@ -116,7 +96,25 @@ and change "scan23" to "scanX" in the `expname`, `fine_tune` and `generate_speci
 configuration, where X is the ID of the desired scan. Similarly, you'd need to change "scan23" to "scanX" in the above
 experiment folder name.
 
+---
 
+## Original Paper/Authors
+
+> [Julian Chibane](http://virtualhumans.mpi-inf.mpg.de/people/Chibane.html), 
+> [Aayush Bansal](http://www.cs.cmu.edu/~aayushb/),
+> [Verica Lazova](http://virtualhumans.mpi-inf.mpg.de/people/Lazova.html),
+> [Gerard Pons-Moll](http://virtualhumans.mpi-inf.mpg.de/people/pons-moll.html) <br />
+> Stereo Radiance Fields (SRF): Learning View Synthesis for Sparse Views of Novel Scenes <br />
+> In IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2021
+
+![Original Teaser](teaser_orig.png)
+
+[Paper](https://virtualhumans.mpi-inf.mpg.de/papers/chibane21SRF/chibane21srf.pdf) - 
+[Supplementaty](https://virtualhumans.mpi-inf.mpg.de/papers/chibane21SRF/chibane21srf_supp.pdf) -
+[Video](https://virtualhumans.mpi-inf.mpg.de/srf/#video) -
+[Project Website](https://virtualhumans.mpi-inf.mpg.de/srf/) -
+[Arxiv](https://arxiv.org/abs/2104.06935) -
+If you find our project useful, please cite us. [Citation (Bibtex)](https://virtualhumans.mpi-inf.mpg.de/srf/#citation)
 ## Contact
 
 For questions and comments please contact [Julian Chibane](http://virtualhumans.mpi-inf.mpg.de/people/Chibane.html) via mail.
