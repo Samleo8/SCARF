@@ -1,7 +1,9 @@
 
 # Stereo Cross-Attention Radiance Fields (SCARF)
 
-This is a modification of the originial SRF paper, but using attention as the mechanism for implicit stereo correspondences.
+This is a modification of the original SRF paper, but using attention as the mechanism for implicit stereo correspondences.
+
+Our website report can be found [here](https://samleo8.github.io/SCARF/).
 
 ## Authors
 
@@ -13,6 +15,9 @@ Alex Strasser [Email: arstrasse at andrew.cmu.edu]
 
 Final presentation for the class is publicly viewable [here](https://docs.google.com/presentation/d/1BXCPMn_tfyXVVvL5m5Y0Ear06_MKOi1l6b6xrLuzZBk/edit?usp=sharing)
 
+Website report can be found at [https://samleo8.github.io/SCARF/](https://samleo8.github.io/SCARF/).
+
+![Teaser](teaser.png)
 
 ---
 
@@ -25,7 +30,7 @@ Final presentation for the class is publicly viewable [here](https://docs.google
 > Stereo Radiance Fields (SRF): Learning View Synthesis for Sparse Views of Novel Scenes <br />
 > In IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2021
 
-![Teaser](teaser.png)
+![Original Teaser](teaser_orig.png)
 
 [Paper](https://virtualhumans.mpi-inf.mpg.de/papers/chibane21SRF/chibane21srf.pdf) - 
 [Supplementaty](https://virtualhumans.mpi-inf.mpg.de/papers/chibane21SRF/chibane21srf_supp.pdf) -
