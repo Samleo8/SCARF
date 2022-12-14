@@ -77,18 +77,18 @@
         </p>
 
         <p>
-            After the image features layer, we first feed into an image feature compression network. This helps to reduce the number of parameters that the transformer network needed to learn.
+            After the image features layer, we first feed into an image feature compression network. This helped reduce the number of parameters that the transformer network needed to learn. See Results experiment 1 for justification and different techniques that were attempted.
+        </p>
+
+        <p>
+            Next we add positional encoding to 
         </p>
         
         <p>
             After feature compression, we feed a sequence of feature vectors (one per view) into a transformer encoder,
             which aims to learn the relation between different views. The feature vectors were positionally encoded in
             the
-            same way as ViT <a href="#cite-4" class="cite">[4]</a>. 
-        </p>
-        
-        <p>
-            TRANSFORMER
+            same way as ViT <a href="#cite-4" class="cite">[4]</a>. We experimented with various different hyperparameters for this transformer encoder to get good results. Max-pooling is run over the output images to preserve the most important features from each image.
         </p>
 
         <p>
@@ -142,7 +142,7 @@
         </div>
 
         <p>
-            Our first experiment was to see the trade-offs between no compression, reduced features, and image compression. We found that the network was not able to learn quickly with the large transformer size. It did not learn a significant amount of information in the scene by iteration 50k, as shown in Figure <a class="figref">3a</a>. Between feature compression and network reduction, we found that the feature compression was able to do a much better job at improving parameter learning quickly.
+            Our first experiment was to see the trade-offs between no compression, reduced features, and image compression. We found that the network was not able to learn quickly with the large transformer size. It did not learn a significant amount of information in the scene by iteration 50k, as shown in Figure <a class="figref">3a</a>. Between feature compression and network reduction, we found that the feature compression was able to do a much better job at learning quickly, reconstructing finer details like color, and minimizing artifacts
         </p>
 
         <h2>Experiment 2: Transformer Heads</h2>
@@ -152,7 +152,7 @@
         </p>
 
         <div class="gallery" fignum="4">
-            <div class="gallery-row d-flex flex-row flex-row">
+            <div class="gallery-row d-flex flex-row flex-wrap">
                 <div class="gallery-item p-2">
                     <figure>
                         <img src="images/render23_2L_8H.png">
@@ -181,7 +181,13 @@
         </div>
 
         <p>
-            As can be seen in Figure <a class="figref">4</a>, increasing the number of heads was significant in improving the quality of the results, in particular the detail and vibrancy 
+            As can be seen in Figure <a class="figref">4</a>, increasing the number of heads was significant in
+            improving the quality of the results, in particular the detail and vibrancy of colors. For example, the rendering with only 8 heads
+            (Figure <a class="figref">4a</a>) looks faded, but the rendering with 16 heads (Figure <a class="figref">4b</a>) looks much more vibrant. We begin to see distinct colors for the different houses and the umbrellas on the patio are yellow as they should be. However, some of the colors still seem faded, and there is some "blurring" near the patio area where the umbrellas are. The rendering with 32 heads (Figure <a class="figref">4c</a>) looks even better. The house and patio colors look much more vibrant and closer to the ground truth. There is also increased detail for the windows, roofs and other objects in the scene. While the model is larger and takes longer to train on its own, using pretrained weights from previous heads allowed us to reduce training time significantly. 
+        </p>
+
+        <p>
+            The results make intuitive sense, because increasing the number of heads increases the number of feature subspaces to cross-attend to. This may allow the model to learn more complex and different relationships between features, and therefore increases the level of detail and color vibrancy in the rendered scene.
         </p>
 
         <h2>Experiment 3: Transformer Layers</h2>
@@ -191,7 +197,7 @@
         </p>
 
         <div class="gallery" fignum="5">
-            <div class="gallery-row d-flex flex-wrap">
+            <div class="gallery-row d-flex flex-row flex-wrap">
                 <div class="gallery-item p-2">
                     <figure>
                         <img src="images/render23_2L_16H.png">
@@ -212,45 +218,27 @@
                 Images are generated with compression and without feature reduction.
             </div>
         </div>
+
+        <p>
+            Finally, we added more layers to the transformer. We transfered the weights from the 2 layer 8 head model
+            and found that the network performed even better with 4 layers. The performance of the 4 layer 16 head model is comparable to the performance of the 2 layer 32 head model.
+        </p>
+
+        <h1>Future Work</h1>
+
+        <p>
+            More experimentation is needed to understand the following:
+            <ul>
+                <li>Effect of positional encoding on the results</li>
+                <li>Full retrain without transfer learning to compare training time to SRF paper</li>
+                <li>Longer training times on larger networks to see if performance further improves</li>
+                <li>Alternatives for max pooling as a transformer reduction operation</li>
+            </ul>
+        </p>
     </div>
 
 
-    <figure>
-        <img src="images/loss23_2L_8H.png">
-        <div class="caption">Figure 4: Loss of the network with 2 layers and 8 heads</div>
-    </figure>
-
-    <p>
-        Next, we trained a baseline proof of concept design using 2 layers of 8 heads. We found that this
-        performed
-        reasonably well and was able to learn the basics of the scene. We used transfer learning from this
-        experiment
-        for the rest of our future experiments. We also found that the network finished improving by iteration
-        63k, as shown in Figure <a class="figref">4</a>.
-    </p>
-
-    <figure>
-        <img src="images/loss23_2L_16H.png">
-        <div class="caption">Figure 5: Loss of the network with 2 layers and 16 heads</div>
-    </figure>
-
-    <p>
-        We then experimented with different numbers of layers and heads. First, we added more heads to the
-        transformer.
-        We transfered the weights from the 2 layer 8 head model and found that the network performed much better
-        with 16
-        heads. We also found that the network finished improving by iteration 50k, as shown in Figure
-        <a class="figref">5</a>. We also trained with 32 heads. We found (INSERT RESULTS HERE)
-    </p>
-
-    <p>
-        Next, we added more layers to the transformer. We transfered the weights from the 2 layer 8 head model
-        and
-        found
-        that the network performed even better with 4 layers.
-    </p>
-
-
+    <div class="references">
     <h1>References</h1>
 
     <ol>

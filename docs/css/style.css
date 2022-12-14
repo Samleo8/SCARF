@@ -13,10 +13,19 @@ body {
     margin: 0 20%;
 }
 
+.references {
+    margin: 0 10%;
+    margin-top: 50px;
+}
+
 @media only screen and (max-width: 960px) {
-  .body {
+    .body {
     margin: 0 5%;
-  }
+    }
+
+    .references {
+        margin: 0 5%;
+    }
 }
 
 .body p {
@@ -140,8 +149,15 @@ a.cite:hover {
 }
 
 .gallery-item {
-    width: 380px;
-    min-width: 200px;
+    width: 33%;
+    min-width: 380px;
+}
+
+@media only screen and (max-width: 960px) {
+    .gallery-item {
+        width: 50%;
+        min-width: 380px;
+    }
 }
 
 figure {
