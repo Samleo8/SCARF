@@ -139,10 +139,20 @@ a.cite:hover {
 }
 
 .gallery {
-    width: 100%;
+    width: 120%;
+    margin-left: -10%;
+
     margin-top: 30px;
     margin-bottom: 50px;
     text-align: center;
+}
+
+.gallery.teaser {
+    margin-top: 25px;
+    margin-bottom: -10px;
+
+    width: 80%;
+    margin-left: 10%;
 }
 
 .gallery-row {
@@ -156,6 +166,11 @@ a.cite:hover {
 }
 
 @media only screen and (max-width: 960px) {
+    .gallery {
+        width: 100%;
+        margin-left: 0;
+    }
+
     .gallery-item {
         width: 50%;
         min-width: 380px;
@@ -197,7 +212,12 @@ figure:hover img {
 .footnote {
     font-size: 14px;
     font-style: italic;
-    padding: 10px 0px;
+    margin: 10px 0px;
+}
+
+.gallery.teaser .footnote {
+    margin: 0px;
+    margin-top: -20px;
 }
 
 ul, ol {
