@@ -53,11 +53,12 @@
                 <div class="gallery-item p-2">
                     <figure>
                         <img src="images/render23_2L_32H.png">
-                        <div class="caption">Ours (2L 32 H)</div>
+                        <div class="caption">Ours (<a href="#fig-4">2L 32 H</a>)</div>
                     </figure>
                 </div>
             </div>
-            <div class="footnote">*Baselines taken from <a href="https://github.com/jchibane/srf" target="_blank">SRF GitHub Repo</a>. Images downsampled by 4.</div>
+            <div class="footnote">*Baselines are artificially downsampled by 4 for fair comparison against our model
+                which renders a downsampled version due to compute constraints. For full-res baseline images, see the <a href="https://github.com/jchibane/srf" target="_blank">SRF GitHub Repo</a></div>
         </div>
     </div>
 
@@ -373,7 +374,7 @@
             // Populate figure IDs
             var _figures = document.getElementsByTagName("figure");
 
-            var id = 1;
+            var id = 0; // ignore the first figure
             for (var i = 0; i < _figures.length; i++) {
                 var fig = _figures[i];
 
