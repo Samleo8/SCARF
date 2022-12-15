@@ -3,6 +3,7 @@ imageio
 matplotlib
 numpy
 PyMCubes
+scipy
 torch
 torchvision
 tqdm
