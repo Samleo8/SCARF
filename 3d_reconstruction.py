@@ -111,7 +111,7 @@ def generate_mesh(cfg, epoch, i4d, test_dataset, specific_obj):
             all_rgb.extend(rgb.reshape((-1,3)))
 
     all_rgb_enc_a = np.array(all_rgb) * 255
-    all_rgb_enc_b = all_rgb_enc_a.astype(np.int)
+    all_rgb_enc_b = all_rgb_enc_a.astype(int)
     all_rgb_enc_c = np.clip(all_rgb_enc_b, 0, 255)
     mesh.visual.vertex_colors[:,:3] = all_rgb_enc_c
     mesh.export(os.path.join(savedir, f'mesh_colored_{specific_obj}.obj'));
