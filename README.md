@@ -44,25 +44,59 @@ conda env create -f srf_env.yml
 
 ## Pretrained Models
 
-Our pretrained SCARF models can be found in our publicly-accessible Google drive: [https://drive.google.com/drive/u/0/folders/1D-Ku0_liA_F2-CRVCK7figIN2BOSWrQY](https://drive.google.com/drive/u/0/folders/1D-Ku0_liA_F2-CRVCK7figIN2BOSWrQY). Please download them into the `./logs/` directory.
+Our pretrained SCARF models can be found in our publicly-accessible Google drive: [https://drive.google.com/drive/u/0/folders/1D-Ku0_liA_F2-CRVCK7figIN2BOSWrQY](https://drive.google.com/drive/u/0/folders/1D-Ku0_liA_F2-CRVCK7figIN2BOSWrQY). Please download them into the `./logs/` directory. The directory structure should look something like
+
+```bash
+ data/
+ scripts/
+ logs/
+   |-- <EXP_NAME (eg. train_DTU_2L_32H)>/
+       |-- training_visualizations/
+       |-- tensorboard/
+       |-- <CKPT_EPOCH>.tar
+       |-- args.txt
+       |-- config.txt
+```
 
 ### Bash Scripts (recommended)
 
 If you are on a system that supports bash/shell scripts, you can use the scripts in the `./scripts` folder to do basically everything.
 
+#### Render Novel Views
 To synthesise novel views of a pretrained model, use the following script
 
 ```bash
-./scripts/render_finetune.sh [EXP_NAME [SAMPLE [POSE [CUDA_VISIBLE_DEVICES]]]] 
+./scripts/render_finetune.sh [EXP_NAME [SCAN_NUMBER [POSE [CUDA_VISIBLE_DEVICES]]]] 
 ```
 
 For example, to render the pretrained model for experiment `train_DTU_2L_32H` on pose 10 (choose from 0-51 inclusive) of scan 23, with CUDA device 2, use the following script
 
 ```bash
-./scripts/render_finetune.sh train_DTU_2L_32H scan23 10 2
+./scripts/render_finetune.sh train_DTU_2L_32H 23 10 2
 ```
 
 There is also a script (`./scripts/render_finetune_multiple.sh`) for rendering multiple experiments across different GPUs, but requires that you modify the bash script to suit your needs.
+
+#### 3D Reconstruction (WIP)
+
+To generate a 3D reconstruction (mesh output) that will be saved in `./logs/<EXP_NAME>/mesh_colored_<SCAN>.obj`, 
+
+```bash
+./scripts/construct_3d.sh [EXP_NAME [SCAN_NUMBER [CUDA_VISIBLE_DEVICES]]]
+```
+
+To then view the mesh in Python, 
+
+```bash
+./scripts/view_3d.sh [EXP_NAME [SCAN_NUMBER [CUDA_VISIBLE_DEVICES]]]
+```
+
+For example, to 3d construct the pretrained model for `train_DTU_2L_32H` on pose 10 (choose from 0-51 inclusive) of scan 23, with CUDA device 2, you would run
+
+```bash
+./scripts/construct_3d.sh train_DTU_2L_32H 23 2
+./scripts/view_3d.sh train_DTU_2L_32H 23 2
+```
 
 ### Raw Python Code
 
