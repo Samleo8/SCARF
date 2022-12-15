@@ -63,6 +63,7 @@ Our pretrained SCARF models can be found in our publicly-accessible Google drive
 If you are on a system that supports bash/shell scripts, you can use the scripts in the `./scripts` folder to do basically everything.
 
 #### Render Novel Views
+
 To synthesise novel views of a pretrained model, use the following script
 
 ```bash
@@ -79,7 +80,7 @@ There is also a script (`./scripts/render_finetune_multiple.sh`) for rendering m
 
 #### 3D Reconstruction (WIP)
 
-To generate a 3D reconstruction (mesh output) that will be saved in `./logs/<EXP_NAME>/mesh_colored_<SCAN>.obj`, 
+To generate a 3D reconstruction (mesh output) that will be saved in `./logs/render_<EXP_NAME>/mesh_colored_<SCAN>.obj`,
 
 ```bash
 ./scripts/construct_3d.sh [EXP_NAME [SCAN_NUMBER [CUDA_VISIBLE_DEVICES]]]
@@ -91,7 +92,7 @@ To then view the mesh in Python,
 ./scripts/view_3d.sh [EXP_NAME [SCAN_NUMBER [CUDA_VISIBLE_DEVICES]]]
 ```
 
-For example, to 3d construct the pretrained model for `train_DTU_2L_32H` on pose 10 (choose from 0-51 inclusive) of scan 23, with CUDA device 2, you would run
+For example, to 3d construct the pretrained model for `train_DTU_2L_32H` on pose 10 (choose from 0-51 inclusive) of scan 23, with CUDA device 2, and then view it, you would run
 
 ```bash
 ./scripts/construct_3d.sh train_DTU_2L_32H 23 2
