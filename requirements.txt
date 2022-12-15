@@ -1,6 +1,6 @@
 ConfigArgParse==1.5.3
 imageio==2.16.1
-matplotlib==3.6.2
+matplotlib
 numpy==1.23.5
 torch==1.13.0
 torchvision==0.14.0a0
