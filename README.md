@@ -80,13 +80,13 @@ There is also a script (`./scripts/render_finetune_multiple.sh`) for rendering m
 
 #### 3D Reconstruction (WIP)
 
-To generate a 3D reconstruction (mesh output) that will be saved in `./logs/render_<EXP_NAME>/mesh_colored_<SCAN>.obj`,
+To generate a 3D reconstruction (mesh output) that will be saved in `./logs/render_<EXP_NAME>/3d_mesh/mesh_colored_<SCAN_NUMBER>.obj`,
 
 ```bash
 ./scripts/construct_3d.sh [EXP_NAME [SCAN_NUMBER [CUDA_VISIBLE_DEVICES]]]
 ```
 
-To then view the mesh in Python, 
+To then view the mesh in Python,
 
 ```bash
 ./scripts/view_3d.sh [EXP_NAME [SCAN_NUMBER [CUDA_VISIBLE_DEVICES]]]

@@ -33,8 +33,7 @@ def generate_mesh(cfg, epoch, i4d, test_dataset, specific_obj):
     expname = cfg.expname
 
     # setup directory to save data
-    savedir = os.path.join(basedir, expname, '3d_mesh',
-                           f'{specific_obj}_epoch_{epoch}')
+    savedir = os.path.join(basedir, expname, '3d_mesh')
     os.makedirs(savedir, exist_ok=True)
 
     # load the input data for the network
