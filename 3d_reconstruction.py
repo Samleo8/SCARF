@@ -10,19 +10,22 @@ import imageio
 import mcubes
 import trimesh
 
+
 # creates a list of all points on a specified grid
-def create_grid_points_from_xyz_bounds(min_x, max_x, min_y, max_y ,min_z, max_z, res):
+def create_grid_points_from_xyz_bounds(min_x, max_x, min_y, max_y, min_z,
+                                       max_z, res):
     x = np.linspace(min_x, max_x, res)
     y = np.linspace(min_y, max_y, res)
     z = np.linspace(min_z, max_z, res)
     X, Y, Z = np.meshgrid(x, y, z, indexing='ij', sparse=False)
-    X = X.reshape((np.prod(X.shape),))
-    Y = Y.reshape((np.prod(Y.shape),))
-    Z = Z.reshape((np.prod(Z.shape),))
+    X = X.reshape((np.prod(X.shape), ))
+    Y = Y.reshape((np.prod(Y.shape), ))
+    Z = Z.reshape((np.prod(Z.shape), ))
 
     points_list = np.column_stack((X, Y, Z))
     del X, Y, Z, x
     return points_list
+
 
 def generate_mesh(cfg, epoch, i4d, test_dataset, specific_obj):
 
@@ -31,7 +34,7 @@ def generate_mesh(cfg, epoch, i4d, test_dataset, specific_obj):
 
     # setup directory to save data
     savedir = os.path.join(basedir, expname, '3d_mesh',
-                               f'{specific_obj}_epoch_{epoch}')
+                           f'{specific_obj}_epoch_{epoch}')
     os.makedirs(savedir, exist_ok=True)
 
     # load the input data for the network
@@ -43,7 +46,9 @@ def generate_mesh(cfg, epoch, i4d, test_dataset, specific_obj):
     batch = test_data[0]
 
     rel_ref_cam_locs, target, idx, focal = batch[-4:]
-    inputs = [tensor.reshape([-1] + list(tensor.shape[2:])) for tensor in batch[:-4]]
+    inputs = [
+        tensor.reshape([-1] + list(tensor.shape[2:])) for tensor in batch[:-4]
+    ]
     focal = np.array(focal)
     rays_o, rays_d, viewdirs, pts, z_vals, ref_pts, ref_images, ref_poses = inputs
 
@@ -54,10 +59,11 @@ def generate_mesh(cfg, epoch, i4d, test_dataset, specific_obj):
     else:
         min_x, max_x, min_y, max_y, min_z, max_z = -15 * 11, 18 * 11, -11 * 11, 2 * 11 * 11, -22 * 11, 15 * 11
 
-    points = create_grid_points_from_xyz_bounds(min_x, max_x, min_y, max_y, min_z, max_z,res)
+    points = create_grid_points_from_xyz_bounds(min_x, max_x, min_y, max_y,
+                                                min_z, max_z, res)
 
     # reshape and batch grid points in order to feed them to the network
-    points = torch.Tensor(points).reshape((1,res**3,3))
+    points = torch.Tensor(points).reshape((1, res**3, 3))
 
     # use the same number of points for batching, that would be used when sampling along rays
     batch_points = cfg.N_rays_test * (cfg.N_importance + cfg.N_samples)
@@ -68,20 +74,21 @@ def generate_mesh(cfg, epoch, i4d, test_dataset, specific_obj):
     all_sigma = []
     for grid_points in tqdm(points_split):
         with torch.no_grad():
-            rgb, sigma = i4d.point_wise_3D_reconst( ref_images, ref_poses, grid_points, focal)
+            rgb, sigma = i4d.point_wise_3D_reconst(ref_images, ref_poses,
+                                                   grid_points, focal)
             all_sigma.extend(sigma.reshape((-1)))
 
     # gather all density values
-    all_sigma = np.array(all_sigma).reshape((res,res,res))
-
+    all_sigma = np.array(all_sigma).reshape((res, res, res))
 
     # padding to be able to retrieve object close to bounding box bondary
-    all_sigma_padded = np.pad(all_sigma, ((1, 1), (1, 1), (1, 1)), 'constant', constant_values=-50)
+    all_sigma_padded = np.pad(all_sigma, ((1, 1), (1, 1), (1, 1)),
+                              'constant',
+                              constant_values=-50)
 
     # create a mesh from the densities, by inferring the level set given by "threshold"
     threshold = -3.45
-    vertices, triangles = mcubes.marching_cubes(
-        all_sigma_padded, threshold)
+    vertices, triangles = mcubes.marching_cubes(all_sigma_padded, threshold)
 
     # remove translation due to padding
     vertices -= 1
@@ -89,7 +96,7 @@ def generate_mesh(cfg, epoch, i4d, test_dataset, specific_obj):
     # rescale to original scale
     step = np.array([max_x - min_x, max_y - min_y, max_z - min_z]) / (res - 1)
     vertices = np.multiply(vertices, step)
-    vertices += [min_x,min_y,min_z]
+    vertices += [min_x, min_y, min_z]
 
     # produce a trimesh object given vertices and triangles
     mesh = trimesh.Trimesh(vertices, triangles)
@@ -107,14 +114,22 @@ def generate_mesh(cfg, epoch, i4d, test_dataset, specific_obj):
     all_rgb = []
     for grid_points in tqdm(points_split):
         with torch.no_grad():
-            rgb, sigma = i4d.point_wise_3D_reconst( ref_images, ref_poses, grid_points, focal)
-            all_rgb.extend(rgb.reshape((-1,3)))
+            rgb, sigma = i4d.point_wise_3D_reconst(ref_images, ref_poses,
+                                                   grid_points, focal)
+            all_rgb.extend(rgb.reshape((-1, 3)))
 
     all_rgb_enc_a = np.array(all_rgb) * 255
     all_rgb_enc_b = all_rgb_enc_a.astype(np.int16)
     all_rgb_enc_c = np.clip(all_rgb_enc_b, 0, 255)
-    mesh.visual.vertex_colors[:,:3] = all_rgb_enc_c
-    mesh.export(os.path.join(savedir, f'mesh_colored_{specific_obj}.obj'));
+    mesh.visual.vertex_colors[:, :3] = all_rgb_enc_c
+    mesh.export(os.path.join(savedir, f'mesh_colored_{specific_obj}.obj'))
+
+
+def str2bool(x):
+    if isinstance(x, bool):
+        return x
+
+    return x.lower() in ("true", "1")
 
 
 if __name__ == '__main__':
@@ -124,9 +139,43 @@ if __name__ == '__main__':
     cfg = config_loader.get_config()
     cfg.video = True
 
+    # Override architectural information from original experiment file
+    orig_expname = cfg.expname.replace("render_", "")
+    archi_file = os.path.join("configs", orig_expname + ".txt")
+    print('archi_file', archi_file)
+
+    if os.path.exists(archi_file):
+        with open(archi_file, 'r') as f:
+            orig_params = DefaultConfigFileParser().parse(f)
+            # print('orig_params', orig_params)
+    else:
+        print(
+            f'WARNING: Could not find {archi_file}. Architectural options are not being loaded and thus can be incorrect.'
+        )
+
+    ## Override the original parameters
+    cfg.num_transformer_layers = int(
+        orig_params.get('num_transformer_layers', cfg.num_transformer_layers))
+    cfg.num_attn_heads = int(
+        orig_params.get('num_attn_heads', cfg.num_attn_heads))
+    cfg.no_compression = str2bool(
+        orig_params.get('no_compression', cfg.no_compression))
+    cfg.reduce_features = str2bool(
+        orig_params.get('reduce_features', cfg.reduce_features))
+
+    print(
+        "================Overriding the architectural parameters======================="
+    )
+    print('cfg.num_transformer_layers', cfg.num_transformer_layers)
+    print('cfg.num_attn_heads', cfg.num_attn_heads)
+    print('cfg.no_compression', cfg.no_compression)
+    print('cfg.reduce_features', cfg.reduce_features)
+
+    # Actually perform the 3D reconstruction
     test_dataset = SceneDataset(cfg, 'test')
 
     i4d = model.Implicit4D(cfg, test_dataset.proj_pts_to_ref_torch)
 
     i4d.load_model()
-    generate_mesh(cfg, i4d.start, i4d, test_dataset, cfg.generate_specific_samples[0])
+    generate_mesh(cfg, i4d.start, i4d, test_dataset,
+                  cfg.generate_specific_samples[0])
