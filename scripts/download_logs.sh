@@ -26,6 +26,11 @@ dl_log() {
         # NOTE: Need to run script ./scripts/compile_renderings from within system to do so properly
         scpfrom SCARF/logs/${EXP_NAME}/renderings ./logs/${EXP_NAME} $INSTANCE
         ;;
+    "3d" | "3dmesh" | "mesh")
+        # Download renderings
+        # NOTE: Need to run script ./scripts/compile_renderings from within system to do so properly
+        scpfrom SCARF/logs/${EXP_NAME}/3d_mesh ./logs/${EXP_NAME} $INSTANCE
+        ;;
     "all")
         dl_log metadata
         dl_log tensorboard
@@ -49,7 +54,7 @@ dl_log() {
 
 # Script to download logs from the server
 LOG_TYPE=${1:-"all"}
-EXP_NAME=${2:-"train_DTU_4L_16H"}
+EXP_NAME=${2:-"train_DTU_2L_32H"}
 INSTANCE=${3:-"main"}
 
 mkdir -p logs/${EXP_NAME}
