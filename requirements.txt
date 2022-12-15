@@ -1,6 +1,7 @@
 ConfigArgParse
 imageio
 matplotlib
+mcubes
 numpy
 torch
 torchvision
