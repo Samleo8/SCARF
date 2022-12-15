@@ -122,8 +122,11 @@ def generate_mesh(cfg, epoch, i4d, test_dataset, specific_obj):
     all_rgb_enc_b = all_rgb_enc_a.astype(np.int16)
     all_rgb_enc_c = np.clip(all_rgb_enc_b, 0, 255)
     mesh.visual.vertex_colors[:, :3] = all_rgb_enc_c
-    mesh.export(os.path.join(savedir, f'mesh_colored_{specific_obj}.obj'))
 
+    save_path = os.path.join(savedir, f'mesh_colored_{specific_obj}.obj')
+    mesh.export(save_path)
+
+    print(f"Done! Saved mesh to {save_path}")
 
 def str2bool(x):
     if isinstance(x, bool):
