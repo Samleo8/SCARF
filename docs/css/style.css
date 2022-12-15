@@ -296,4 +296,8 @@ ul, ol {
         width: 50%;
         min-width: 380px;
     }
+
+    .modal-dialog {
+        max-width: 85%;
+    }
 }
