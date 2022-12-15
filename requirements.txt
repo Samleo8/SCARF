@@ -3,6 +3,7 @@ imageio
 matplotlib
 numpy
 PyMCubes
+pyglet<2
 scipy
 torch
 torchvision
