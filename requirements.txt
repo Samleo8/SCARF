@@ -1,8 +1,8 @@
 ConfigArgParse
 imageio
 matplotlib
-mcubes
 numpy
+PyMCubes
 torch
 torchvision
 tqdm
