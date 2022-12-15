@@ -193,6 +193,10 @@ figure:hover img {
     margin: 10px 0px;
 }
 
+.body .footnote {
+    font-size: 17px;
+}
+
 .gallery.teaser .footnote {
     margin: 0px;
     margin-top: -20px;
