@@ -3,6 +3,7 @@
     src: url('../fonts/quicksand/static/Quicksand-Regular.ttf');
 }
 
+/** General Body Formatting **/
 body {
     text-align: center;
     font-size: 22px;
@@ -13,11 +14,6 @@ body {
 
 .body {
     margin: 0 20%;
-}
-
-.references {
-    margin: 0 12%;
-    margin-top: 50px;
 }
 
 .body p {
@@ -31,6 +27,7 @@ body {
     margin-bottom: 20px;
 }
 
+/** Headers -- Titles **/
 .header {
     margin-top: 80px;
     margin-bottom: 80px;
@@ -53,6 +50,7 @@ body {
     font-family: "News Cycle","Arial Narrow Bold", serif;
 }
 
+/** Headers -- Authors **/
 .authors {
     font-size: 25px;
     font-weight: bold;
@@ -92,6 +90,7 @@ body {
     margin: 5px 8px;
 }
 
+/** Links and Citations **/
 a:not(.btn) {
     border-radius: 5px;
     color: red;
@@ -127,6 +126,7 @@ a.cite:hover {
     font-size: 17px;
 }
 
+/** Gallery and Figures **/
 .gallery {
     width: 120%;
     margin-left: -10%;
@@ -198,9 +198,15 @@ figure:hover img {
     margin-top: -20px;
 }
 
+/** References Stuff **/
 ul, ol {
     text-align: left;
     margin-left: 5px;
+}
+
+.references {
+    margin: 0 12%;
+    margin-top: 80px;
 }
 
 .references ol {
@@ -219,7 +225,6 @@ ul, ol {
 }
 
 /** Floating triangle for GitHub repo **/
-
 .float-triangle {
     position: fixed;
     top: 0;
@@ -271,7 +276,6 @@ ul, ol {
 .float-triangle:hover a {
     font-size: 36px;
 }
-
 
 /** Mobile Responsive: 1080px **/
 @media only screen and (max-width: 1080px) {
