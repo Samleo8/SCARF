@@ -134,6 +134,7 @@ def str2bool(x):
 
 if __name__ == '__main__':
     import config_loader
+    from configargparse import DefaultConfigFileParser
     import model
 
     cfg = config_loader.get_config()
