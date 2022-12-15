@@ -172,10 +172,34 @@
                     </figure>
                 </div>
             </div>
+            <div class="collapse" id="video-row-1">
+                <div class="gallery-row d-flex flex-row flex-wrap">
+                    <div class="gallery-item p-2">
+                        <video controls>
+                            <source src="videos/render23_2L_nocompress.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="gallery-item p-2">
+                        <video controls>
+                            <source src="videos/render23_2L_16H_reduced.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="gallery-item p-2">
+                        <video controls>
+                            <source src="videos/render23_2L_8H.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </div>
             <div class="caption">
                 Figure 3: Gallery of results for rendering of Scene 23 of the DTU Dataset
                 <a href="#cite-5" class="cite">[5]</a> with different feature reduction techniques.
-                <div class="footnote">NOTE: All rendered images are downscaled by 4 because of compute constraints.
+
+                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#video-row-1" aria-expanded="false" aria-controls="video-row-1">Toggle Time Lapse</button>
+
+                <div class="footnote">
+                    NOTE: All rendered images are downscaled by 4 because of compute constraints. Time lapses downscaled
+                    by 16.
                 </div>
             </div>
         </div>
@@ -217,13 +241,36 @@
                     </figure>
                 </div>
             </div>
+            <div class="collapse" id="video-row-2">
+                <div class="gallery-row d-flex flex-row flex-wrap">
+                    <div class="gallery-item p-2">
+                        <video controls>
+                            <source src="videos/render23_2L_8H.mp4">
+                        </video>
+                    </div>
+                    <div class="gallery-item p-2">
+                        <video controls>
+                            <source src="videos/render23_2L_16H.mp4">
+                        </video>
+                    </div>
+                    <div class="gallery-item p-2">
+                        <video controls>
+                            <source src="videos/render23_2L_32H.mp4">
+                        </video>
+                    </div>
+                </div>
+            </div>
             <div class="caption flex-row">
                 Figure 4: Gallery of results for rendering of Scene 23 of the DTU Dataset
                 <a href="#cite-5" class="cite">[5]</a> with varied number of transformer heads.
                 <div></div>
                 Images are generated with compression and without feature reduction.
+
+                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#video-row-2" aria-expanded="false" aria-controls="video-row-2">Toggle Time Lapse</button>
+
                 <div class="footnote">
-                    NOTE: All rendered images are downscaled by 4 because of compute constraints.
+                    NOTE: All rendered images are downscaled by 4 because of compute constraints. Time lapses downscaled
+                    by 16.
                 </div>
             </div>
         </div>
@@ -273,13 +320,31 @@
                     </figure>
                 </div>
             </div>
+            <div class="collapse" id="video-row-3">
+                <div class="gallery-row d-flex flex-row flex-wrap">
+                    <div class="gallery-item p-2">
+                        <video controls>
+                            <source src="videos/render23_2L_16H.mp4">
+                        </video>
+                    </div>
+                    <div class="gallery-item p-2">
+                        <video controls>
+                            <source src="videos/render23_4L_16H.mp4">
+                        </video>
+                    </div>
+                </div>
+            </div>
             <div class="caption flex-row">
                 Figure 5: Gallery of results for rendering of Scene 23 of the DTU
                 Dataset <a href="#cite-5" class="cite">[5]</a> with varied number of transformer layers.
                 <div></div>
                 Images are generated with compression and without feature reduction.
+
+                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#video-row-3" aria-expanded="false" aria-controls="video-row-3">Toggle Time Lapse</button>
+
+
                 <div class="footnote">
-                    NOTE: All rendered images are downscaled by 4 because of compute constraints.
+                    NOTE: All rendered images are downscaled by 4 because of compute constraints. Time lapses downscaled by 16.
                 </div>
             </div>
         </div>
@@ -301,6 +366,14 @@
                 <li>Longer training times on larger networks to see if performance further improves</li>
                 <li>Alternatives for max pooling as a transformer reduction operation</li>
             </ul>
+        </p>
+
+        <h1 id="bonus-content">Bonus Content</h1>
+        <p>You can view compiled time-lapse animations/videos of the training processes for experiments by clicking the
+            red buttons near the captions. The button below toggles visibility for all of them.
+            This is applicable for Figures <a class="figref">3</a>, <a class="figref">4</a> and <a class="figref">5</a>
+            above.
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target=".collapse" aria-expanded="false" aria-controls="video-row-1 video-row-2 video-row-3">Toggle Time Lapse</button>
         </p>
     </div>
 

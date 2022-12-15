@@ -160,6 +160,10 @@ figure {
     margin-bottom: 30px;
 }
 
+video {
+    width: 95%;
+}
+
 figure img {
     width: 90%;
     transition: all ease-in-out 0.3s;
@@ -181,6 +185,10 @@ figure:hover img {
     font-size: 20px;
     font-style: italic;
     padding: 0px 0px;
+}
+
+.caption button {
+    margin-left: 10px;
 }
 
 .gallery-item .caption {
