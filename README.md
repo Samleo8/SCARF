@@ -92,6 +92,8 @@ To then view the mesh in Python,
 ./scripts/view_3d.sh [EXP_NAME [SCAN_NUMBER [CUDA_VISIBLE_DEVICES]]]
 ```
 
+Note that the view script also generates a HTML file that can be opened in a browser to view the mesh. It will be saved in `./logs/render_<EXP_NAME>/3d_mesh/mesh_colored_<SCAN_NUMBER>.obj`
+
 For example, to 3d construct the pretrained model for `train_DTU_2L_32H` on pose 10 (choose from 0-51 inclusive) of scan 23, with CUDA device 2, and then view it, you would run
 
 ```bash
