@@ -18,9 +18,12 @@ if __name__ == '__main__':
     mesh = trimesh.load_mesh(mesh_path)
     print("Done!")
 
-    # html = trimesh.viewer.notebook.scene_to_html(mesh.scene())
-    # with open(mesh_path.replace('.obj', '.html'), 'w') as f:
-    #     f.write(html)
+    print("Saving 3D reconstruction as HTML file for viewing in browser... ", end='', flush=True)
+    html = trimesh.viewer.notebook.scene_to_html(mesh.scene())
+    mesh_path_html = mesh_path.replace('.obj', '.html')
+    with open(mesh_path_html, 'w') as f:
+        f.write(html)
+    print("Done! Saved as ", mesh_path_html)
 
     print("Displaying 3D reconstruction using trimesh and pyglet. Please be patient...")
     mesh.show()
