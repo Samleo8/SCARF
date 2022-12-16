@@ -437,6 +437,9 @@
             For the transformer architecture of 2 layers and 32 heads, Scene 106 (the <a href="#results-4">dove scene</a>) was rendered in 3D using Pyglet, and exported as a HTML file rendered with
             threejs. It can be viewed <a href="3d_mesh/mesh_2L_32H.html" target="_blank">here</a>.
         </p>
+        <p>
+            Unfortunately, the 3D rendering of the scene is not very good, with some errors along the rays. This could be due to the model not being fine-tuned, or the model not being trained for long enough (we have trained for less than half the number of iterations that SRF used in their model).
+        </p>
         <div class="links center">
             <a href="3d_mesh/mesh_2L_32H.html" class="btn btn-primary large-font" target="_blank"><span class="fa-brands fa-unity"></span>&nbsp;&nbsp;3D Rendering</a>
 
