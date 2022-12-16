@@ -1,4 +1,5 @@
 import trimesh
+import trimesh.viewer
 
 if __name__ == '__main__':
     import sys, os
@@ -16,6 +17,10 @@ if __name__ == '__main__':
     print("Loading 3D reconstruction for experiment", expname, "scan", scan, end='... ', flush=True)
     mesh = trimesh.load_mesh(mesh_path)
     print("Done!")
+
+    # html = trimesh.viewer.notebook.scene_to_html(mesh.scene())
+    # with open(mesh_path.replace('.obj', '.html'), 'w') as f:
+    #     f.write(html)
 
     print("Displaying 3D reconstruction using trimesh and pyglet. Please be patient...")
     mesh.show()
