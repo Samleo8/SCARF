@@ -64,7 +64,7 @@
                 </div>
             </div>
             <div class="footnote">*Baselines are artificially downsampled by 4 for fair comparison against our model
-                which renders a downsampled version due to compute constraints. For full-res baseline images, see the
+                which renders a downsampled version due to compute constraints. We do not use fine-tuning. For full-res baseline images, see the
                 <a href="https://github.com/jchibane/srf" target="_blank">SRF GitHub Repo</a></div>
         </div>
     </div>
@@ -298,7 +298,7 @@
             between features, and therefore increases the level of detail and color vibrancy in the rendered scene.
         </p>
 
-        <h2>Experiment 3: Transformer Layers</h2>
+        <h2 id="results-3">Experiment 3: Transformer Layers</h2>
 
         <p>
             We then varied the nubmer of transformer cross attention layers. We held the number of heads constant at
@@ -356,11 +356,64 @@
             head model is comparable to the performance of the 2 layer 32 head model.
         </p>
 
+        <h2>Testing on Scene 106 (Dove Scene)</h2>
+        <p>
+            As aforementioned, we discovered that the 2 best architectures were 2 layers 32 heads and 4 layers 16 heads.
+            We then tried rendering a pose of different scene (Scene 106) from the DTU dataset. The scene pictures a statuette of two textured doves. The results are shown in Figure
+            <a class="figref">6</a> below. It is noted that the quality of the renderings for both architectures is
+            pretty good, and are comparable to one another, similar to the results for Scene 23.
+        </p>
+
+        <p>
+            This scene presents a different challenge for the network, as the doves are textured and have a lot of
+            detail. Similar to SRF <a href="#cite-1" class="cite">[1]</a>, our network is able to capture the detail of
+            the doves, and the colors are also vibrant. As noted in the SRF paper, the original NeRF paper is unable to
+            capture the detail of the doves. However, our results are comparable to the
+            non-finetuned results of the SRF paper, although results may improve with fine-tuning (we have not tested fine-tuning of our models yet).
+        </p>
+
+        <div class="gallery" fignum="6">
+            <div class="gallery-row d-flex flex-row flex-wrap">
+                <div class="gallery-item p-2">
+                    <figure>
+                        <img src="images/render106_2L_32H.png">
+                        <div class="caption">Figure 6a: 2 layers, 32 heads.</div>
+                    </figure>
+                </div>
+                <div class="gallery-item p-2">
+                    <figure>
+                        <img src="images/render106_4L_16H.png">
+                        <div class="caption">Figure 6b: 4 layers, 16 heads</div>
+                    </figure>
+                </div>
+                <div class="gallery-item p-2">
+                    <figure>
+                        <img src="images/scene106_baseline.png">
+                        <div class="caption">Figure 6c: Baselines from SRF paper <a href="#cite-1" class="cite">[1]</a>
+                        </div>
+                    </figure>
+                </div>
+            </div>
+            <div class="caption flex-row">
+                Figure 5: Gallery of results for rendering of Scene 106 of the DTU
+                Dataset <a href="#cite-5" class="cite">[5]</a> with the best transformer architectures from
+                <a href="#results">Experiments</a> <a href="#results-1">1</a>, <a href="#results-2">2</a> and
+                <a href="#results-3">3</a> above.
+                <div></div>
+                Images are generated with compression and without feature reduction.
+
+                <div class="footnote">
+                    NOTE: All rendered images are downscaled by 4 because of compute constraints.
+                </div>
+            </div>
+        </div>
+
         <h1 id="future-work">Future Work</h1>
 
         <p>
             More experimentation is needed to understand the following:
             <ul>
+                <li>Effect of fine-tuning (our models are not fine-tuned)</li>
                 <li>Effect of positional encoding on the results</li>
                 <li>Full retrain without transfer learning to compare training time to SRF paper</li>
                 <li>Longer training times on larger networks to see if performance further improves</li>
@@ -369,14 +422,19 @@
         </p>
 
         <h1 id="bonus-content">Bonus Content</h1>
-        <p>You can view compiled time-lapse animations/videos of the training processes for experiments by clicking the
+        <h2>Training Time Lapse Videos</h2>
+        <p>You can view compiled time-lapse animations/videos of the scene learning for any of the presented experiments by clicking the
             red buttons near the captions. This is applicable for Figures <a class="figref">3</a>, <a class="figref">4</a> and <a class="figref">5</a>
             above. The button below toggles visibility for all of them.
             <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target=".collapse" aria-expanded="false" aria-controls="video-row-1 video-row-2 video-row-3">Toggle Time Lapse</button>
         </p>
 
+        <h2>3D Rendered Scene</h2>
         <p>
-            <div id="container"></div>
+            Scene 106 (the dove scene) was rendered in 3D using Pyglet, and exported as a HTML file rendered with threejs. It can be viewed <a href="3d_mesh/mesh_2L_32H.html">here</a>.
+        </p>
+        <p>
+            <a href="3d_mesh/mesh_2L_32H.html" class="btn btn-primary">3D Rendering</div>
         </p>
     </div>
 
@@ -431,8 +489,8 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
         </script>
-        <script src="modal.js"></script>
-        <script src="links.js"></script>
+        <script src="scripts/modal.js"></script>
+        <script src="scripts/links.js"></script>
 </body>
 
 </html>
